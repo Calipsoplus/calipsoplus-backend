@@ -1,0 +1,10 @@
+ {
+    "model": "apprest.CalipsoUser",
+    "pk": 1,
+    "fields": {
+      "calipso_uid":"",
+      "bio":"Description of experiment 1",
+      "location":"Description of experiment 1",
+      "user_id":"1"
+    }
+  }

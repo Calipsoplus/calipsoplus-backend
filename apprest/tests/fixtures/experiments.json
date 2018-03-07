@@ -1,0 +1,19 @@
+[
+  {
+    "model": "apprest.CalipsoExperiment",
+    "pk": 1,
+    "fields": {
+      "subject":"Experiment 1",
+      "body":"Description of experiment 1"
+    }
+  },
+  {
+    "model": "apprest.CalipsoExperiment",
+    "pk": 2,
+    "fields": {
+      "subject":"Experiment 2",
+      "body":"Description of experiment 2"
+    }
+  }
+
+]

@@ -1,0 +1,58 @@
+[
+ {
+    "model": "auth.User",
+    "pk": 1,
+    "fields": {
+      "username":"acampsm"
+    }
+  },
+   {
+    "model": "apprest.CalipsoExperiment",
+    "pk": 1,
+    "fields": {
+      "subject":"Experiment 1",
+      "body":"Description of experiment 1"
+    }
+  },
+{
+    "model": "apprest.CalipsoExperiment",
+    "pk": 2,
+    "fields": {
+      "subject":"Experiment 2",
+      "body":"Description of experiment 1"
+    }
+  },
+  {
+    "model": "apprest.CalipsoExperiment",
+    "pk": 3,
+    "fields": {
+      "subject":"Experiment 3",
+      "body":"Description of experiment 1"
+    }
+  },
+
+  {
+    "model": "apprest.CalipsoUserExperiment",
+    "pk": 1,
+    "fields": {
+      "user_id":1,
+      "experiment_id":1
+    }
+  },
+  {
+    "model": "apprest.CalipsoUserExperiment",
+    "pk": 2,
+    "fields": {
+      "user_id":1,
+      "experiment_id":2
+    }
+  },
+  {
+    "model": "apprest.CalipsoUserExperiment",
+    "pk": 3,
+    "fields": {
+      "user_id":1,
+      "experiment_id":3
+    }
+  }
+]
