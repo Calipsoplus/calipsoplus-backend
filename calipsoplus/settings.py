@@ -81,6 +81,18 @@ WSGI_APPLICATION = 'calipsoplus.wsgi.application'
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
 
 DATABASES = {
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.mysql',
+    #     'NAME': 'calipsodb',
+    #     'USER': 'admin',
+    #     'PASSWORD': 'admincamps',
+    #     'HOST': '192.168.33.11',
+    #     'PORT': '3306',
+    #     'OPTIONS': {
+    #         'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+    #         'charset': 'utf8mb4',
+    #     }
+    # },
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'calipsodb',
@@ -92,8 +104,16 @@ DATABASES = {
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
             'charset': 'utf8mb4',
         }
+    },
+    'auth_db': {
+        'ENGINE': 'django.db.backends.mysql',
+        'OPTIONS': {
+            'read_default_file': os.path.join(BASE_DIR, '..', 'config', 'database', 'auth_db.cnf'),
+        }
     }
 }
+
+DATABASE_ROUTERS = ['calipsoplus.router.CalipsoPlusDBRouter']
 
 # Password validation
 # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators
