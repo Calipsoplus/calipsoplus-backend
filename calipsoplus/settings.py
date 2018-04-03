@@ -28,8 +28,6 @@ SECRET_KEY = '7@=x7lhgpx_1weud8l9!r2@av)p_y)x9vl2379em))l3gi=0&*'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.33.11']
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -95,18 +93,21 @@ DATABASES = {
     # },
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'calipsodb',
-        'USER': 'admin',
-        'PASSWORD': 'admincamps',
-        'HOST': '192.168.33.11',
-        'PORT': '3306',
+        'STORAGE_ENGINE': 'INNODB',
         'OPTIONS': {
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
-            'charset': 'utf8mb4',
+            'read_default_file': os.path.join(BASE_DIR, '..', 'config', 'database', 'default.cnf'),
         }
     },
+    # 'auth_db': {
+    #     'ENGINE': 'django.db.backends.mysql',
+    #     'OPTIONS': {
+    #         'read_default_file': os.path.join(BASE_DIR, '..', 'config', 'database', 'auth_db.cnf'),
+    #     }
+    # }
     'auth_db': {
         'ENGINE': 'django.db.backends.mysql',
+        'STORAGE_ENGINE': 'INNODB',
         'OPTIONS': {
             'read_default_file': os.path.join(BASE_DIR, '..', 'config', 'database', 'auth_db.cnf'),
         }
