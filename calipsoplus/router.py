@@ -5,7 +5,7 @@ class CalipsoPlusDBRouter:
     A router to control all database operations on models in the
     auth application.
     """
-    def db_for_read(self, model):
+    def db_for_read(self, model, **hints):
         if model._meta.app_label == 'external_db_auth':
             return 'auth_db'
         return 'default'
