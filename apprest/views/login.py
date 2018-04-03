@@ -1,5 +1,5 @@
 from django.contrib.auth import authenticate, logout, login
-from django.views.decorators.csrf import csrf_protect
+from django.views.decorators.csrf import csrf_protect, csrf_exempt
 
 from rest_framework import status
 
@@ -8,7 +8,8 @@ from apprest.serializers.user import CalipsoUserSerializer
 from apprest.utils.request import JSONResponse
 
 
-@csrf_protect
+# @csrf_protect
+@csrf_exempt
 def login_calipso_user(request):
     if request.method == 'POST':
         logout(request)
