@@ -34,7 +34,7 @@ INSTALLED_APPS = [
 
     'apprest.apps.ApprestConfig',
     'applogin.apps.ApploginConfig',
-
+    'corsheaders',
     'django.contrib.admin',
     'django.contrib.admindocs',
     'django.contrib.auth',
@@ -48,6 +48,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -206,3 +207,11 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 #LOGIN_REDIRECT_URL = reverse_lazy('experiments')
+
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'calipsoplus.auth.backends.ExternalDatabaseAuthenticationBackend',
+)
+
+CORS_ALLOW_CREDENTIALS = True
+CORS_ORIGIN_ALLOW_ALL = True
