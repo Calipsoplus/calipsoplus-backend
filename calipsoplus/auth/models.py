@@ -11,4 +11,4 @@ class AuthDatabaseUser(models.Model):
     class Meta:
         managed = False
         db_table = 'User'
-        app_label = 'auth'
+        app_label = 'external_db_auth'
