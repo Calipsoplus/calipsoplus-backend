@@ -28,6 +28,10 @@ SECRET_KEY = '7@=x7lhgpx_1weud8l9!r2@av)p_y)x9vl2379em))l3gi=0&*'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+ALLOWED_HOSTS = [
+    '.cells.es',
+]
+
 # Application definition
 
 INSTALLED_APPS = [
