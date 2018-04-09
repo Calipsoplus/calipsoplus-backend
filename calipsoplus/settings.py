@@ -30,6 +30,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = [
     '.cells.es',
+    '192.168.33.11',
 ]
 
 # Application definition
