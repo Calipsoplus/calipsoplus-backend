@@ -11,9 +11,9 @@ The user will need to install Python 3+, python-pip and python-virtualenv. Some 
 ```bash
 mkdir calipsoplus & cd calipsoplus
 mkdir logs
-virtualenv env
+virtualenv ~/.virtualenvs/calipsoenv/bin/activate
 git clone git@git.cells.es:mis/calipsoplus-backend.git -b develop backend
-env/bin/pip install -r backend/requirements.txt
+env/bin/pip install -r calipsoplus/requirements.txt
 ```
 
 ### Database configuration
@@ -62,7 +62,7 @@ chmod 555 default.cnf
 
 ### Migrate
 ```
-env/bin/python backend/manage.py migrate --settings=settings.settings_[local|test|demo|prod]
+env/bin/python backend/manage.py migrate --settings=calipsoplus.settings_[local|test|demo|prod]
 ```
 
 ### Run
@@ -70,18 +70,19 @@ env/bin/python backend/manage.py migrate --settings=settings.settings_[local|tes
 Once the environment and the database are configured...
 
 ```bash
-env/bin/python backend/manage.py runserver --settings=settings.settings
+./manage.py runserver 127.0.0.1:8000 settings=calipsoplus.settings
 ```
 
-The service should be available at [http://127.0.0.1:8030](http://127.0.0.1:8030)
+The service should be available at [http://127.0.0.1:8000](http://127.0.0.1:8000)
 
 ## Testing
 
 The application has its own unit testing settings, which will create a mock database using SQLite and will store it in local memory. This way the testing is faster than using MySQL.
 
 ```bash
-cd timedb/backend
-env/bin/python backend/manage.py test --settings=settings.settings_unittest
+cd calipsoplus
+source ~/.virtualenvs/calipsoenv/bin/activate
+./manage.py test --settings=calipsoplus.settings
 ```
 
 ## Deploy
@@ -92,7 +93,7 @@ Follow the same steps as in the **Build & Development** section except the **Run
 
 Go to uwsgi's directory which contains the apps-available and apps-enabled directories. We will name it UWSGI_DIR.
 
-First of all, review the employmentOfficeBackend.ini file to be sure every property is set correctly.
+First of all, review the calipsoplus-backend.ini file to be sure every property is set correctly.
 
 After that, we need to edit the configuration file with correct environment configuration in terms of project location, Django's environment settings and database configuration.
 
