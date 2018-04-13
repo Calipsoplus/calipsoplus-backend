@@ -26,7 +26,7 @@ class FacilityServiceTestCase(APITestCase):
 
         # create facilities
         for facility in self.facilities:
-            CalipsoFacility.objects.create(name=facility, description='facility for test', url='http://calipsoplus.cells.es')
+            CalipsoFacility.create(name=facility, description='facility for test', url='http://calipsoplus.cells.es')
 
         # get_all_facilities
         all_facilities = self.service.get_all_facilities()
