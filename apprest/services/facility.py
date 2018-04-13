@@ -8,7 +8,6 @@ class CalipsoFacilityServices:
         self.logger = logging.getLogger(__name__)
 
     def get_all_facilities(self):
-
         self.logger.debug('Getting all facilities')
         try:
             all_facilities = CalipsoFacility.objects.all()
