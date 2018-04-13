@@ -38,7 +38,6 @@ ALLOWED_HOSTS = [
 INSTALLED_APPS = [
 
     'apprest.apps.ApprestConfig',
-    'applogin.apps.ApploginConfig',
     'corsheaders',
     'django.contrib.admin',
     'django.contrib.admindocs',
