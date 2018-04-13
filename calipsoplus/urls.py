@@ -15,70 +15,13 @@ Including another URLconf
 """
 
 from django.conf.urls import url, include
-
-from applogin import views
 from apprest.views import login
 
 urlpatterns = [
     url(r'^users/', include('apprest.urls.user')),
     url(r'^facilities/', include('apprest.urls.facility')),
-    url(r'^experiments/', include('apprest.urls.experiment')),
     url(r'^login/$', login.login_calipso_user, name='login'),
     url(r'^logout/$', login.logout_calipso_user),
 
-    url(r'^$', views.index,name='index'),
+    #url(r'^$', views.index,name='index'),
 ]
-
-"""
-urlpatterns = [
-    path('accounts/', include('django.contrib.auth.urls')),
-    url(r'^$', login_views.index, name='index'),
-
-
-    # user accounts
-     path('accounts/', include('django.contrib.auth.urls')),
-
-    #admin site
-    url(r'^admin/', admin.site.urls),
-
-    #list experiments
-    url(r'^experiments/$', login_views.list_experiments, name='experiments'),
-
-    # my login
-    url(r'^login/$', login, {'template_name': 'login.html'},name='login'),
-    url(r'^logout/$', login_views.logout_user, name='logout'),
-
-    # rest_framework
-    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-]
-
-
-urlpatterns = [
-    # url(r'^', include(router.urls)),
-    path('login/', login_views.login_user),
-
-    url(r'^logout/$', auth_views.logout, name='logout'),
-
-    path('', auth_views.login,{'template_name': 'login.html'}, name='index'),
-
-    path('accounts/', include('django.contrib.auth.urls')),
-    
-]
-
-
-urlpatterns = [
-    url(r'^', include(router.urls)),
-    #url(r'^$', login_views.main, name='main'),
-    path('login/', login_views.login_user),
-    path('logout/', login_views.logout_user),
-    # path('main/', login_views.main),
-    path('admin/', admin.site.urls),
-    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-
-
-    path('accounts/', include('django.contrib.auth.urls')),
-
-]
-
-
-"""
