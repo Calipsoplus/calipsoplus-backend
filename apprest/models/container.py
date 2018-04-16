@@ -18,4 +18,4 @@ class CalipsoContainer(models.Model):
         unique_together = ("calipso_user", "calipso_experiment")
 
     def __str__(self):
-        return self.uid
+        return self.container
