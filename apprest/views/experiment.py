@@ -2,7 +2,7 @@ import logging
 
 from rest_framework import status
 
-from apprest.models.experiments import CalipsoExperiment
+from apprest.models.experiment import CalipsoExperiment
 from apprest.models.user import CalipsoUser
 from apprest.serializers.experiment import CalipsoExperimentSerializer
 from apprest.services.experiment import CalipsoExperimentsServices

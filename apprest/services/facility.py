@@ -1,6 +1,6 @@
 import logging
 
-from apprest.models.facilities import CalipsoFacility
+from apprest.models.facility import CalipsoFacility
 
 
 class CalipsoFacilityServices:

@@ -98,7 +98,15 @@ DATABASES = {
         'OPTIONS': {
             'read_default_file': os.path.join(BASE_DIR, '..', 'config', 'database', 'auth_db.cnf'),
         }
-    }
+    },
+    'guacamole': {
+        'ENGINE': 'django.db.backends.mysql',
+        'STORAGE_ENGINE': 'INNODB',
+        'OPTIONS': {
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+            'read_default_file': os.path.join(BASE_DIR, '..', 'config', 'database', 'guacamole.cnf'),
+        },
+    },
 }
 
 DATABASE_ROUTERS = ['calipsoplus.router.CalipsoPlusDBRouter']
@@ -192,11 +200,11 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-#LOGIN_REDIRECT_URL = reverse_lazy('experiments')
+# LOGIN_REDIRECT_URL = reverse_lazy('experiments')
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
-    'calipsoplus.auth.backends.ExternalDatabaseAuthenticationBackend',
+    'apprest.views.auth.ExternalDatabaseAuthenticationBackend',
 )
 
 CORS_ALLOW_CREDENTIALS = True

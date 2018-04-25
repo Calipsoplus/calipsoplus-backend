@@ -2,7 +2,7 @@ import logging
 
 from rest_framework import status
 
-from apprest.models.facilities import CalipsoFacility
+from apprest.models.facility import CalipsoFacility
 from apprest.serializers.facility import CalipsoFacilitySerializer
 from apprest.services.facility import CalipsoFacilityServices
 

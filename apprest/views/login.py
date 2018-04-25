@@ -28,7 +28,6 @@ def login_calipso_user(request):
     return JSONResponse({'error': 'METHOD NOT ALLOWED'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 
-
 def logout_calipso_user(request):
     logout(request)
     return JSONResponse({'message': 'logout done'}, status=status.HTTP_200_OK)
