@@ -1,8 +1,10 @@
-from django.conf.urls import url
+from django.urls import path
 
-from apprest.views.container import create, delete
+from apprest.views import container
 
 urlpatterns = [
-    url(r'^add/$', create),
-    url(r'^(?P<container_uid>\d+)/remove/$', delete),
+    path('', container.index, name='index'),
+    path('run', container.run_container, name='run_container'),
+    path('rm/<container_id>/', container.rm_container, name='rm_container'),
+    path('stop/<container_id>/', container.stop_container, name='stop_container'),
 ]
