@@ -1,8 +1,10 @@
 import hashlib
 import logging
 
+from django.contrib.auth.models import User
 
-from calipsoplus.auth.models import User, AuthDatabaseUser
+from apprest.models.auth import AuthDatabaseUser
+
 
 class ExternalDatabaseAuthenticationBackend:
     logger = logging.getLogger(__name__)

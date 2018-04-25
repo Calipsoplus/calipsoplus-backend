@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import User
+
 
 class AuthDatabaseUser(models.Model):
     login = models.CharField(db_column='Login')
