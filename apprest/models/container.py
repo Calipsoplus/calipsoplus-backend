@@ -9,6 +9,9 @@ class CalipsoContainer(models.Model):
     container_status = models.CharField(max_length=25)
     container_info = models.TextField()
     container_logs = models.TextField()
+    guacamole_username = models.CharField(max_length=255, blank=True)
+    guacamole_password = models.CharField(max_length=255, blank=True)
+    vnc_password = models.CharField(max_length=255, blank=True)
 
     class Meta:
         db_table = 'calipso_containers'

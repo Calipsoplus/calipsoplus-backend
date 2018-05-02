@@ -46,7 +46,7 @@ def stop_container(request, container_id):
 def run_container(request):
     if request.method == 'POST':
         try:
-            container = container_service.run_container()
+            container = container_service.run_container(GUACAMOLE_USERNAME, GUACAMOLE_USER_PASSORD, VNCPASSWORD)
             serializer = CalipsoContainerSerializer(container)
             try:
                 port = int(container.container_info['NetworkSettings']['Ports']['5901/tcp'][0]['HostPort'])

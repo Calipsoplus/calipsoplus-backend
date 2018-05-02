@@ -21,7 +21,7 @@ class CalipsoContainersServices:
         except Exception as e:
             self.logger.critical("Docker deamon not found. %s" % e)
 
-    def run_container(self):
+    def run_container(self, guacamole_username, guacamole_password, vncpassword):
         """
         Run a new container
         returns a container created
@@ -30,6 +30,10 @@ class CalipsoContainersServices:
         # ports = {'5901/tcp': 5901} to assign specific port
 
         try:
+
+            #add to the img vncpassword
+            #select img
+
             docker_container = self.client.containers.run(DOCKER_IMAGE,
                                                           # ports=ports,
                                                           detach=True,
@@ -42,7 +46,11 @@ class CalipsoContainersServices:
                                                             container_status=docker_container.status,
                                                             container_info=self.client.api.inspect_container(
                                                                 docker_container.id),
-                                                            container_logs="...")
+                                                            container_logs="...",
+                                                            guacamole_username=guacamole_username,#docker_container.name
+                                                            guacamole_password=guacamole_password,#rndpass
+                                                            vnc_password=vncpassword
+                                                            )
 
             return new_container
 
