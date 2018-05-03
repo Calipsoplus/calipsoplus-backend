@@ -4,11 +4,11 @@ import pdb
 import docker
 
 from apprest.models.container import CalipsoContainer
+from calipsoplus.settings import DOCKER_URL_DAEMON
 
 CALIPSO_EXPERIMENT = "A/7889"
 CALIPSO_USER_NAME = "acampsm"
 DOCKER_IMAGE = "consol/centos-xfce-vnc:latest"
-DOCKER_URL_DAEMON = "tcp://192.168.33.13:2375"
 
 
 class CalipsoContainersServices:

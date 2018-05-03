@@ -33,6 +33,9 @@ ALLOWED_HOSTS = [
     '192.168.33.11',
 ]
 
+# DOCKER
+DOCKER_URL_DAEMON = "tcp://calipsotest.cells.es:2375"
+
 # Application definition
 
 INSTALLED_APPS = [
