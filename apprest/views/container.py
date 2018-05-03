@@ -11,13 +11,7 @@ from apprest.services.guacamole import CalipsoGuacamoleServices
 
 from apprest.utils.request import JSONResponse, ErrorFormatting
 
-GUACAMOLE_USERNAME = "alexcamps"
-
-GUACAMOLE_USER_PASSORD = "password"
-
 PROTOCOL = "vnc"
-
-VNCPASSWORD = "vncpassword"
 
 HOST_DOCKER_IP = "192.168.33.13"
 
@@ -46,14 +40,18 @@ def stop_container(request, container_id):
 def run_container(request):
     if request.method == 'POST':
         try:
-            container = container_service.run_container(GUACAMOLE_USERNAME, GUACAMOLE_USER_PASSORD, VNCPASSWORD)
+            container = container_service.run_container()
             serializer = CalipsoContainerSerializer(container)
             try:
                 port = int(container.container_info['NetworkSettings']['Ports']['5901/tcp'][0]['HostPort'])
 
-                guacamole_service.create_connection(GUACAMOLE_USERNAME, GUACAMOLE_USER_PASSORD,
-                                                    container.container_name,
-                                                    PROTOCOL, VNCPASSWORD, HOST_DOCKER_IP, port)
+                guacamole_service.create_connection(guacamole_username=container.guacamole_username,
+                                                    guacamole_password=container.guacamole_password,
+                                                    guacamole_connection_name=container.container_name,
+                                                    guacamole_protocol=PROTOCOL,
+                                                    vnc_password=container.vnc_password,
+                                                    container_ip=HOST_DOCKER_IP,
+                                                    container_port=port)
 
             except Exception as e:
                 logger.error(errorFormatting.format(e))
