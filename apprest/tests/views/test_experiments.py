@@ -3,7 +3,7 @@ from rest_framework import status
 
 import logging
 
-from apprest.models.experiments import CalipsoExperiment
+from apprest.models.experiment import CalipsoExperiment
 from apprest.services.experiment import CalipsoExperimentsServices
 from apprest.tests.utils import CalipsoTestCase
 

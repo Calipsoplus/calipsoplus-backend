@@ -5,7 +5,7 @@ from rest_framework import status
 
 import logging
 
-from apprest.models.experiments import CalipsoExperiment
+from apprest.models.experiment import CalipsoExperiment
 from apprest.models.user import CalipsoUser
 from apprest.services.experiment import CalipsoExperimentsServices
 from apprest.tests.utils import CalipsoTestCase
@@ -39,7 +39,7 @@ class UserExperimentViewsTestCase(CalipsoTestCase):
 
     def test_get_user_experiments(self):
         self.logger.debug('#### TEST test_get_user_experiments START ####')
-        url = '/users/' + str(self.user_alex.id) + '/experiments/'
+        url = '/user/' + str(self.user_alex.id) + '/experiment/'
 
         # Should return status 200 if everything goes fine
 
