@@ -33,7 +33,7 @@ class ExperimentServiceTestCase(APITestCase):
         logger.debug('#### setUp ExperimentServiceTestCase END ####')
 
     def test_service_experiments(self):
-        self.logger.debug('#### TEST test_service_experiments END ####')
+        self.logger.debug('#### TEST test_service_experiments START ####')
         all_experiments = self.service.get_user_experiments(self.calipso_user.id)
         self.assertEqual(len(all_experiments), 2)
         self.logger.debug('#### TEST test_service_experiments END ####')
