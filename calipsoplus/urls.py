@@ -18,9 +18,9 @@ from django.conf.urls import url, include
 from apprest.views import login
 
 urlpatterns = [
-    url(r'^users/', include('apprest.urls.user')),
-    url(r'^facilities/', include('apprest.urls.facility')),
-    url(r'^containers/', include('apprest.urls.container')),
+    url(r'^user/', include('apprest.urls.user')),
+    url(r'^facility/', include('apprest.urls.facility')),
+    url(r'^container/', include('apprest.urls.container')),
     url(r'^login/$', login.login_calipso_user, name='login'),
     url(r'^logout/$', login.logout_calipso_user),
 ]
