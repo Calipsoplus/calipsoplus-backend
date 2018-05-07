@@ -4,7 +4,9 @@
     "pk": 1,
     "fields": {
       "subject":"Experiment 1",
-      "body":"Description of experiment 1"
+      "body":"Description of experiment 1",
+      "serial_number":"201809162",
+      "beam_line":"MIDAS"
     }
   },
   {
@@ -12,7 +14,9 @@
     "pk": 2,
     "fields": {
       "subject":"Experiment 2",
-      "body":"Description of experiment 2"
+      "body":"Description of experiment 2",
+      "serial_number":"201809162",
+      "beam_line":"MIDAS"
     }
   }
 

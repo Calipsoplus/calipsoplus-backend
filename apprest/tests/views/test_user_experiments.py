@@ -39,11 +39,11 @@ class UserExperimentViewsTestCase(CalipsoTestCase):
 
     def test_get_user_experiments(self):
         self.logger.debug('#### TEST test_get_user_experiments START ####')
-        url = '/user/' + str(self.user_alex.id) + '/experiment/'
+        url = '/user/' + str(self.user_alex.username) + '/experiment/'
 
         # Should return status 200 if everything goes fine
 
-        self.logger.debug('# TEST URL --> %s' % url)
+        print('# TEST URL --> %s' % url)
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.logger.debug('# response.content --> %s' % response.content)

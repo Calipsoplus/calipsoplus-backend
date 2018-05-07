@@ -207,8 +207,10 @@ STATIC_URL = '/static/'
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
-    'apprest.views.auth.ExternalDatabaseAuthenticationBackend',
+    'apprest.views.auth.ExternalServiceAuthenticationBackend',
 )
 
 CORS_ALLOW_CREDENTIALS = True
 CORS_ORIGIN_ALLOW_ALL = True
+
+BACKEND_UO = "https://misapptest.cells.es/duo-services/login/"
