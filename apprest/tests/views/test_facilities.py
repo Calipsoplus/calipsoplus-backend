@@ -3,7 +3,7 @@ from rest_framework import status
 
 import logging
 
-from apprest.models.facilities import CalipsoFacility
+from apprest.models.facility import CalipsoFacility
 from apprest.services.facility import CalipsoFacilityServices
 from apprest.tests.utils import CalipsoTestCase
 
@@ -17,14 +17,15 @@ class FacilityViewsTestCase(CalipsoTestCase):
         self.logger.debug('#### setUp START ####')
 
         self.service = CalipsoFacilityServices()
-        self.facility_alba = CalipsoFacility.objects.create(name='ALBA', description='Cells Alba syncotron', url ='https://calipsoplus.cells.es/')
+        self.facility_alba = CalipsoFacility.objects.create(name='ALBA', description='Cells Alba syncotron',
+                                                            url='https://calipsoplus.cells.es/')
 
         self.logger.debug('#### setUp END ####')
 
     def test_get_all_facilities(self):
         self.logger.debug('#### TEST get_all_facilitites START ####')
 
-        url = '/facilities/all/'
+        url = '/facility/all/'
 
         # Should return status 200 if everything goes fine
 
@@ -39,4 +40,3 @@ class FacilityViewsTestCase(CalipsoTestCase):
         self.assertGreater(len(json_content), 0)
 
         self.logger.debug('#### TEST get time_entry by pk END ####')
-

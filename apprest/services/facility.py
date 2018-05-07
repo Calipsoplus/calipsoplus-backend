@@ -1,6 +1,6 @@
 import logging
 
-from apprest.models.facilities import CalipsoFacility
+from apprest.models.facility import CalipsoFacility
 
 
 class CalipsoFacilityServices:
@@ -8,7 +8,6 @@ class CalipsoFacilityServices:
         self.logger = logging.getLogger(__name__)
 
     def get_all_facilities(self):
-
         self.logger.debug('Getting all facilities')
         try:
             all_facilities = CalipsoFacility.objects.all()

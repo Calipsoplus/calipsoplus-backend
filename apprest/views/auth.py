@@ -1,9 +1,10 @@
-from django.conf import settings
 import hashlib
 import logging
-# from django.contrib.auth.hashers
 
-from calipsoplus.auth.models import User, AuthDatabaseUser
+from django.contrib.auth.models import User
+
+from apprest.models.auth import AuthDatabaseUser
+
 
 class ExternalDatabaseAuthenticationBackend:
     logger = logging.getLogger(__name__)
@@ -20,7 +21,7 @@ class ExternalDatabaseAuthenticationBackend:
             try:
                 auth_user = AuthDatabaseUser.objects.get(login=username)
             except AuthDatabaseUser.DoesNotExist:
-                log.info('%s not found in auth_db', username)
+                self.logger.info('%s not found in auth_db', username)
                 return None
 
             # Hash password

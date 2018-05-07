@@ -1,9 +1,7 @@
 from django.conf.urls import url
 
-from apprest.views import user
+from apprest.views import experiment
 
 urlpatterns = [
-    url(r'^all/$', user.get_all_users),
-    url(r'^(?P<user_id>\d+)/$', user.get_user),
-    url(r'^(?P<user_id>\d+)/experiments/$', user.get_user_experiments),
+    url(r'^(?P<user_id>\d+)/experiment/$', experiment.get_experiments_from_user_id),
 ]

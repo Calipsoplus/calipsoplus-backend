@@ -2,7 +2,7 @@ from rest_framework.test import APITestCase
 
 import logging
 
-from apprest.models.facilities import CalipsoFacility
+from apprest.models.facility import CalipsoFacility
 from apprest.services.facility import CalipsoFacilityServices
 
 logger = logging.getLogger(__name__)
@@ -11,7 +11,6 @@ logger = logging.getLogger(__name__)
 class FacilityServiceTestCase(APITestCase):
     logger = logging.getLogger(__name__)
     fixtures = ['facilities.json']
-
 
     def setUp(self):
         self.logger.debug('#### setUp START ####')
@@ -32,3 +31,4 @@ class FacilityServiceTestCase(APITestCase):
         all_facilities = self.service.get_all_facilities()
         self.assertEqual(len(all_facilities), len(self.facilities) + 2)  # two from fixtures
         self.logger.debug('#### TEST get_all_facilities END ####')
+

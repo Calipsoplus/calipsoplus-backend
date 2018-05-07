@@ -33,12 +33,14 @@ ALLOWED_HOSTS = [
     '192.168.33.11',
 ]
 
+# DOCKER
+DOCKER_URL_DAEMON = "tcp://calipsotest.cells.es:2375"
+
 # Application definition
 
 INSTALLED_APPS = [
 
     'apprest.apps.ApprestConfig',
-    'applogin.apps.ApploginConfig',
     'corsheaders',
     'django.contrib.admin',
     'django.contrib.admindocs',
@@ -85,18 +87,6 @@ WSGI_APPLICATION = 'calipsoplus.wsgi.application'
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
 
 DATABASES = {
-    # 'default': {
-    #     'ENGINE': 'django.db.backends.mysql',
-    #     'NAME': 'calipsodb',
-    #     'USER': 'admin',
-    #     'PASSWORD': 'admincamps',
-    #     'HOST': '192.168.33.11',
-    #     'PORT': '3306',
-    #     'OPTIONS': {
-    #         'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
-    #         'charset': 'utf8mb4',
-    #     }
-    # },
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'STORAGE_ENGINE': 'INNODB',
@@ -105,19 +95,21 @@ DATABASES = {
             'read_default_file': os.path.join(BASE_DIR, '..', 'config', 'database', 'default.cnf'),
         }
     },
-    # 'auth_db': {
-    #     'ENGINE': 'django.db.backends.mysql',
-    #     'OPTIONS': {
-    #         'read_default_file': os.path.join(BASE_DIR, '..', 'config', 'database', 'auth_db.cnf'),
-    #     }
-    # }
     'auth_db': {
         'ENGINE': 'django.db.backends.mysql',
         'STORAGE_ENGINE': 'INNODB',
         'OPTIONS': {
             'read_default_file': os.path.join(BASE_DIR, '..', 'config', 'database', 'auth_db.cnf'),
         }
-    }
+    },
+    'guacamole': {
+        'ENGINE': 'django.db.backends.mysql',
+        'STORAGE_ENGINE': 'INNODB',
+        'OPTIONS': {
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+            'read_default_file': os.path.join(BASE_DIR, '..', 'config', 'database', 'guacamole.cnf'),
+        },
+    },
 }
 
 DATABASE_ROUTERS = ['calipsoplus.router.CalipsoPlusDBRouter']
@@ -211,11 +203,11 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-#LOGIN_REDIRECT_URL = reverse_lazy('experiments')
+# LOGIN_REDIRECT_URL = reverse_lazy('experiments')
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
-    'calipsoplus.auth.backends.ExternalDatabaseAuthenticationBackend',
+    'apprest.views.auth.ExternalDatabaseAuthenticationBackend',
 )
 
 CORS_ALLOW_CREDENTIALS = True

@@ -1,5 +1,3 @@
-from django.conf import settings
-
 class CalipsoPlusDBRouter:
     """
     A router to control all database operations on models in the

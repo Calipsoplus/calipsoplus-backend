@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from apprest.models.experiments import CalipsoExperiment
+from apprest.models.experiment import CalipsoExperiment
 
 
 class CalipsoExperimentSerializer(serializers.ModelSerializer):

@@ -8,7 +8,6 @@ from apprest.serializers.user import CalipsoUserSerializer
 from apprest.utils.request import JSONResponse
 
 
-# @csrf_protect
 @csrf_exempt
 def login_calipso_user(request):
     if request.method == 'POST':
@@ -27,7 +26,6 @@ def login_calipso_user(request):
         return JSONResponse({'error': 'HTTP_401_UNAUTHORIZED'}, status=status.HTTP_401_UNAUTHORIZED)
 
     return JSONResponse({'error': 'METHOD NOT ALLOWED'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
-
 
 
 def logout_calipso_user(request):
