@@ -13,11 +13,11 @@ logger = logging.getLogger(__name__)
 errorFormatting = ErrorFormatting()
 
 
-def get_experiments_from_user_id(request, user_id):
+def get_experiments_from_username(request, username):
     if request.method == 'GET':
         try:
-            logger.debug('get_experiments_from_user_id (user_id=%s)' % user_id)
-            experiments = service.get_user_experiments(user_id=user_id)
+            logger.debug('get_experiments_from_username (username=%s)' % username)
+            experiments = service.get_user_experiments(username=username)
             serializer = CalipsoExperimentSerializer(experiments, many=True)
             return JSONResponse(serializer.data)
         except CalipsoUser.DoesNotExist as dne:
