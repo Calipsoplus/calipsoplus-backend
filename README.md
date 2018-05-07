@@ -52,12 +52,23 @@ user = *****
 password = *****
 default-character-set = utf8
 ```
+Add the following content to the **guacamole.cnf** file
+```bash
+[client]
+database = guacamoledb
+host = localhost
+port = 3306
+user = *****
+password = *****
+default-character-set = utf8
+```
 
 Set **auth_db.cnf** and **default.cnf** files as read only
 
 ```bash
 chmod 555 auth_db.cnf
 chmod 555 default.cnf
+chmod 555 guacamole.cnf
 ```
 
 ### Migrate
