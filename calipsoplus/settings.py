@@ -207,7 +207,7 @@ STATIC_URL = '/static/'
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
-    'apprest.views.auth.ExternalDatabaseAuthenticationBackend',
+    'apprest.views.auth.ExternalServiceAuthenticationBackend',
 )
 
 CORS_ALLOW_CREDENTIALS = True

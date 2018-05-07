@@ -1,17 +1,15 @@
-import hashlib
 import json
 import logging
-import pdb
 
 import requests
 from django.contrib.auth.models import User
 from rest_framework import status
 
-from apprest.models.auth import AuthDatabaseUser
+
 from calipsoplus.settings import BACKEND_UO
 
 
-class ExternalDatabaseAuthenticationBackend:
+class ExternalServiceAuthenticationBackend:
     logger = logging.getLogger(__name__)
 
     def authenticate(self, request, username=None, password=None):
