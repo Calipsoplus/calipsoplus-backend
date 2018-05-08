@@ -1,4 +1,5 @@
 from django.db import models
+from simple_history.models import HistoricalRecords
 
 
 class CalipsoContainer(models.Model):
@@ -12,6 +13,8 @@ class CalipsoContainer(models.Model):
     guacamole_username = models.CharField(max_length=255, blank=True)
     guacamole_password = models.CharField(max_length=255, blank=True)
     vnc_password = models.CharField(max_length=255, blank=True)
+
+    history = HistoricalRecords()
 
     class Meta:
         db_table = 'calipso_containers'

@@ -1,4 +1,5 @@
 from django.db import models
+from simple_history.models import HistoricalRecords
 
 
 class CalipsoExperiment(models.Model):
@@ -6,6 +7,8 @@ class CalipsoExperiment(models.Model):
     body = models.TextField()
     serial_number = models.CharField(max_length=50, blank=True)
     beam_line = models.CharField(max_length=200, blank=True)
+
+    history = HistoricalRecords()
 
     def create(self, subject, body, serial_number, beam_line):
         self.subject = subject
