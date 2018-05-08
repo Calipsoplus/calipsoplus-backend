@@ -4,3 +4,4 @@ djangorestframework>=3.7,<3.8
 mysqlclient==1.3.12
 pytz==2018.3
 docker==3.2.1
+django-simple-history==2.0

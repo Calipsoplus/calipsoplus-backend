@@ -40,6 +40,7 @@ DOCKER_URL_DAEMON = "tcp://calipsotest.cells.es:2375"
 
 INSTALLED_APPS = [
 
+    'simple_history',
     'apprest.apps.ApprestConfig',
     'corsheaders',
     'django.contrib.admin',
@@ -61,6 +62,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'simple_history.middleware.HistoryRequestMiddleware',
 ]
 
 ROOT_URLCONF = 'calipsoplus.urls'
