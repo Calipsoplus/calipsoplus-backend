@@ -1,5 +1,6 @@
 import logging
 import pdb
+import uuid
 
 import docker
 
@@ -29,9 +30,10 @@ class CalipsoContainersServices:
 
         try:
 
-            # TODO: generate random values for guacamole credentials
-            guacamole_username = 'alexcamps'
-            guacamole_password = 'password'
+            # generate random values for guacamole credentials
+            guacamole_username = uuid.uuid4().hex
+            guacamole_password = uuid.uuid4().hex
+
             vnc_password = 'vncpassword'
 
             # add to the img vncpassword
