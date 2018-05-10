@@ -48,8 +48,13 @@ def stop_container(request, container_name):
     if request.method == 'GET':
         try:
             container_data = container_service.stop_container(container_name)
-            serializer = CalipsoContainerSerializer(container_data)
-            return JSONResponse(serializer.data, status=status.HTTP_200_OK)
+            try:
+                serializer = CalipsoContainerSerializer(container_data)
+                return JSONResponse(serializer.data, status=status.HTTP_200_OK)
+            except Exception as e:
+                logger.error(errorFormatting.format(e))
+                return JSONResponse([], status=status.HTTP_200_OK)
+
         except Exception as e:
             logger.error(errorFormatting.format(e))
             return JSONResponse({'error': errorFormatting.format(e)}, status=status.HTTP_400_BAD_REQUEST)
