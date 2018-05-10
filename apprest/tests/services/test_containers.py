@@ -19,7 +19,7 @@ class CalipsoContainerServiceTestCase(APITestCase):
     def test_service_run_stop_rm_container(self):
         self.logger.debug('#### TEST test_service_run_stop_rm_container START ####')
 
-        container = self.service.run_container()
+        container = self.service.run_container(username='username', experiment='experiment_id')
 
         self.assertEqual(len(container.container_id), 64)
         self.assertEqual(container.container_status, 'created')
