@@ -1,4 +1,5 @@
 import logging
+import pdb
 
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -10,10 +11,10 @@ from apprest.services.container import CalipsoContainersServices
 from apprest.services.guacamole import CalipsoGuacamoleServices
 
 from apprest.utils.request import JSONResponse, ErrorFormatting
+from calipsoplus.settings import HOST_DOCKER_IP
 
 PROTOCOL = "vnc"
 
-HOST_DOCKER_IP = "192.168.33.13"
 
 container_service = CalipsoContainersServices()
 guacamole_service = CalipsoGuacamoleServices()
@@ -26,21 +27,45 @@ def index(request):
     return HttpResponse("Hello, world. You're at the docker index.")
 
 
-def rm_container(request, container_id):
-    container_data = container_service.rm_container(container_id)
-    return HttpResponse(container_data)
+def rm_container(request, container_name):
+    if request.method == 'GET':
+        try:
+            container_data = container_service.rm_container(container_name)
+            try:
+                serializer = CalipsoContainerSerializer(container_data)
+                return JSONResponse(serializer.data, status=status.HTTP_200_OK)
+            except Exception as e:
+                logger.error(errorFormatting.format(e))
+                return JSONResponse([], status=status.HTTP_200_OK)
+
+        except Exception as e:
+            logger.error(errorFormatting.format(e))
+            return JSONResponse({'error': errorFormatting.format(e)}, status=status.HTTP_400_BAD_REQUEST)
+    return JSONResponse({'error': 'METHOD NOT ALLOWED'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 
-def stop_container(request, container_id):
-    container_data = container_service.stop_container(container_id)
-    return HttpResponse(container_data)
+def stop_container(request, container_name):
+    if request.method == 'GET':
+        try:
+            container_data = container_service.stop_container(container_name)
+            try:
+                serializer = CalipsoContainerSerializer(container_data)
+                return JSONResponse(serializer.data, status=status.HTTP_200_OK)
+            except Exception as e:
+                logger.error(errorFormatting.format(e))
+                return JSONResponse([], status=status.HTTP_200_OK)
+
+        except Exception as e:
+            logger.error(errorFormatting.format(e))
+            return JSONResponse({'error': errorFormatting.format(e)}, status=status.HTTP_400_BAD_REQUEST)
+    return JSONResponse({'error': 'METHOD NOT ALLOWED'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 
 @csrf_exempt
-def run_container(request):
+def run_container(request, username, experiment):
     if request.method == 'POST':
         try:
-            container = container_service.run_container()
+            container = container_service.run_container(username, experiment)
             serializer = CalipsoContainerSerializer(container)
             try:
                 port = int(container.container_info['NetworkSettings']['Ports']['5901/tcp'][0]['HostPort'])
@@ -63,4 +88,21 @@ def run_container(request):
             logger.error(errorFormatting.format(e))
             return JSONResponse({'error': errorFormatting.format(e)}, status=status.HTTP_400_BAD_REQUEST)
 
+    return JSONResponse({'error': 'METHOD NOT ALLOWED'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+
+def list_container(request, username):
+    if request.method == 'GET':
+        try:
+            container_data = container_service.list_container(username=username)
+
+            try:
+                serializer = CalipsoContainerSerializer(container_data, many=True)
+                return JSONResponse(serializer.data, status=status.HTTP_200_OK)
+            except Exception as e:
+                return JSONResponse({'error': errorFormatting.format(e)}, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            logger.error(errorFormatting.format(e))
+            return JSONResponse({'error': errorFormatting.format(e)}, status=status.HTTP_400_BAD_REQUEST)
     return JSONResponse({'error': 'METHOD NOT ALLOWED'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)

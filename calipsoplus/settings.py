@@ -34,7 +34,11 @@ ALLOWED_HOSTS = [
 ]
 
 # DOCKER
+# where docker daemon lives
 DOCKER_URL_DAEMON = "tcp://calipsotest.cells.es:2375"
+
+# where docker containers spawn
+HOST_DOCKER_IP = "calipsotest.cells.es"
 
 # Application definition
 
