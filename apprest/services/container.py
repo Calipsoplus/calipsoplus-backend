@@ -6,8 +6,6 @@ import docker
 from apprest.models.container import CalipsoContainer
 from calipsoplus.settings import DOCKER_URL_DAEMON
 
-CALIPSO_EXPERIMENT = "A/7889"
-CALIPSO_USER_NAME = "acampsm"
 DOCKER_IMAGE = "consol/centos-xfce-vnc:latest"
 
 
@@ -21,7 +19,7 @@ class CalipsoContainersServices:
         except Exception as e:
             self.logger.critical("Docker deamon not found. %s" % e)
 
-    def run_container(self):
+    def run_container(self, username, experiment):
         """
         Run a new container
         returns a container created
@@ -46,8 +44,8 @@ class CalipsoContainersServices:
 
             self.logger.info('Container ' + docker_container.name + ' has been created')
 
-            new_container = CalipsoContainer.objects.create(calipso_user=CALIPSO_USER_NAME,
-                                                            calipso_experiment=CALIPSO_EXPERIMENT,
+            new_container = CalipsoContainer.objects.create(calipso_user=username,
+                                                            calipso_experiment=experiment,
                                                             container_id=docker_container.id,
                                                             container_name=docker_container.name,
                                                             container_status=docker_container.status,
@@ -66,33 +64,64 @@ class CalipsoContainersServices:
 
             raise e
 
-    def rm_container(self, container_id):
+    def rm_container(self, container_name):
         """
-        Remove a container (container_id)
-        :param container_id: container id to be removed
+        Remove a container (container_name)
+        :param container_name: container name to be removed
         """
-        self.logger.info('Attempting to remove container %s' % container_id)
+        self.logger.info('Attempting to remove container %s' % container_name)
 
         try:
-            self.client.api.remove_container(container_id)
-            self.logger.info('Container ' + container_id + ' has been created')
-            return "container removed"
+            self.client.api.remove_container(container_name)
+
+            container = CalipsoContainer.objects.get(container_name=container_name)
+            container.container_status = 'removed'
+            container.save()
+
+            self.logger.info('Container ' + container_name + ' has been removed')
+
+            return container
 
         except Exception as e:
+            self.logger.error(e)
             return e
 
-    def stop_container(self, container_id):
+    def stop_container(self, container_name):
         """
-        Stop a container (container_id)
-        :param container_id: container id to be stopped
+        Stop a container (container_name)
+        :param container_name: container id to be stopped
         :return: none
         """
-        self.logger.info('Attempting to stop a container %s' % container_id)
+        self.logger.info('Attempting to stop a container %s' % container_name)
 
         try:
-            self.client.api.stop(container_id)
-            self.logger.info('Container ' + container_id + ' has been stopped')
-            return "container stopped"
+            self.client.api.stop(container_name)
+
+            container = CalipsoContainer.objects.get(container_name=container_name)
+            container.container_status = 'stopped'
+            container.save()
+
+            self.logger.info('Container ' + container_name + ' has been stopped')
+
+            return container
 
         except Exception as e:
+            self.logger.error(e)
             return e
+
+    def list_container(self, username):
+        """
+        List all created containers for a user
+        :return: list containers
+        """
+        self.logger.info('Attempting to list containers from calipso user:' + username)
+
+        try:
+            containers = CalipsoContainer.objects.filter(calipso_user=username, container_status='created')
+            self.logger.info('List containers from ' + username)
+
+            return containers
+
+        except CalipsoContainer.DoesNotExist as dne:
+            self.logger.error(dne)
+            return dne
