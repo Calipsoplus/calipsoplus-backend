@@ -5,7 +5,6 @@ import requests
 from django.contrib.auth.models import User
 from rest_framework import status
 
-
 from calipsoplus.settings import BACKEND_UO
 
 
@@ -40,14 +39,13 @@ class ExternalServiceAuthenticationBackend:
             self.logger.error(e)
             return None
 
-
-def get_user(self, user_id):
-    """
-    Retrieve the user's entry in the User model if it exists
-    :param user_id:
-    :return:
-    """
-    try:
-        return User.objects.get(pk=user_id)
-    except User.DoesNotExist:
-        return None
+    def get_user(self, user_id):
+        """
+        Retrieve the user's entry in the User model if it exists
+        :param user_id:
+        :return:
+        """
+        try:
+            return User.objects.get(pk=user_id)
+        except User.DoesNotExist:
+            return None
