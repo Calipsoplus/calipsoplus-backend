@@ -1,5 +1,4 @@
 import logging
-import pdb
 
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -14,7 +13,6 @@ from apprest.utils.request import JSONResponse, ErrorFormatting
 from calipsoplus.settings import HOST_DOCKER_IP
 
 PROTOCOL = "vnc"
-
 
 container_service = CalipsoContainersServices()
 guacamole_service = CalipsoGuacamoleServices()
@@ -65,7 +63,12 @@ def stop_container(request, container_name):
 def run_container(request, username, experiment):
     if request.method == 'POST':
         try:
+
             container = container_service.run_container(username, experiment)
+
+            if container is None:
+                return JSONResponse({'error': 'Maximum number containers exceeded'}, status=status.HTTP_204_NO_CONTENT)
+
             serializer = CalipsoContainerSerializer(container)
             try:
                 port = int(container.container_info['NetworkSettings']['Ports']['5901/tcp'][0]['HostPort'])
@@ -95,7 +98,6 @@ def list_container(request, username):
     if request.method == 'GET':
         try:
             container_data = container_service.list_container(username=username)
-
             try:
                 serializer = CalipsoContainerSerializer(container_data, many=True)
                 return JSONResponse(serializer.data, status=status.HTTP_200_OK)

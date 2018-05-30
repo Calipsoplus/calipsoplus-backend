@@ -1,13 +1,13 @@
 import logging
-import pdb
 import uuid
 
 import docker
 
 from apprest.models.container import CalipsoContainer
-from calipsoplus.settings import DOCKER_URL_DAEMON
+from calipsoplus.settings import DOCKER_URL_DAEMON, MAX_CONTAINER_PER_USER
 
 DOCKER_IMAGE = "consol/centos-xfce-vnc:latest"
+# DOCKER_IMAGE = "jupyter/minimal-notebook:latest"
 
 
 class CalipsoContainersServices:
@@ -28,43 +28,48 @@ class CalipsoContainersServices:
         self.logger.info('Attempting to run a new container')
         # ports = {'5901/tcp': 5901} to assign specific port
 
-        try:
+        list_of_containers = self.list_container(username=username)
+        size_list = len(list_of_containers)
+        if size_list >= MAX_CONTAINER_PER_USER:
+            return None
 
+        try:
             # generate random values for guacamole credentials
             guacamole_username = uuid.uuid4().hex
             guacamole_password = uuid.uuid4().hex
 
             vnc_password = 'vncpassword'
-
             # add to the img vncpassword
             # select img
 
-            docker_container = self.client.containers.run(DOCKER_IMAGE,
-                                                          # ports=ports,
-                                                          detach=True,
-                                                          publish_all_ports=True)
-
-            self.logger.info('Container ' + docker_container.name + ' has been created')
-
             new_container = CalipsoContainer.objects.create(calipso_user=username,
                                                             calipso_experiment=experiment,
-                                                            container_id=docker_container.id,
-                                                            container_name=docker_container.name,
-                                                            container_status=docker_container.status,
-                                                            container_info=self.client.api.inspect_container(
-                                                                docker_container.id),
+                                                            container_id='not created yet',
+                                                            container_name='not created yet',
+                                                            container_status='busy',
                                                             container_logs="...",
                                                             guacamole_username=guacamole_username,
                                                             guacamole_password=guacamole_password,
                                                             vnc_password=vnc_password
                                                             )
 
+            docker_container = self.client.containers.run(DOCKER_IMAGE,
+                                                          # ports=ports,
+                                                          detach=True,
+                                                          publish_all_ports=True)
+
+            new_container.container_id = docker_container.id
+            new_container.container_name = docker_container.name
+            new_container.container_status = docker_container.status
+            new_container.container_info = self.client.api.inspect_container(docker_container.id)
+
+            new_container.save()
+
             return new_container
 
         except Exception as e:
             self.logger.error(e)
-
-            raise e
+            return e
 
     def rm_container(self, container_name):
         """
@@ -104,7 +109,6 @@ class CalipsoContainersServices:
             container.save()
 
             self.logger.info('Container ' + container_name + ' has been stopped')
-
             return container
 
         except Exception as e:
@@ -119,7 +123,8 @@ class CalipsoContainersServices:
         self.logger.info('Attempting to list containers from calipso user:' + username)
 
         try:
-            containers = CalipsoContainer.objects.filter(calipso_user=username, container_status='created')
+            containers = CalipsoContainer.objects.filter(calipso_user=username,
+                                                         container_status__in=['created', 'busy'])
             self.logger.info('List containers from ' + username)
 
             return containers
