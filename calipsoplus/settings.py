@@ -220,3 +220,5 @@ CORS_ALLOW_CREDENTIALS = True
 CORS_ORIGIN_ALLOW_ALL = True
 
 BACKEND_UO = "https://misapptest.cells.es/duo-services/login/"
+MAX_CONTAINER_PER_USER = 3
+
