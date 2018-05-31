@@ -9,7 +9,6 @@ class CalipsoFacility(models.Model):
 
     history = HistoricalRecords()
 
-
     def create(self, name, description, url):
         self.name = name
         self.description = description
