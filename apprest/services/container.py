@@ -69,7 +69,7 @@ class CalipsoContainersServices:
 
         except Exception as e:
             self.logger.error(e)
-            return e
+            raise e
 
     def rm_container(self, container_name):
         """
@@ -91,7 +91,7 @@ class CalipsoContainersServices:
 
         except Exception as e:
             self.logger.error(e)
-            return e
+            raise e
 
     def stop_container(self, container_name):
         """
@@ -113,7 +113,7 @@ class CalipsoContainersServices:
 
         except Exception as e:
             self.logger.error(e)
-            return e
+            raise e
 
     def list_container(self, username):
         """
@@ -126,9 +126,8 @@ class CalipsoContainersServices:
             containers = CalipsoContainer.objects.filter(calipso_user=username,
                                                          container_status__in=['created', 'busy'])
             self.logger.info('List containers from ' + username)
-
             return containers
 
-        except CalipsoContainer.DoesNotExist as dne:
-            self.logger.error(dne)
-            return dne
+        except Exception as e:
+            self.logger.error(e)
+            raise e
