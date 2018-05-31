@@ -10,7 +10,7 @@ class CalipsoFacilityServices:
     def get_all_facilities(self):
         self.logger.debug('Getting all facilities')
         try:
-            all_facilities = CalipsoFacility.objects.all()
+            all_facilities = CalipsoFacility.objects.all().order_by('name')
             self.logger.debug('All application facilities got')
             return all_facilities
         except Exception as e:
