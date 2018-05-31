@@ -59,5 +59,4 @@ class CalipsoGuacamoleServices:
             return "ok"
 
         except Exception as e:
-
             return e
