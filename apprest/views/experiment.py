@@ -1,29 +1,24 @@
-import logging
+from django.views.decorators.csrf import csrf_exempt
 
-from rest_framework import status
+from rest_framework.generics import ListAPIView
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from rest_framework.permissions import IsAuthenticated
 
-from apprest.models.experiment import CalipsoExperiment
-from apprest.models.user import CalipsoUser
 from apprest.serializers.experiment import CalipsoExperimentSerializer
 from apprest.services.experiment import CalipsoExperimentsServices
-from apprest.utils.request import JSONResponse, ErrorFormatting
 
 service = CalipsoExperimentsServices()
-logger = logging.getLogger(__name__)
-errorFormatting = ErrorFormatting()
 
 
-def get_experiments_from_username(request, username):
-    if request.method == 'GET':
-        try:
-            logger.debug('get_experiments_from_username (username=%s)' % username)
-            experiments = service.get_user_experiments(username=username)
-            serializer = CalipsoExperimentSerializer(experiments, many=True)
-            return JSONResponse(serializer.data)
-        except CalipsoUser.DoesNotExist as dne:
-            logger.error(errorFormatting.format(dne))
-            return JSONResponse({'error': errorFormatting.format(dne)}, status=status.HTTP_404_NOT_FOUND)
-        except Exception as e:
-            logger.error(errorFormatting.format(e))
-            return JSONResponse({'error': errorFormatting.format(e)}, status=status.HTTP_400_BAD_REQUEST)
-    return JSONResponse({'error': 'METHOD NOT ALLOWED'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+class GetExperimentsByUserName(ListAPIView):
+    authentication_classes = (SessionAuthentication, BasicAuthentication)
+    permission_classes = (IsAuthenticated,)
+    serializer_class = CalipsoExperimentSerializer
+    pagination_class = None
+
+    def get_queryset(self):
+        return service.get_user_experiments(self.kwargs.get('username'))
+
+    @csrf_exempt
+    def dispatch(self, *args, **kwargs):
+        return super(GetExperimentsByUserName, self).dispatch(*args, **kwargs)
