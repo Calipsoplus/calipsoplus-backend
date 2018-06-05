@@ -25,7 +25,7 @@ class FacilityViewsTestCase(CalipsoTestCase):
     def test_get_all_facilities(self):
         self.logger.debug('#### TEST test_get_all_facilities START ####')
 
-        url = '/facility/all/'
+        url = '/facility/'
 
         self.logger.debug('# TEST URL --> %s' % url)
 
