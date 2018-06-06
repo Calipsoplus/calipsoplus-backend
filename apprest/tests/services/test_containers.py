@@ -1,6 +1,5 @@
 import logging
 
-from rest_framework import status
 from rest_framework.test import APITestCase
 
 from apprest.services.container import CalipsoContainersServices
@@ -46,5 +45,6 @@ class CalipsoContainerServiceTestCase(APITestCase):
         for x in range(0, MAX_CONTAINER_PER_USER):
             container = all_container_responses.pop()
             self.service.stop_container(container_name=container.container_name)
+            self.service.rm_container(container_name=container.container_name)
 
         self.logger.debug('#### TEST test_service_run_container END ####')

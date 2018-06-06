@@ -21,8 +21,8 @@ class ExperimentServiceTestCase(APITestCase):
         self.experiment_1 = CalipsoExperiment.objects.get(pk=1)
         self.experiment_2 = CalipsoExperiment.objects.get(pk=2)
 
-        self.calipso_user.experiments.add(self.experiment1)
-        self.calipso_user.experiments.add(self.experiment2)
+        self.calipso_user.experiments.add(self.experiment_1)
+        self.calipso_user.experiments.add(self.experiment_2)
 
         self.service = CalipsoExperimentsServices()
 
@@ -30,6 +30,6 @@ class ExperimentServiceTestCase(APITestCase):
 
     def test_service_experiments(self):
         self.logger.debug('#### TEST test_service_experiments START ####')
-        all_experiments = self.service.get_user_experiments(self.user.username)
+        all_experiments = self.service.get_user_experiments(self.calipso_user.user.username)
         self.assertEqual(len(all_experiments), 2)
         self.logger.debug('#### TEST test_service_experiments END ####')

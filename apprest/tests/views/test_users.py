@@ -1,10 +1,7 @@
-import json
-from rest_framework import status
 from django.contrib.auth.models import User
 
 import logging
 
-from apprest.models.user import CalipsoUser
 from apprest.services.user import CalipsoUserServices
 from apprest.tests.utils import CalipsoTestCase
 
