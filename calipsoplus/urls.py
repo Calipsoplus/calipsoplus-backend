@@ -1,26 +1,14 @@
-"""calipsoplus URL Configuration
-
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/2.0/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
-"""
-
 from django.conf.urls import url, include
-from apprest.views import login
+from django.urls import path
+
+from apprest.views.experiment import GetExperimentsByUserName
+from apprest.views.facility import GetAllFacilities
+from apprest.views.login import login_user, logout_user
 
 urlpatterns = [
-    url(r'^user/', include('apprest.urls.user')),
-    url(r'^facility/', include('apprest.urls.facility')),
     url(r'^container/', include('apprest.urls.container')),
-    url(r'^login/$', login.login_calipso_user, name='login'),
-    url(r'^logout/$', login.logout_calipso_user),
+    path('experiments/<username>/', GetExperimentsByUserName.as_view()),
+    path('facility/', GetAllFacilities.as_view()),
+    path('login/', login_user),
+    path('logout/', logout_user),
 ]

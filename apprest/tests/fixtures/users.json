@@ -1,10 +1,70 @@
- {
+[
+  {
+    "model": "auth.User",
+    "pk": 1,
+    "fields": {
+      "username": "userA"
+    }
+  },
+  {
     "model": "apprest.CalipsoUser",
     "pk": 1,
     "fields": {
-      "calipso_uid":"",
-      "bio":"Description of experiment 1",
-      "location":"Description of experiment 1",
-      "user_id":"1"
+      "calipso_uid": "82e0468c629e41498742b9731d33bcd2",
+      "bio": "Description of experiment 1",
+      "location": "Description of experiment 1",
+      "user_id": 1
+    }
+  },
+  {
+    "model": "auth.User",
+    "pk": 2,
+    "fields": {
+      "username": "userB"
+    }
+  },
+  {
+    "model": "apprest.CalipsoUser",
+    "pk": 2,
+    "fields": {
+      "calipso_uid": "82e0468c669e41498242b9731d33bcd2",
+      "bio": "Description of experiment 1",
+      "location": "Description of experiment 1",
+      "user_id": 2
+    }
+  },
+  {
+    "model": "auth.User",
+    "pk": 3,
+    "fields": {
+      "username": "userC"
+    }
+  },
+  {
+    "model": "apprest.CalipsoUser",
+    "pk": 3,
+    "fields": {
+      "calipso_uid": "82e0418c669e41498742b9731d33bcd2",
+      "bio": "Description of experiment 1",
+      "location": "Description of experiment 1",
+      "user_id": 3
+    }
+  },
+  {
+    "model": "auth.User",
+    "pk": 4,
+    "fields": {
+      "username": "userD"
+    }
+  },
+  {
+    "model": "apprest.CalipsoUser",
+    "pk": 4,
+    "fields": {
+      "calipso_uid": "82e0418c619e41498742b9731d33bcd2",
+      "bio": "Description of experiment 1",
+      "location": "Description of experiment 1",
+      "user_id": 4
     }
   }
+]

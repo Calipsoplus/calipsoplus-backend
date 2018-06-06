@@ -1,10 +1,7 @@
-import json
+import logging
 from rest_framework import status
 
-import logging
-
-from apprest.models.experiment import CalipsoExperiment
-from apprest.services.experiment import CalipsoExperimentsServices
+from apprest.models.user import CalipsoUser
 from apprest.tests.utils import CalipsoTestCase
 
 logger = logging.getLogger(__name__)
@@ -12,14 +9,49 @@ logger = logging.getLogger(__name__)
 
 class ExperimentViewsTestCase(CalipsoTestCase):
     logger = logging.getLogger(__name__)
-    fixtures = ['experiments.json']
+    fixtures = ['users.json']
 
     def setUp(self):
         self.logger.debug('#### setUp START ####')
 
-        self.service = CalipsoExperimentsServices()
-        self.experiment_1 = CalipsoExperiment.objects.create(subject='Experiment 1', body='Experiment to look at ...')
-        self.experiment_2 = CalipsoExperiment.objects.create(subject='Experiment 2', body='Experiment to look at ...')
+        self.scientist_1 = CalipsoUser.objects.get(pk=1)
+        self.scientist_2 = CalipsoUser.objects.get(pk=2)
+        self.scientist_3 = CalipsoUser.objects.get(pk=3)
+        self.scientist_4 = CalipsoUser.objects.get(pk=4)
 
         self.logger.debug('#### setUp END ####')
 
+    def test_get_experiments_by_username(self):
+        self.logger.debug('#### TEST get experiments by username START ####')
+
+        base_url = '/experiments/%s/'
+
+        # Not authenticated -> 403
+        url = base_url % self.scientist_1.user.username
+        self.logger.debug('# TEST URL --> %s' % url)
+        response = self.client.get(url, format='json', content_type='application/json')
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+        # Login and check methods
+        self.login_and_check_http_methods(self.scientist_1.user.username, url, ['GET', 'HEAD', 'OPTIONS'])
+
+        # No user specified -> 404
+        url = base_url % ''
+        self.logger.debug('# TEST URL --> %s' % url)
+        response = self.client.get(url, format='json', content_type='application/json')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+        # Test with non-existing user -> 404
+        url = base_url % 'xxxxx'
+        self.logger.debug('# TEST URL --> %s' % url)
+        response = self.client.get(url, format='json', content_type='application/json')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+        # Test with valid user -> 200
+        url = base_url % self.scientist_1.user.username
+        self.logger.debug('# TEST URL --> %s' % url)
+        response = self.client.get(url, format='json', content_type='application/json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # TODO: Test response structure
+        self.logger.debug('#### TEST get experiments by login END ####')

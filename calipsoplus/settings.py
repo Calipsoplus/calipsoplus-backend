@@ -30,7 +30,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = [
     '.cells.es',
-    '192.168.33.11',
+    '192.168.33.11'
 ]
 
 # DOCKER
@@ -43,7 +43,7 @@ HOST_DOCKER_IP = "calipsotest.cells.es"
 # Application definition
 
 INSTALLED_APPS = [
-
+    'rest_framework',
     'simple_history',
     'apprest.apps.ApprestConfig',
     'corsheaders',
@@ -54,7 +54,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
 ]
 
 MIDDLEWARE = [
@@ -221,4 +220,3 @@ CORS_ORIGIN_ALLOW_ALL = True
 
 BACKEND_UO = "https://misapptest.cells.es/duo-services/login/"
 MAX_CONTAINER_PER_USER = 3
-
