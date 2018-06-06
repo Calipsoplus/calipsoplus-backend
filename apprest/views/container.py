@@ -2,7 +2,7 @@ import logging
 
 from rest_framework import status
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAuthenticated
 
@@ -24,7 +24,10 @@ errorFormatting = ErrorFormatting()
 
 @api_view(['GET'])
 @permission_classes((IsAuthenticated,))
-def rm_container(request, container_name):
+@authentication_classes((SessionAuthentication, BasicAuthentication,))
+def rm_container(request, username, container_name):
+    if username != request.user.username:
+        return JSONResponse("username mismatch", status=status.HTTP_403_FORBIDDEN)
     try:
         container_data = container_service.rm_container(container_name)
         try:
@@ -41,7 +44,10 @@ def rm_container(request, container_name):
 
 @api_view(['GET'])
 @permission_classes((IsAuthenticated,))
-def stop_container(request, container_name):
+@authentication_classes((SessionAuthentication, BasicAuthentication,))
+def stop_container(request, username, container_name):
+    if username != request.user.username:
+        return JSONResponse("username mismatch", status=status.HTTP_403_FORBIDDEN)
     try:
         container_data = container_service.stop_container(container_name)
         try:
@@ -56,7 +62,8 @@ def stop_container(request, container_name):
         return JSONResponse({'error': errorFormatting.format(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(['POST'])
+@api_view(['GET'])
+@authentication_classes((SessionAuthentication, BasicAuthentication,))
 @permission_classes((IsAuthenticated,))
 def run_container(request, username, experiment):
     if username != request.user.username:
@@ -96,7 +103,11 @@ class GetContainersByUserName(ListAPIView):
     pagination_class = None
 
     def get_queryset(self):
-        return container_service.list_container(self.kwargs.get('username'))
+        username = self.kwargs.get('username')
+        if username == self.request.user.username:
+            return container_service.list_container(self.request.user.username)
+        else:
+            return []
 
     def dispatch(self, *args, **kwargs):
         return super(GetContainersByUserName, self).dispatch(*args, **kwargs)

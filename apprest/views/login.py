@@ -7,7 +7,6 @@ from rest_framework.decorators import api_view
 from apprest.utils.request import JSONResponse
 
 
-@csrf_exempt
 @api_view(['POST'])
 def login_user(request):
     logout(request)
@@ -29,7 +28,6 @@ def login_user(request):
         return JSONResponse('Unable to authenticate', status=status.HTTP_401_UNAUTHORIZED)
 
 
-@csrf_exempt
 @api_view(['GET'])
 def logout_user(request):
     logout(request)
