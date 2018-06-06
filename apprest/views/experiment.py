@@ -19,6 +19,5 @@ class GetExperimentsByUserName(ListAPIView):
     def get_queryset(self):
         return service.get_user_experiments(self.kwargs.get('username'))
 
-    @csrf_exempt
     def dispatch(self, *args, **kwargs):
         return super(GetExperimentsByUserName, self).dispatch(*args, **kwargs)

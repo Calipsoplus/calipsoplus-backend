@@ -1,7 +1,5 @@
-from django.views.decorators.csrf import csrf_exempt
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.generics import ListAPIView
-from rest_framework.permissions import IsAuthenticated
 
 from apprest.serializers.facility import CalipsoFacilitySerializer
 from apprest.services.facility import CalipsoFacilityServices
@@ -18,6 +16,5 @@ class GetAllFacilities(ListAPIView):
     def get_queryset(self):
         return service.get_all_facilities()
 
-    @csrf_exempt
     def dispatch(self, *args, **kwargs):
         return super(GetAllFacilities, self).dispatch(*args, **kwargs)
