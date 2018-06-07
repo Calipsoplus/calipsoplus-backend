@@ -9,4 +9,5 @@ class CalipsoContainerSerializer(serializers.ModelSerializer):
 
         fields = (
             'calipso_user', 'calipso_experiment', 'container_id', 'container_name', 'container_status',
-            'container_info', 'container_logs', 'guacamole_username', 'guacamole_password', 'max_num_container')
+            'container_logs', 'guacamole_username', 'guacamole_password', 'max_num_container',
+            'creation_date','host_port')

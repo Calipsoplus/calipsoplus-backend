@@ -45,7 +45,7 @@ class ExperimentViewsTestCase(CalipsoTestCase):
         url = base_url % 'xxxxx'
         self.logger.debug('# TEST URL --> %s' % url)
         response = self.client.get(url, format='json', content_type='application/json')
-        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
         # Test with valid user -> 200
         url = base_url % self.scientist_1.user.username

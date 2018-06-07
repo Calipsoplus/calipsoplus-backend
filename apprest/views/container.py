@@ -1,8 +1,10 @@
 import logging
 
+from django.utils.datetime_safe import strftime
 from rest_framework import status
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAuthenticated
 
@@ -98,7 +100,7 @@ def run_container(request, username, experiment):
 
 class GetContainersByUserName(ListAPIView):
     authentication_classes = (SessionAuthentication, BasicAuthentication)
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated, )
     serializer_class = CalipsoContainerSerializer
     pagination_class = None
 
@@ -107,7 +109,7 @@ class GetContainersByUserName(ListAPIView):
         if username == self.request.user.username:
             return container_service.list_container(self.request.user.username)
         else:
-            return []
+            raise PermissionDenied
 
     def dispatch(self, *args, **kwargs):
         return super(GetContainersByUserName, self).dispatch(*args, **kwargs)

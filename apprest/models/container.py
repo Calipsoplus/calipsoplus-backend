@@ -1,4 +1,6 @@
+
 from django.db import models
+from django.utils import timezone
 from simple_history.models import HistoricalRecords
 
 from calipsoplus.settings import MAX_CONTAINER_PER_USER
@@ -16,6 +18,8 @@ class CalipsoContainer(models.Model):
     guacamole_password = models.CharField(max_length=255, blank=True)
     vnc_password = models.CharField(max_length=255, blank=True)
     max_num_container = models.IntegerField(default=MAX_CONTAINER_PER_USER)
+    creation_date = models.DateTimeField(default=timezone.now, blank=True)
+    host_port = models.CharField(max_length=255, blank=True)
 
     history = HistoricalRecords()
 
