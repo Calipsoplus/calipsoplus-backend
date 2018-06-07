@@ -7,6 +7,8 @@ from apprest.models.container import CalipsoContainer
 from calipsoplus.settings import DOCKER_URL_DAEMON, MAX_CONTAINER_PER_USER
 
 DOCKER_IMAGE = "consol/centos-xfce-vnc:latest"
+
+
 # DOCKER_IMAGE = "jupyter/minimal-notebook:latest"
 
 
@@ -63,6 +65,11 @@ class CalipsoContainersServices:
             new_container.container_status = docker_container.status
             new_container.container_info = self.client.api.inspect_container(docker_container.id)
 
+            port = new_container.container_info['NetworkSettings']['Ports']['5901/tcp'][0]['HostPort']
+            ip = new_container.container_info['NetworkSettings']['IPAddress']
+
+            new_container.host_port = ip + " : " + port
+
             new_container.save()
 
             return new_container
@@ -81,7 +88,7 @@ class CalipsoContainersServices:
         try:
             self.client.api.remove_container(container_name)
 
-            container = CalipsoContainer.objects.get(container_name=container_name)
+            container = CalipsoContainer.objects.get(container_name=container_name, container_status='stopped')
             container.container_status = 'removed'
             container.save()
 
@@ -104,7 +111,7 @@ class CalipsoContainersServices:
         try:
             self.client.api.stop(container_name)
 
-            container = CalipsoContainer.objects.get(container_name=container_name)
+            container = CalipsoContainer.objects.get(container_name=container_name, container_status='created')
             container.container_status = 'stopped'
             container.save()
 
