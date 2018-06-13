@@ -2,7 +2,8 @@ from rest_framework.test import APITestCase
 
 import logging
 
-from apprest.models.experiments import CalipsoExperiment
+from apprest.models.experiment import CalipsoExperiment
+from apprest.models.user import CalipsoUser
 from apprest.services.experiment import CalipsoExperimentsServices
 
 logger = logging.getLogger(__name__)
@@ -11,35 +12,24 @@ logger = logging.getLogger(__name__)
 class ExperimentServiceTestCase(APITestCase):
     logger = logging.getLogger(__name__)
 
-    fixtures = ['experiments.json']
+    fixtures = ['users.json', 'experiments.json']
 
     def setUp(self):
-        self.logger.debug('#### setUp START ####')
+        self.logger.debug('#### setUp ExperimentServiceTestCase START ####')
+
+        self.calipso_user = CalipsoUser.objects.get(pk=1)
+        self.experiment_1 = CalipsoExperiment.objects.get(pk=1)
+        self.experiment_2 = CalipsoExperiment.objects.get(pk=2)
+
+        self.calipso_user.experiments.add(self.experiment_1)
+        self.calipso_user.experiments.add(self.experiment_2)
 
         self.service = CalipsoExperimentsServices()
-        self.experiments = ['EXP1', 'EXP2', 'EXP3']
 
-        self.logger.debug('#### setUp END ####')
+        logger.debug('#### setUp ExperimentServiceTestCase END ####')
 
-    def test_get_all_experiments(self):
-        self.logger.debug('#### TEST get_all_experiments START ####')
-
-        # create experiments
-        for experiment in self.experiments:
-            CalipsoExperiment.objects.create(subject=experiment, body='experiment for test')
-
-        # get_all_experiments
-        all_experiments = self.service.get_all_experiments()
-        self.assertEqual(len(all_experiments), len(self.experiments) + 2) # two from fixtures
-
-        self.logger.debug('#### TEST get_all_experiments END ####')
-
-    def test_get_one_experiments(self):
-        self.logger.debug('#### TEST get_one_experiment START ####')
-
-        # get one experiments
-        one_experiment = self.service.get_experiment(1)
-        self.assertEqual(one_experiment.subject,'Experiment 1')
-
-        self.logger.debug('#### TEST get_all_experiments END ####')
-
+    def test_service_experiments(self):
+        self.logger.debug('#### TEST test_service_experiments START ####')
+        all_experiments = self.service.get_user_experiments(self.calipso_user.user.username)
+        self.assertEqual(len(all_experiments), 2)
+        self.logger.debug('#### TEST test_service_experiments END ####')

@@ -1,30 +1,24 @@
 import logging
 
-from apprest.models.experiments import CalipsoExperiment
+from django.contrib.auth.models import User
+from rest_framework.exceptions import NotFound
 
-
+from apprest.models.user import CalipsoUser
 
 
 class CalipsoExperimentsServices:
     def __init__(self):
         self.logger = logging.getLogger(__name__)
 
-    def get_experiment(self, experiment_id):
-        self.logger.debug('Getting experiment %s', experiment_id)
+    def get_user_experiments(self, username):
+        self.logger.debug('Getting get_user_experiments from user_id %s', username)
         try:
-            experiment = CalipsoExperiment.objects.get(id=experiment_id)
-            self.logger.debug('Experiment %s', experiment_id)
-            return experiment
-        except Exception as e:
-            self.logger.error(e)
-            raise e
-
-    def get_all_experiments(self):
-        self.logger.debug('Getting all experiments')
-        try:
-            experiments = CalipsoExperiment.objects.all()
-            self.logger.debug('All application experiments got')
+            user = User.objects.get(username=username)
+            experiments = CalipsoUser.objects.get(user=user).experiments.all()
             return experiments
+        except User.DoesNotExist as dne:
+            self.logger.error(dne)
+            raise NotFound(detail='User not found')
         except Exception as e:
             self.logger.error(e)
             raise e

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from apprest.models.facilities import CalipsoFacility
+from apprest.models.facility import CalipsoFacility
 
 
 class CalipsoFacilitySerializer(serializers.ModelSerializer):

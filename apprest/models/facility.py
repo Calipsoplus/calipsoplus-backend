@@ -1,4 +1,5 @@
 from django.db import models
+from simple_history.models import HistoricalRecords
 
 
 class CalipsoFacility(models.Model):
@@ -6,6 +7,7 @@ class CalipsoFacility(models.Model):
     description = models.TextField()
     url = models.CharField(max_length=2083)
 
+    history = HistoricalRecords()
 
     def create(self, name, description, url):
         self.name = name

@@ -1,10 +1,7 @@
-import json
+import logging
 from rest_framework import status
 
-import logging
-
-from apprest.models.experiments import CalipsoExperiment
-from apprest.services.experiment import CalipsoExperimentsServices
+from apprest.models.user import CalipsoUser
 from apprest.tests.utils import CalipsoTestCase
 
 logger = logging.getLogger(__name__)
@@ -12,53 +9,49 @@ logger = logging.getLogger(__name__)
 
 class ExperimentViewsTestCase(CalipsoTestCase):
     logger = logging.getLogger(__name__)
-    fixtures = ['experiments.json']
+    fixtures = ['users.json']
 
     def setUp(self):
         self.logger.debug('#### setUp START ####')
 
-        self.service = CalipsoExperimentsServices()
-        self.experiment_1 = CalipsoExperiment.objects.create(subject='Experiment 1', body='Experiment to look at ...')
+        self.scientist_1 = CalipsoUser.objects.get(pk=1)
+        self.scientist_2 = CalipsoUser.objects.get(pk=2)
+        self.scientist_3 = CalipsoUser.objects.get(pk=3)
+        self.scientist_4 = CalipsoUser.objects.get(pk=4)
 
         self.logger.debug('#### setUp END ####')
 
-    def test_get_all_experiments(self):
-        self.logger.debug('#### TEST test_get_all_experiments START ####')
+    def test_get_experiments_by_username(self):
+        self.logger.debug('#### TEST get experiments by username START ####')
 
-        url = '/experiments/all/'
+        base_url = '/experiments/%s/'
 
-        # Should return status 200 if everything goes fine
-
+        # Not authenticated -> 403
+        url = base_url % self.scientist_1.user.username
         self.logger.debug('# TEST URL --> %s' % url)
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.logger.debug('# response.content --> %s' % response.content)
+        response = self.client.get(url, format='json', content_type='application/json')
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
-        json_content = json.loads(response.content.decode("utf-8"))
-        self.logger.debug('# RESPONSE --> %s' % json_content)
-        self.assertIsInstance(json_content, list)
-        self.assertGreater(len(json_content), 0)
+        # Login and check methods
+        self.login_and_check_http_methods(self.scientist_1.user.username, url, ['GET', 'HEAD', 'OPTIONS'])
 
-        self.logger.debug('#### TEST get test_get_all_experiments by pk END ####')
-
-    def test_get_experiment(self):
-        self.logger.debug('#### TEST test_get_experiment START ####')
-
-        url = '/experiments/1/'
-
-        # Should return status 200 if everything goes fine
-
+        # No user specified -> 404
+        url = base_url % ''
         self.logger.debug('# TEST URL --> %s' % url)
-        response = self.client.get(url)
+        response = self.client.get(url, format='json', content_type='application/json')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
+        # Test with non-existing user -> 404
+        url = base_url % 'xxxxx'
+        self.logger.debug('# TEST URL --> %s' % url)
+        response = self.client.get(url, format='json', content_type='application/json')
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+        # Test with valid user -> 200
+        url = base_url % self.scientist_1.user.username
+        self.logger.debug('# TEST URL --> %s' % url)
+        response = self.client.get(url, format='json', content_type='application/json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.logger.debug('# response.content --> %s' % response.content)
 
-        json_content = json.loads(response.content.decode("utf-8"))
-        self.logger.debug('# RESPONSE --> %s' % json_content)
-
-        self.assertIsInstance(json_content, dict)
-        self.assertGreater(len(json_content), 0)
-
-        self.logger.debug('#### TEST get test_get_experiment END ####')
-
+        # TODO: Test response structure
+        self.logger.debug('#### TEST get experiments by login END ####')

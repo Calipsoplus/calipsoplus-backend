@@ -1,34 +1,34 @@
-from django.contrib.auth import authenticate, logout, login
-from django.views.decorators.csrf import csrf_protect
+from django.contrib.auth import authenticate, login, logout
+from django.views.decorators.csrf import csrf_exempt
 
 from rest_framework import status
+from rest_framework.decorators import api_view
 
-from apprest.models.user import CalipsoUser
-from apprest.serializers.user import CalipsoUserSerializer
 from apprest.utils.request import JSONResponse
 
 
-@csrf_protect
-def login_calipso_user(request):
-    if request.method == 'POST':
-        logout(request)
-
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-        user = authenticate(request, username=username, password=password)
-
-        if user is not None:
-            if user.is_active:
-                login(request, user)
-                calipso_user = CalipsoUser.objects.get(user=user)
-                serializer = CalipsoUserSerializer(calipso_user)
-                return JSONResponse(serializer.data)
-        return JSONResponse({'error': 'HTTP_401_UNAUTHORIZED'}, status=status.HTTP_401_UNAUTHORIZED)
-
-    return JSONResponse({'error': 'METHOD NOT ALLOWED'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
-
-
-
-def logout_calipso_user(request):
+@api_view(['POST'])
+def login_user(request):
     logout(request)
-    return JSONResponse({'message': 'logout done'}, status=status.HTTP_200_OK)
+    try:
+        username = request.data['username']
+        password = request.data['password']
+    except Exception as e:
+        return JSONResponse(
+            "Expected 'username' and 'password'",
+            status=status.HTTP_400_BAD_REQUEST)
+
+    user = authenticate(request, username=username, password=password)
+
+    if user is not None:
+        login(request, user)
+
+        return JSONResponse('Login OK', status=status.HTTP_200_OK)
+    else:
+        return JSONResponse('Unable to authenticate', status=status.HTTP_401_UNAUTHORIZED)
+
+
+@api_view(['GET'])
+def logout_user(request):
+    logout(request)
+    return JSONResponse('Logout OK', status=status.HTTP_200_OK)

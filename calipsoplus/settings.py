@@ -28,15 +28,25 @@ SECRET_KEY = '7@=x7lhgpx_1weud8l9!r2@av)p_y)x9vl2379em))l3gi=0&*'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.33.11']
+ALLOWED_HOSTS = [
+    '.cells.es',
+    '192.168.33.11'
+]
+
+# DOCKER
+# where docker daemon lives
+DOCKER_URL_DAEMON = "tcp://calipsotest.cells.es:2375"
+
+# where docker containers spawn
+HOST_DOCKER_IP = "calipsotest.cells.es"
 
 # Application definition
 
 INSTALLED_APPS = [
-
+    'rest_framework',
+    'simple_history',
     'apprest.apps.ApprestConfig',
-    'applogin.apps.ApploginConfig',
-
+    'corsheaders',
     'django.contrib.admin',
     'django.contrib.admindocs',
     'django.contrib.auth',
@@ -44,17 +54,18 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'simple_history.middleware.HistoryRequestMiddleware',
 ]
 
 ROOT_URLCONF = 'calipsoplus.urls'
@@ -83,17 +94,30 @@ WSGI_APPLICATION = 'calipsoplus.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'calipsodb',
-        'USER': 'admin',
-        'PASSWORD': 'admincamps',
-        'HOST': '192.168.33.11',
-        'PORT': '3306',
+        'STORAGE_ENGINE': 'INNODB',
         'OPTIONS': {
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
-            'charset': 'utf8mb4',
+            'read_default_file': os.path.join(BASE_DIR, '..', 'config', 'database', 'default.cnf'),
         }
-    }
+    },
+    'auth_db': {
+        'ENGINE': 'django.db.backends.mysql',
+        'STORAGE_ENGINE': 'INNODB',
+        'OPTIONS': {
+            'read_default_file': os.path.join(BASE_DIR, '..', 'config', 'database', 'auth_db.cnf'),
+        }
+    },
+    'guacamole': {
+        'ENGINE': 'django.db.backends.mysql',
+        'STORAGE_ENGINE': 'INNODB',
+        'OPTIONS': {
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+            'read_default_file': os.path.join(BASE_DIR, '..', 'config', 'database', 'guacamole.cnf'),
+        },
+    },
 }
+
+DATABASE_ROUTERS = ['calipsoplus.router.CalipsoPlusDBRouter']
 
 # Password validation
 # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators
@@ -184,4 +208,15 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-#LOGIN_REDIRECT_URL = reverse_lazy('experiments')
+# LOGIN_REDIRECT_URL = reverse_lazy('experiments')
+
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'apprest.views.auth.ExternalServiceAuthenticationBackend',
+)
+
+CORS_ALLOW_CREDENTIALS = True
+CORS_ORIGIN_ALLOW_ALL = True
+
+BACKEND_UO = "https://misapptest.cells.es/duo-services/login/"
+MAX_CONTAINER_PER_USER = 3
