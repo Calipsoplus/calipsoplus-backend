@@ -1,6 +1,5 @@
 import logging
 
-from django.utils.datetime_safe import strftime
 from rest_framework import status
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
@@ -13,7 +12,8 @@ from apprest.services.container import CalipsoContainersServices
 from apprest.services.guacamole import CalipsoGuacamoleServices
 
 from apprest.utils.request import JSONResponse, ErrorFormatting
-from calipsoplus.settings import HOST_DOCKER_IP
+
+from django.conf import settings
 
 PROTOCOL = "vnc"
 
@@ -36,11 +36,11 @@ def rm_container(request, username, container_name):
             serializer = CalipsoContainerSerializer(container_data)
             return JSONResponse(serializer.data, status=status.HTTP_200_OK)
         except Exception as e:
-            logger.error(errorFormatting.format(e))
+            logger.debug(errorFormatting.format(e))
             return JSONResponse([], status=status.HTTP_200_OK)
 
     except Exception as e:
-        logger.error(errorFormatting.format(e))
+        logger.debug(errorFormatting.format(e))
         return JSONResponse({'error': errorFormatting.format(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -56,11 +56,11 @@ def stop_container(request, username, container_name):
             serializer = CalipsoContainerSerializer(container_data)
             return JSONResponse(serializer.data, status=status.HTTP_200_OK)
         except Exception as e:
-            logger.error(errorFormatting.format(e))
+            logger.debug(errorFormatting.format(e))
             return JSONResponse([], status=status.HTTP_200_OK)
 
     except Exception as e:
-        logger.error(errorFormatting.format(e))
+        logger.debug(errorFormatting.format(e))
         return JSONResponse({'error': errorFormatting.format(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -71,11 +71,15 @@ def run_container(request, username, experiment):
     if username != request.user.username:
         return JSONResponse("username mismatch", status=status.HTTP_403_FORBIDDEN)
     try:
-        container = container_service.run_container(username, experiment)
-        if container is None:
-            return JSONResponse({'error': 'Maximum number containers exceeded'}, status=status.HTTP_204_NO_CONTENT)
+
+        try:
+            container = container_service.run_container(username, experiment)
+        except Exception as e:
+            logger.debug(errorFormatting.format(e))
+            return JSONResponse({'error': errorFormatting.format(e)}, status=status.HTTP_204_NO_CONTENT)
 
         serializer = CalipsoContainerSerializer(container)
+
         try:
             port = int(container.container_info['NetworkSettings']['Ports']['5901/tcp'][0]['HostPort'])
 
@@ -84,23 +88,23 @@ def run_container(request, username, experiment):
                                                 guacamole_connection_name=container.container_name,
                                                 guacamole_protocol=PROTOCOL,
                                                 vnc_password=container.vnc_password,
-                                                container_ip=HOST_DOCKER_IP,
+                                                container_ip=settings.REMOTE_MACHINE_IP,
                                                 container_port=port)
 
         except Exception as e:
-            logger.error(errorFormatting.format(e))
+            logger.debug(errorFormatting.format(e))
             return JSONResponse({'error': errorFormatting.format(e)}, status=status.HTTP_400_BAD_REQUEST)
 
         return JSONResponse(serializer.data, status=status.HTTP_201_CREATED)
 
     except Exception as e:
-        logger.error(errorFormatting.format(e))
+        logger.debug(e)
         return JSONResponse({'error': errorFormatting.format(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class GetContainersByUserName(ListAPIView):
     authentication_classes = (SessionAuthentication, BasicAuthentication)
-    permission_classes = (IsAuthenticated, )
+    permission_classes = (IsAuthenticated,)
     serializer_class = CalipsoContainerSerializer
     pagination_class = None
 

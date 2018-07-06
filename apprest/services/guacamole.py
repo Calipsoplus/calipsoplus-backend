@@ -16,7 +16,7 @@ class CalipsoGuacamoleServices:
 
     def create_connection(self, guacamole_username, guacamole_password, guacamole_connection_name, guacamole_protocol,
                           vnc_password, container_ip, container_port):
-        self.logger.info('Attempting to run create_connection')
+        self.logger.info('Attempting to run create_connection_guacamole')
 
         try:
             salt = bytearray(random.getrandbits(8) for _ in xrange(32))
