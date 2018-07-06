@@ -5,7 +5,7 @@ import requests
 from django.contrib.auth.models import User
 from rest_framework import status
 
-from calipsoplus.settings import BACKEND_UO
+from django.conf import settings
 
 
 class ExternalServiceAuthenticationBackend:
@@ -21,7 +21,7 @@ class ExternalServiceAuthenticationBackend:
 
             post_data = {'username': username, 'password': password}
             headers = {'Content-type': 'application/json'}
-            response = requests.post(BACKEND_UO, data=json.dumps(post_data), headers=headers)
+            response = requests.post(settings.BACKEND_UO, data=json.dumps(post_data), headers=headers)
 
             if response.status_code == status.HTTP_200_OK:
                 self.logger.info('Authenticated %s', username)
@@ -36,7 +36,7 @@ class ExternalServiceAuthenticationBackend:
                     return user
             return None
         except Exception as e:
-            self.logger.error(e)
+            self.logger.debug(e)
             return None
 
     def get_user(self, user_id):

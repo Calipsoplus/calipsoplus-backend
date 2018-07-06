@@ -23,5 +23,3 @@ class GetExperimentsByUserName(ListAPIView):
         else:
             raise PermissionDenied
 
-    def dispatch(self, *args, **kwargs):
-        return super(GetExperimentsByUserName, self).dispatch(*args, **kwargs)
