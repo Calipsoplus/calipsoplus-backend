@@ -1,0 +1,5 @@
+# define generic quota per user
+MAX_CONTAINER_PER_USER = 3
+MAX_RAM_PER_USER = "8G"
+MAX_CPU_PER_USER = 4
+MAX_STORAGE_PER_USER = "20G"
