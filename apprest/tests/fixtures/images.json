@@ -1,0 +1,14 @@
+[
+  {
+    "model": "apprest.CalipsoAvailableImages",
+    "pk": 1,
+    "fields": {
+      "public_name": "base_image",
+      "docker_daemon": "tcp://192.168.33.13:2375",
+      "image": "consol/centos-xfce-vnc:latest",
+      "cpu": 2,
+      "memory": "4G",
+      "hdd": "10G"
+    }
+  }
+]

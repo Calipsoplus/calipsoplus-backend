@@ -26,7 +26,7 @@ class ExperimentServiceTestCase(APITestCase):
 
         self.service = CalipsoExperimentsServices()
 
-        logger.debug('#### setUp ExperimentServiceTestCase END ####')
+        self.logger.debug('#### setUp ExperimentServiceTestCase END ####')
 
     def test_service_experiments(self):
         self.logger.debug('#### TEST test_service_experiments START ####')

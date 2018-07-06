@@ -1,48 +1,36 @@
-[{
+[
+  {
     "model": "apprest.CalipsoContainer",
     "pk": 1,
     "fields": {
-      "calipso_user":"acampsm",
-      "calipso_experiment":"experiment_1",
-      "container_id":"c79a948380516cbb5b6b4ef817cf9d83064477cec5b019140b99cad9d9538e3e",
-      "container_name":"vigilant_wilson",
-      "container_status":"created",
-      "container_info":"info from container",
-      "container_logs":"..",
-      "guacamole_username":"GUAC_USERNAME1",
-      "guacamole_password":"GUAC_PASSWORD1",
-      "vnc_password":"VNC_PASSWORD1"
+      "calipso_user": "userA",
+      "calipso_experiment": "experiment_1",
+      "container_id": "c79a948380516cbb5b6b4ef817cf9d83064477cec5b019140b99cad9d9538e3e",
+      "container_name": "vigilant_wilson",
+      "container_status": "created",
+      "container_info": "info from container",
+      "container_logs": "..",
+      "guacamole_username": "GUAC_USERNAME1",
+      "guacamole_password": "GUAC_PASSWORD1",
+      "vnc_password": "VNC_PASSWORD1",
+      "public_name": "base_image"
     }
   },
   {
     "model": "apprest.CalipsoContainer",
     "pk": 2,
     "fields": {
-      "calipso_user":"jsanju",
-      "calipso_experiment":"experiment_2",
-      "container_id":"7ef712753dd5377e4b179ed2b64487a1a1687691cb0077e27945ea0ef456323f",
-      "container_name":"wonderful_allen",
-      "container_status":"created",
-      "container_info":"info from container2",
-      "container_logs":"...",
-      "guacamole_username":"GUAC_USERNAME2",
-      "guacamole_password":"GUAC_PASSWORD2",
-      "vnc_password":"VNC_PASSWORD2"
+      "calipso_user": "userB",
+      "calipso_experiment": "experiment_2",
+      "container_id": "7ef712753dd5377e4b179ed2b64487a1a1687691cb0077e27945ea0ef456323f",
+      "container_name": "wonderful_allen",
+      "container_status": "created",
+      "container_info": "info from container2",
+      "container_logs": "...",
+      "guacamole_username": "GUAC_USERNAME2",
+      "guacamole_password": "GUAC_PASSWORD2",
+      "vnc_password": "VNC_PASSWORD2",
+      "public_name": "base_image"
     }
-  },
-  {
-    "model": "apprest.CalipsoContainer",
-    "pk": 3,
-    "fields": {
-      "calipso_user":"sancamp",
-      "calipso_experiment":"experiment_3",
-      "container_id":"23c5eaabc556459baa898189acc9e9881694f24fefb6dbc7f2af5d386f30a626",
-      "container_name":"agitated_ardinghelli",
-      "container_status":"created",
-      "container_info":"info from container3",
-      "container_logs":"...",
-      "guacamole_username":"GUAC_USERNAME3",
-      "guacamole_password":"GUAC_PASSWORD3",
-      "vnc_password":"VNC_PASSWORD3"
-    }
-  }]
+  }
+]
