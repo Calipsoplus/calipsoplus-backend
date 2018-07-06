@@ -14,7 +14,7 @@ class CalipsoFacilityServices:
             self.logger.debug('All application facilities got')
             return all_facilities
         except Exception as e:
-            self.logger.error(e)
+            self.logger.debug(e)
             raise e
 
 

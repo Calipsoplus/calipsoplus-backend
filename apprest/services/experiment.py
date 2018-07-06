@@ -17,8 +17,8 @@ class CalipsoExperimentsServices:
             experiments = CalipsoUser.objects.get(user=user).experiments.all()
             return experiments
         except User.DoesNotExist as dne:
-            self.logger.error(dne)
+            self.logger.debug(dne)
             raise NotFound(detail='User not found')
         except Exception as e:
-            self.logger.error(e)
+            self.logger.debug(e)
             raise e
