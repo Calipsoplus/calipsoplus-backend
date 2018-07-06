@@ -1,11 +1,10 @@
-from django.conf import settings
 from django.db import models
 from simple_history.models import HistoricalRecords
 
 
 class CalipsoAvailableImages(models.Model):
     public_name = models.CharField(max_length=255, unique=True)
-    docker_daemon = models.CharField(default=settings.DOCKER_URL_DAEMON, max_length=255)
+    docker_daemon = models.CharField(default="", max_length=255)
     image = models.CharField(max_length=255)
     cpu = models.IntegerField()
     memory = models.CharField(max_length=100)
@@ -17,4 +16,5 @@ class CalipsoAvailableImages(models.Model):
         db_table = 'calipso_images'
 
     def __str__(self):
-        return self.public_name + "_" + self.image + "_" + str(self.cpu) + "_" + self.memory + "_" + self.hdd
+        return self.public_name
+

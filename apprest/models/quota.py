@@ -1,27 +1,25 @@
 from django.db import models
 from simple_history.models import HistoricalRecords
 
+from apprest.models.user import CalipsoUser
+from calipsoplus.settings_calipso import MAX_CONTAINER_PER_USER, MAX_STORAGE_PER_USER, MAX_RAM_PER_USER, \
+    MAX_CPU_PER_USER
 
-class CalipsoQuotas(models.Model):
-    name = models.CharField(max_length=255)
-    image = models.CharField(max_length=255)
-    cpus = models.IntegerField()
-    memory = models.CharField(max_length=100)
-    hdd = models.CharField(max_length=100)
-    type = models.CharFiled(default='docker', max_lenght=100)
+
+class CalipsoUserQuota(models.Model):
+    calipso_user = models.OneToOneField(CalipsoUser, on_delete=models.CASCADE, blank=True)
+    max_simultaneous = models.IntegerField(default=MAX_CONTAINER_PER_USER, )
+    cpu = models.IntegerField(default=MAX_CPU_PER_USER)
+    memory = models.CharField(default=MAX_RAM_PER_USER, max_length=100)
+    hdd = models.CharField(default=MAX_STORAGE_PER_USER, max_length=100)
 
     history = HistoricalRecords()
-
-    def create(self, name, image, cpus, memory, hdd, type):
-        self.name = name
-        self.image = image
-        self.cpus = cpus
-        self.memory = memory
-        self.hdd = hdd
-        self.type = type
 
     class Meta:
         db_table = 'calipso_quotas'
 
     def __str__(self):
-        return self.name
+        return str(self.cpu) + "_" + str(
+            self.max_simultaneous) + "_" + str(self.memory) + "_" + str(self.hdd)
+
+
