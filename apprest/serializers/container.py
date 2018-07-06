@@ -4,10 +4,12 @@ from apprest.models.container import CalipsoContainer
 
 
 class CalipsoContainerSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = CalipsoContainer
 
         fields = (
             'calipso_user', 'calipso_experiment', 'container_id', 'container_name', 'container_status',
-            'container_logs', 'guacamole_username', 'guacamole_password', 'max_num_container',
-            'creation_date','host_port')
+            'container_logs', 'guacamole_username', 'guacamole_password', 'creation_date', 'host_port', 'public_name')
+
+
