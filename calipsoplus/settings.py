@@ -12,9 +12,6 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 import logging
 import os
 
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-from django.urls import reverse_lazy
-
 logger = logging.getLogger(__name__)
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -28,17 +25,7 @@ SECRET_KEY = '7@=x7lhgpx_1weud8l9!r2@av)p_y)x9vl2379em))l3gi=0&*'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = [
-    '.cells.es',
-    '192.168.33.11'
-]
-
-# DOCKER
-# where docker daemon lives
-DOCKER_URL_DAEMON = "tcp://calipsotest.cells.es:2375"
-
-# where docker containers spawn
-HOST_DOCKER_IP = "calipsotest.cells.es"
+ALLOWED_HOSTS = []
 
 # Application definition
 
@@ -174,10 +161,6 @@ LOGGING = {
             'handlers': ['file'],
             'level': 'DEBUG',
         },
-        'applogin': {
-            'handlers': ['file'],
-            'level': 'DEBUG',
-        },
         'apprest': {
             'handlers': ['file'],
             'level': 'DEBUG',
@@ -201,14 +184,12 @@ USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
+
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
 STATIC_URL = '/static/'
-
-# LOGIN_REDIRECT_URL = reverse_lazy('experiments')
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
@@ -217,6 +198,3 @@ AUTHENTICATION_BACKENDS = (
 
 CORS_ALLOW_CREDENTIALS = True
 CORS_ORIGIN_ALLOW_ALL = True
-
-BACKEND_UO = "https://misapptest.cells.es/duo-services/login/"
-MAX_CONTAINER_PER_USER = 3
