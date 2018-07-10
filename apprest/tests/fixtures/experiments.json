@@ -5,7 +5,7 @@
     "fields": {
       "subject":"Experiment 1",
       "body":"Description of experiment 1",
-      "serial_number":"201809162",
+      "serial_number":"2018091622",
       "beam_line":"MIDAS"
     }
   },
@@ -15,7 +15,7 @@
     "fields": {
       "subject":"Experiment 2",
       "body":"Description of experiment 2",
-      "serial_number":"201809162",
+      "serial_number":"2018091632",
       "beam_line":"MIDAS"
     }
   }
