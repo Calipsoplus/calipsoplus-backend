@@ -26,7 +26,7 @@ class Command(BaseCommand):
         if not public_number or not title or not description or not beamline_code:
             raise CommandError(
                 'python manage.py add_experiment --public_number public_number'
-                ' --title title --decription description --beamline_code beam line coe')
+                ' --title title --description description --beamline_code beam line coe')
 
         try:
             self.experiments_services.add_experiment(beamline_code, description, public_number, title)

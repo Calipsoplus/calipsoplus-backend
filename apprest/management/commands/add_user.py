@@ -1,9 +1,5 @@
-import logging
-
 from django.core.management.base import BaseCommand, CommandError
 from apprest.services.experiment import CalipsoExperimentsServices
-
-
 
 
 class Command(BaseCommand):
