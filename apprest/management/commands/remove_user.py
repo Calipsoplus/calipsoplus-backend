@@ -1,10 +1,5 @@
-import logging
-
 from django.core.management.base import BaseCommand, CommandError
-
 from apprest.services.experiment import CalipsoExperimentsServices
-
-logger = logging.getLogger(__name__)
 
 
 class Command(BaseCommand):
@@ -17,8 +12,6 @@ class Command(BaseCommand):
                             help='The public number of the experiment', type=str)
 
     def handle(self, *args, **options):
-        logger.debug('####### DJANGO remove_user command to Calipso   START #######')
-
         username = options['userlogin']
         public_number = options['public_number']
 
