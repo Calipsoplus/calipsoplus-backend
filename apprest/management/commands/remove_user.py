@@ -1,16 +1,15 @@
 import logging
 
-from django.contrib.auth.models import User
 from django.core.management.base import BaseCommand, CommandError
 
-from apprest.models.experiment import CalipsoExperiment
-from apprest.models.user import CalipsoUser
+from apprest.services.experiment import CalipsoExperimentsServices
 
 logger = logging.getLogger(__name__)
 
 
 class Command(BaseCommand):
     help = 'Remove user from experiment'
+    experiments_services = CalipsoExperimentsServices()
 
     def add_arguments(self, parser):
         parser.add_argument('--userlogin', dest='userlogin', default='', help='The title of the experiment', type=str)
@@ -28,21 +27,11 @@ class Command(BaseCommand):
                 'python manage.py remove_user --userlogin username --public_number public_number')
 
         try:
-            user = User.objects.get(username=username)
-            calipso_user = CalipsoUser.objects.get(user=user)
-            calipso_experiment = CalipsoExperiment.objects.get(serial_number=public_number)
+            self.experiments_services.remove_user_from_experiment(username, public_number)
 
-            calipso_user.experiments.remove(calipso_experiment)
-            calipso_user.save()
-
-            logger.debug(
-                self.style.SUCCESS('Successfully removed user %s from experiment:%s' % (username, public_number)))
             self.stdout.write(
                 self.style.SUCCESS('Successfully removed user %s from experiment:%s' % (username, public_number)))
 
         except Exception as e:
-            logger.debug(
-                self.style.SUCCESS(
-                    'Can not be able to remove user:%s from experiment: %s, error:%s' % (username, public_number, e)))
             raise CommandError(
                 'Can not be able to remove user:%s from experiment: %s, error:%s' % (username, public_number, e))
