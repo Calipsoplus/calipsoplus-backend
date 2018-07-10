@@ -32,11 +32,11 @@ class CalipsoExperimentsServices:
         calipso_user.experiments.add(experiment)
         calipso_user.save()
 
-    def add_experiment(self, beamline_code, description, public_number, title):
+    def add_experiment(self, public_number, title, description, beamline_code):
         self.logger.debug('Try to add experiment %s' % public_number)
         calipso_experiment = CalipsoExperiment.objects.filter(serial_number=public_number)
         if len(calipso_experiment) > 0:
-            raise Exception('Experiment already exists.')
+            raise Exception('Experiment %s already exists.' % public_number)
         else:
             calipso_experiment = CalipsoExperiment()
             calipso_experiment.subject = title
@@ -51,7 +51,7 @@ class CalipsoExperimentsServices:
         CalipsoExperiment.objects.get(serial_number=public_number).delete()
 
     def remove_user_from_experiment(self, username, public_number):
-        self.logger.debug('Try to remove user %s from experiment %s' % (username,public_number))
+        self.logger.debug('Try to remove user %s from experiment %s' % (username, public_number))
         user = User.objects.get(username=username)
         calipso_user = CalipsoUser.objects.get(user=user)
         calipso_experiment = CalipsoExperiment.objects.get(serial_number=public_number)

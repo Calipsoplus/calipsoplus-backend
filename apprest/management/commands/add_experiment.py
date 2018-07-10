@@ -29,7 +29,7 @@ class Command(BaseCommand):
                 ' --title title --description description --beamline_code beam line coe')
 
         try:
-            self.experiments_services.add_experiment(beamline_code, description, public_number, title)
+            self.experiments_services.add_experiment(public_number, title, description, beamline_code)
             self.stdout.write(self.style.SUCCESS('Successfully added experiment "%s"' % public_number))
 
         except Exception as e:

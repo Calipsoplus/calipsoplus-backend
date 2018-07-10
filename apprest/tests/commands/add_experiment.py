@@ -25,7 +25,7 @@ class AddExperimentCommandTest(TestCase):
         with self.assertRaises(Exception):
             call_command('add_experiment', '--public_number=CODE000', '--title=another title first experiment',
                          '--description=description of the experiment',
-                         '--beamline_code="COPRS"', stdout=out)
+                         '--beamline_code=COPRS', stdout=out)
 
     def test_command_add_three_experiments(self):
         out = StringIO()
