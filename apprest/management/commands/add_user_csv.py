@@ -13,7 +13,7 @@ class Command(BaseCommand):
         parser.add_argument('--path', dest='path', default='', help='absolute csv filename path', type=str)
 
     def handle(self, *args, **options):
-        done = 1
+        done = 0
         path = options['path']
 
         if not path:
@@ -35,7 +35,7 @@ class Command(BaseCommand):
                             self.style.ERROR('line %d .%s. %s Error! e:%s' % (line, userlogin, public_number, e)))
                         pass
 
-            self.stdout.write(self.style.SUCCESS('File processed. %d/%d done.!' % (done, line)))
+            self.stdout.write(self.style.SUCCESS('File processed. %d/%d done.!' % (done, line-1)))
 
         except Exception as e:
             raise CommandError('Problems, %s' % e)

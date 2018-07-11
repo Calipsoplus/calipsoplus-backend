@@ -20,7 +20,7 @@ class Command(BaseCommand):
                 'python manage.py add_user --userlogin username --public_number public_number')
 
         try:
-            self.experiments_services.add_user_to_experiment(username=username, experiment=public_number)
+            self.experiments_services.add_user_to_experiment(username=username, public_number=public_number)
             self.stdout.write(
                 self.style.SUCCESS('Successfully added experiment %s to user %s' % (public_number, username)))
 
