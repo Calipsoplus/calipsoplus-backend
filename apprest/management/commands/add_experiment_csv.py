@@ -13,7 +13,7 @@ class Command(BaseCommand):
         parser.add_argument('--path', dest='path', default='', help='absolute csv filename path', type=str)
 
     def handle(self, *args, **options):
-        done = 0
+        done = 1
         path = options['path']
 
         if not path:
@@ -22,7 +22,7 @@ class Command(BaseCommand):
         try:
             with open(path) as csv_file:
                 reader = csv.DictReader(csv_file)
-                for line, row in enumerate(reader, start=1):
+                for line, row in enumerate(reader, start=2):
                     public_number = row['public_number']
                     title = row['title']
                     description = row['description']
