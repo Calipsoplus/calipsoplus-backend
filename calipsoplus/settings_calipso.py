@@ -5,4 +5,4 @@ MAX_CPU_PER_USER = 10
 MAX_STORAGE_PER_USER = "80G"
 
 # define limit max experiments per page
-PAGE_SIZE_EXPERIMENTS = 7
+PAGE_SIZE_EXPERIMENTS = 5

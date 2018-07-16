@@ -1,4 +1,4 @@
-from rest_framework import pagination
+from rest_framework import pagination, filters
 from rest_framework.exceptions import PermissionDenied
 
 from rest_framework.generics import ListAPIView
@@ -32,6 +32,9 @@ class GetExperimentsByUserName(ListAPIView):
     permission_classes = (IsAuthenticated,)
     serializer_class = CalipsoExperimentSerializer
     pagination_class = ExperimentsPagination
+    filter_backends = (filters.OrderingFilter,)
+    ordering_fields = '__all__'
+    ordering = ('serial_number',)
 
     def get_queryset(self):
         username = self.kwargs.get('username')
