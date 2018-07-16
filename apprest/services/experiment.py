@@ -15,7 +15,7 @@ class CalipsoExperimentsServices:
         self.logger.debug('Getting get_user_experiments from user_id %s', username)
         try:
             user = User.objects.get(username=username)
-            experiments = CalipsoUser.objects.get(user=user).experiments.all().order_by('serial_number')
+            experiments = CalipsoUser.objects.get(user=user).experiments.all()
             return experiments
         except User.DoesNotExist as dne:
             self.logger.debug(dne)
