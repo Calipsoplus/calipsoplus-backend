@@ -32,9 +32,10 @@ class GetExperimentsByUserName(ListAPIView):
     permission_classes = (IsAuthenticated,)
     serializer_class = CalipsoExperimentSerializer
     pagination_class = ExperimentsPagination
-    filter_backends = (filters.OrderingFilter,)
+    filter_backends = (filters.OrderingFilter, filters.SearchFilter,)
     ordering_fields = '__all__'
     ordering = ('serial_number',)
+    search_fields = ('subject', 'body', 'serial_number', 'beam_line',)
 
     def get_queryset(self):
         username = self.kwargs.get('username')
@@ -42,3 +43,4 @@ class GetExperimentsByUserName(ListAPIView):
             return service.get_user_experiments(self.kwargs.get('username'))
         else:
             raise PermissionDenied
+
