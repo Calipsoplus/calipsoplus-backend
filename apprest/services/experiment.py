@@ -24,13 +24,17 @@ class CalipsoExperimentsServices:
             self.logger.debug(e)
             raise e
 
-    def add_user_to_experiment(self, username, experiment):
-        self.logger.debug('Adding user: %s to experiment: %s' % (username, experiment))
+    def add_user_to_experiment(self, username, public_number):
+        self.logger.debug('Adding user: %s to experiment: %s' % (username, public_number))
         user = User.objects.get(username=username)
         calipso_user = CalipsoUser.objects.get(user=user)
-        experiment = CalipsoExperiment.objects.get(serial_number=experiment)
-        calipso_user.experiments.add(experiment)
-        calipso_user.save()
+        experiment = CalipsoExperiment.objects.get(serial_number=public_number)
+
+        if experiment in calipso_user.experiments.all():
+            raise Exception('User %s already has experiment %s.' % (username, public_number))
+        else:
+            calipso_user.experiments.add(experiment)
+            calipso_user.save()
 
     def add_experiment(self, public_number, title, description, beamline_code):
         self.logger.debug('Try to add experiment %s' % public_number)
