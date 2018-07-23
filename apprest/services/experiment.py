@@ -3,7 +3,7 @@ import logging
 from django.contrib.auth.models import User
 from rest_framework.exceptions import NotFound
 
-from apprest.models.experiment import CalipsoExperiment
+from apprest.models.experiment import CalipsoExperiment, CalipsoUserExperiment
 from apprest.models.user import CalipsoUser
 
 
@@ -15,7 +15,8 @@ class CalipsoExperimentsServices:
         self.logger.debug('Getting get_user_experiments from user_id %s', username)
         try:
             user = User.objects.get(username=username)
-            experiments = CalipsoUser.objects.get(user=user).experiments.all()
+            calipso_user = CalipsoUser.objects.get(user=user)
+            experiments = CalipsoExperiment.objects.filter(calipso_users=calipso_user).all()
             return experiments
         except User.DoesNotExist as dne:
             self.logger.debug(dne)
@@ -30,11 +31,14 @@ class CalipsoExperimentsServices:
         calipso_user = CalipsoUser.objects.get(user=user)
         experiment = CalipsoExperiment.objects.get(serial_number=public_number)
 
-        if experiment in calipso_user.experiments.all():
+        calipso_user_experiment = CalipsoUserExperiment.objects.filter(calipso_user=calipso_user,
+                                                                       calipso_experiment=experiment)
+
+        if len(calipso_user_experiment) > 0:
             raise Exception('User %s already has experiment %s.' % (username, public_number))
         else:
-            calipso_user.experiments.add(experiment)
-            calipso_user.save()
+            calipso_user_experiment = CalipsoUserExperiment(calipso_user=calipso_user, calipso_experiment=experiment)
+            calipso_user_experiment.save()
 
     def add_experiment(self, public_number, title, description, beamline_code):
         self.logger.debug('Try to add experiment %s' % public_number)
@@ -59,16 +63,21 @@ class CalipsoExperimentsServices:
         user = User.objects.get(username=username)
         calipso_user = CalipsoUser.objects.get(user=user)
         calipso_experiment = CalipsoExperiment.objects.get(serial_number=public_number)
-        calipso_user.experiments.remove(calipso_experiment)
-        calipso_user.save()
+
+        calipso_user_experiment = CalipsoUserExperiment.objects.get(calipso_user=calipso_user,
+                                                                    calipso_experiment=calipso_experiment)
+
+        calipso_user_experiment.delete()
 
     def update_experiment(self, beamline_code, description, public_number, title):
         self.logger.debug('Try to update experiment %s' % public_number)
         calipso_experiment = CalipsoExperiment.objects.get(serial_number=public_number)
+
         if title:
             calipso_experiment.subject = title
         if description:
             calipso_experiment.body = description
         if beamline_code:
             calipso_experiment.beam_line = beamline_code
+
         calipso_experiment.save()
