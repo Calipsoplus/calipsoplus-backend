@@ -1,3 +1,4 @@
+from django.views.decorators.csrf import csrf_exempt
 from rest_framework import pagination, filters
 from rest_framework.exceptions import PermissionDenied
 
