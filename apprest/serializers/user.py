@@ -7,3 +7,4 @@ class CalipsoUserSerializer(serializers.ModelSerializer):
     class Meta:
         fields = ('id', 'calipso_uid', 'user_id')
         model = CalipsoUser
+
