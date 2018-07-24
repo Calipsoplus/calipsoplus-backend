@@ -5,5 +5,5 @@ from apprest.models.experiment import CalipsoUserExperiment
 
 class CalipsoUserExperimentSerializer(serializers.ModelSerializer):
     class Meta:
-        fields = ('calipso_user', 'calipso_experiment', 'favorite')
+        fields = ('id', 'favorite')
         model = CalipsoUserExperiment
