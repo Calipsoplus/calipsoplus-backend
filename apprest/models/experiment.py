@@ -36,6 +36,7 @@ class CalipsoUserExperiment(models.Model):
     history = HistoricalRecords()
 
     class Meta:
+        unique_together = ('calipso_user', 'calipso_experiment')
         db_table = 'calipso_user_experiment'
 
     def __str__(self):
