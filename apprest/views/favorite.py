@@ -8,8 +8,8 @@ from apprest.serializers.users_experiments import CalipsoUserExperimentSerialize
 
 
 class CalipsoExperimentFavorite(UpdateAPIView):
-    authentication_classes = (SessionAuthentication, BasicAuthentication)
-    permission_classes = (IsAuthenticated,)
+    authentication_classes = ()
+    permission_classes = ()
     serializer_class = CalipsoUserExperimentSerializer
     pagination_class = None
 
