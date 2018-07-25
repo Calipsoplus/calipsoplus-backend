@@ -1,30 +1,26 @@
-from django.http import Http404
-from rest_framework import status
+from rest_framework.exceptions import NotFound, ValidationError
+from rest_framework.generics import UpdateAPIView
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.views import APIView
-
 from apprest.models.experiment import CalipsoUserExperiment
 from apprest.serializers.users_experiments import CalipsoUserExperimentSerializer
 
 
-class CalipsoExperimentFavorite(APIView):
-    authentication_classes = (SessionAuthentication, BasicAuthentication)
-    permission_classes = (IsAuthenticated,)
+class CalipsoExperimentFavorite(UpdateAPIView):
+    authentication_classes = ()
+    permission_classes = ()
     serializer_class = CalipsoUserExperimentSerializer
     pagination_class = None
 
-    def get_object(self, pk):
+    def put(self, request, *args, **kwargs):
         try:
-            return CalipsoUserExperiment.objects.get(pk=pk)
+            user_experiment = CalipsoUserExperiment.objects.get(pk=self.kwargs.get('pk'))
         except CalipsoUserExperiment.DoesNotExist:
-            raise Http404
+            raise NotFound
 
-    def put(self, request, pk, format=None):
-        user_experiment = self.get_object(pk)
         serializer = CalipsoUserExperimentSerializer(user_experiment, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status=ValidationError)
