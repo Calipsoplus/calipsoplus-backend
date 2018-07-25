@@ -32,6 +32,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'rest_framework',
     'simple_history',
+    'django_filters',
     'apprest.apps.ApprestConfig',
     'corsheaders',
     'django.contrib.admin',
@@ -195,6 +196,10 @@ AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
     'apprest.views.auth.ExternalServiceAuthenticationBackend',
 )
+
+REST_FRAMEWORK = {
+    'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend',)
+}
 
 CORS_ALLOW_CREDENTIALS = True
 CORS_ORIGIN_ALLOW_ALL = True

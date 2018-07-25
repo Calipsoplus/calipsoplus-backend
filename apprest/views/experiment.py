@@ -10,6 +10,8 @@ from apprest.serializers.experiment import CalipsoExperimentSerializer
 from apprest.services.experiment import CalipsoExperimentsServices
 from calipsoplus.settings_calipso import PAGE_SIZE_EXPERIMENTS
 
+from django_filters.rest_framework import DjangoFilterBackend
+
 service = CalipsoExperimentsServices()
 
 
@@ -32,15 +34,16 @@ class GetExperimentsByUserName(ListAPIView):
     permission_classes = (IsAuthenticated,)
     serializer_class = CalipsoExperimentSerializer
     pagination_class = ExperimentsPagination
-    filter_backends = (filters.OrderingFilter, filters.SearchFilter,)
-    ordering_fields = '__all__'
+    filter_backends = (filters.OrderingFilter, filters.SearchFilter, DjangoFilterBackend,)
+    ordering_fields = ('subject', 'body', 'serial_number', 'beam_line', 'calipsouserexperiment__favorite',)
     ordering = ('serial_number',)
-    search_fields = ('subject', 'body', 'serial_number', 'beam_line',)
+    search_fields = ('subject', 'body', 'serial_number', 'beam_line', 'calipsouserexperiment__favorite',)
+    filter_fields = ('calipsouserexperiment__favorite',)
 
     def get_queryset(self):
         username = self.kwargs.get('username')
         if username == self.request.user.username:
-            return service.get_user_experiments(self.kwargs.get('username'))
+            experiments_list = service.get_user_experiments(self.kwargs.get('username'))
+            return experiments_list
         else:
             raise PermissionDenied
-

@@ -1,6 +1,8 @@
 from calipsoplus.settings import *
 
 
+ALLOWED_HOSTS = ['192.168.33.11']
+
 DJANGO_ENV = 'LOCAL'
 
 DATABASES = {
@@ -19,7 +21,7 @@ DATABASES = {
 }
 
 # logs
-LOGGING['loggers']['apprest']['handlers'] = ['file']
+LOGGING['loggers']['apprest']['handlers'] = ['console']
 
 TESTING_MODE = True
 
