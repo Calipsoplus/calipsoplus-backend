@@ -1,4 +1,4 @@
-from rest_framework.exceptions import NotFound, ValidationError
+from rest_framework.exceptions import NotFound, ValidationError, PermissionDenied
 from rest_framework.generics import UpdateAPIView
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.permissions import IsAuthenticated
@@ -8,14 +8,17 @@ from apprest.serializers.users_experiments import CalipsoUserExperimentSerialize
 
 
 class CalipsoExperimentFavorite(UpdateAPIView):
-    authentication_classes = ()
-    permission_classes = ()
+    authentication_classes = (SessionAuthentication, BasicAuthentication)
+    permission_classes = (IsAuthenticated,)
     serializer_class = CalipsoUserExperimentSerializer
     pagination_class = None
 
     def put(self, request, *args, **kwargs):
         try:
-            user_experiment = CalipsoUserExperiment.objects.get(pk=self.kwargs.get('pk'))
+            pk = self.kwargs.get('pk')
+            user_experiment = CalipsoUserExperiment.objects.get(pk=pk)
+            if user_experiment.calipso_user.user != request.user:
+                raise PermissionDenied
         except CalipsoUserExperiment.DoesNotExist:
             raise NotFound
 
