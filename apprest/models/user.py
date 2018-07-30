@@ -5,7 +5,6 @@ from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
-from apprest.models.experiment import CalipsoExperiment
 from simple_history.models import HistoricalRecords
 
 
@@ -14,8 +13,6 @@ class CalipsoUser(models.Model):
     calipso_uid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
     bio = models.TextField(max_length=500, blank=True)
     location = models.CharField(max_length=30, blank=True)
-    # facility = models.ForeignKey(CalipsoFacility, on_delete=models.CASCADE)
-    experiments = models.ManyToManyField(CalipsoExperiment)
 
     history = HistoricalRecords()
 
@@ -32,4 +29,5 @@ class CalipsoUser(models.Model):
         db_table = 'calipso_users'
 
     def __str__(self):
-        return self.user.username
+        return str(self.calipso_uid)
+
