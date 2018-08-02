@@ -7,7 +7,6 @@ import logging
 from apprest.models.user import CalipsoUser
 from apprest.services.quota import CalipsoUserQuotaServices
 from apprest.tests.utils import CalipsoTestCase
-from apprest.utils.exceptions import QuotaMaxSimultaneousExceeded, QuotaCpuExceeded
 
 logger = logging.getLogger(__name__)
 
