@@ -1,4 +1,5 @@
-from django.contrib.auth import authenticate, login, logout
+import requests
+from django.contrib.auth import login, logout, authenticate
 
 from rest_framework import status
 from rest_framework.decorators import api_view
@@ -12,6 +13,7 @@ def login_user(request):
     try:
         username = request.data['username']
         password = request.data['password']
+
     except Exception as e:
         return JSONResponse(
             "Expected 'username' and 'password'",
@@ -20,7 +22,7 @@ def login_user(request):
     user = authenticate(request, username=username, password=password)
 
     if user is not None:
-        login(request, user)
+        login(request, user, backend='apprest.views.auth.ExternalServiceAuthenticationBackend')
 
         return JSONResponse('Login OK', status=status.HTTP_200_OK)
     else:
