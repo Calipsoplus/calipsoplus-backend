@@ -1,8 +1,10 @@
 from calipsoplus.settings import *
 
 DEBUG = True
+CORS_ORIGIN_ALLOW_ALL = False
 
 ALLOWED_HOSTS = ['.cells.es']
+
 CORS_ORIGIN_WHITELIST = ['misapptest.cells.es', ]
 
 DJANGO_ENV = 'TEST'

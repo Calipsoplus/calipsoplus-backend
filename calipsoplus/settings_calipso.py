@@ -9,10 +9,6 @@ MAX_STORAGE_PER_USER = "80G"
 # define limit max experiments per page
 PAGE_SIZE_EXPERIMENTS = 7
 
-# login
-login_umbrella = 1
-login_local = 2
-login_umbrella_local = 3
-
-login_service = login_local
-
+# 0: This would only allow Umbrella authentication. By default, the system does only allow Umbrella authentication.
+# 1: This would allow the user to show the form in order to authenticate locally
+ALLOW_LOCAL_AUTHENTICATION = 0
