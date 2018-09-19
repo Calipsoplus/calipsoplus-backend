@@ -21,7 +21,7 @@ class ExternalServiceAuthenticationBackend:
 
             post_data = {'username': username, 'password': password}
             headers = {'Content-type': 'application/json'}
-            response = requests.post(settings.BACKEND_UO, data=json.dumps(post_data), headers=headers)
+            response = requests.post(settings.BACKEND_UO_LOGIN, data=json.dumps(post_data), headers=headers)
 
             if response.status_code == status.HTTP_200_OK:
                 self.logger.info('Authenticated %s', username)

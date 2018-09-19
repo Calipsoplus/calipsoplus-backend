@@ -7,7 +7,7 @@ from django.test import TestCase
 class RemoveUserCommandTest(TestCase):
     logger = logging.getLogger(__name__)
 
-    fixtures = ['users.json', 'experiments.json']
+    fixtures = ['users.json', 'experiments.json', 'users_experiments.json']
 
     def setUp(self):
         self.logger.debug('#### setUp START ####')
@@ -36,4 +36,4 @@ class RemoveUserCommandTest(TestCase):
         out = StringIO()
 
         with self.assertRaises(Exception):
-            call_command('remove_user', '--userlogin=usrA', '--public_number=AAAR91632', stdout=out)
+            call_command('remove_user', '--userlogin=userA', '--public_number=AAAR91632', stdout=out)

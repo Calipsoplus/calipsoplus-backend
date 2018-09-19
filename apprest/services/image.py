@@ -49,9 +49,9 @@ class CalipsoAvailableImagesServices:
 
             quota = (CalipsoUserQuota(),)
             quota[0].max_simultaneous = max_simultaneous
-            quota[0].memory = "%dg" % max_memory
+            quota[0].memory = "%dG" % max_memory
             quota[0].cpu = max_cpu
-            quota[0].hdd = "%dg" % max_hdd
+            quota[0].hdd = "%dG" % max_hdd
 
             return quota
 
