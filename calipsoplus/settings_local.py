@@ -33,7 +33,7 @@ UMBRELLA_LOGIN = BACKEND_CALIPSO + "/Shibboleth.sso/Login?target=" + BACKEND_CAL
 
 # User Office backend API login
 BACKEND_UO_LOGIN = "https://misapptest.cells.es/duo-services/login/"
-BACKEND_UO_HASH = BACKEND_CALIPSO + "/calipso/duo-services/hash/"
+BACKEND_UO_HASH = "https://misapptest.cells.es/duo-services/login/umbrella/"
 
 
 
