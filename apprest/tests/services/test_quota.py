@@ -3,7 +3,6 @@ import logging
 from rest_framework.test import APITestCase
 
 from apprest.services.container import CalipsoContainersServices
-from apprest.services.quota import CalipsoUserQuotaServices
 from apprest.utils.exceptions import QuotaCpuExceeded, QuotaMemoryExceeded, QuotaHddExceeded
 
 logger = logging.getLogger(__name__)
