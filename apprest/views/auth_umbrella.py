@@ -22,18 +22,16 @@ class ExternalUmbrellaServiceAuthenticationBackend:
             return None
 
     def authenticate(self, request, uid=None, eaa_hash=None):
-        self.logger.info('Attempting to authenticate via umbrella')
+        self.logger.debug('Attempting to authenticate via umbrella')
         try:
             if None in (uid, eaa_hash):
                 self.logger.warning('Tried to authenticate user with missing fields, rejecting')
                 return None
 
-            post_data = {'uid': uid, 'EAAHash': eaa_hash}
+            post_data = {'eaa_hash': eaa_hash}
 
             headers = {'Content-type': 'application/json'}
-            response = requests.post(settings.BACKEND_UO_HASH,
-                                     data=json.dumps(post_data),
-                                     headers=headers, verify=False)
+            response = requests.post(settings.BACKEND_UO_HASH, data=json.dumps(post_data), headers=headers)
 
             if response.status_code == status.HTTP_200_OK:
                 self.logger.info('Authenticated %s', uid)

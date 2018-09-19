@@ -7,7 +7,6 @@ from apprest.views.favorite import CalipsoExperimentFavorite
 from apprest.views.image import GetUsedQuotaFromUser, GetInfoImage
 from apprest.views.login import login_user, logout_user, get_calipso_settings
 from apprest.views.quota import GetDefaultUserQuotasFromUser
-from apprest.views.umbrella import find_umbrella_hash_in_user_office_fake
 
 urlpatterns = [
     url(r'^container/', include('apprest.urls.container')),
@@ -21,6 +20,4 @@ urlpatterns = [
     path('login/', login_user),
     path('logout/', logout_user),
     path('settings/', get_calipso_settings),
-
-    path('duo-services/hash/', find_umbrella_hash_in_user_office_fake),
 ]

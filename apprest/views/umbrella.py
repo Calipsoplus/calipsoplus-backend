@@ -1,7 +1,6 @@
 import logging
 
-import requests
-from django.contrib.auth import login, authenticate, logout
+from django.contrib.auth import login, logout, authenticate
 from django.http import JsonResponse
 from django.shortcuts import redirect
 
@@ -66,17 +65,3 @@ def login_umbrella_by_hash(request):
 def get_umbrella_logout_local(request):
     logout(request)
     return JSONResponse("ok logout", status=status.HTTP_200_OK)
-
-
-@api_view(['POST'])
-def find_umbrella_hash_in_user_office_fake(request):
-    logger.debug("post, find_umbrella_hash_in_user_office_fake, redirect")
-    try:
-        hash = request.data['EAAHash']
-
-        # if hash exists, ok
-        return JSONResponse('Login OK', status=status.HTTP_200_OK)
-        #return JSONResponse('Not Found', status=status.HTTP_404_NOT_FOUND)
-
-    except Exception as e:
-        return JSONResponse("error:%s" % e, status=400)
