@@ -11,7 +11,7 @@ class CalipsoAvailableImagesServices:
         self.logger = logging.getLogger(__name__)
 
     def get_available_image(self, public_name):
-        self.logger.debug('Getting one get_available_image: ' + public_name)
+        self.logger.debug('Getting one get_available_image: %s' % public_name)
         try:
             selected_image = CalipsoAvailableImages.objects.filter(public_name=public_name)
 
@@ -22,8 +22,7 @@ class CalipsoAvailableImagesServices:
                 raise NotFound
 
         except Exception as e:
-            self.logger.debug('Available image %s not found', public_name)
-            self.logger.debug(e)
+            self.logger.error("%s not found." % public_name)
             raise NotFound
 
     def get_sum_containers_quota(self, username):
@@ -56,5 +55,6 @@ class CalipsoAvailableImagesServices:
             return quota
 
         except Exception as e:
-            self.logger.debug('Error to get calipso_user from quota, error:%s' % e)
+            self.logger.error('Error to get calipso_user from quota user:%s' % username)
+            self.logger.debug(e)
             raise NotFound
