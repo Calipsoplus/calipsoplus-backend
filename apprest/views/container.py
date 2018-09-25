@@ -67,39 +67,45 @@ def stop_container(request, username, container_name):
 @api_view(['GET'])
 @authentication_classes((SessionAuthentication, BasicAuthentication,))
 @permission_classes((IsAuthenticated,))
-def run_container(request, username, experiment):
+def run_container(request, username, experiment, public_name):
     if username != request.user.username:
         return JSONResponse("username mismatch", status=status.HTTP_403_FORBIDDEN)
+
     try:
+        container = container_service.run_container(username, experiment, public_name)
+    except Exception as e:
+        logger.error("Error after run_container : %s " % e)
+        return JSONResponse({'error': errorFormatting.format(e)}, status=status.HTTP_204_NO_CONTENT)
 
-        try:
-            container = container_service.run_container(username, experiment)
-        except Exception as e:
-            logger.debug(errorFormatting.format(e))
-            return JSONResponse({'error': errorFormatting.format(e)}, status=status.HTTP_204_NO_CONTENT)
+    serializer = CalipsoContainerSerializer(container)
 
-        serializer = CalipsoContainerSerializer(container)
+    port = 0
+    try:
+        port = int(container.container_info['NetworkSettings']['Ports']['5901/tcp'][0]['HostPort'])
+    except Exception as e:
+        logger.error(e)
+        logger.error("Error obtaining port")
+        for key, val in container.container_info['NetworkSettings']['Ports'].items():
+            port = int(val[0]['HostPort'])
+            logger.info("Found port: %d" % port)
+            break
 
-        try:
-            port = int(container.container_info['NetworkSettings']['Ports']['5901/tcp'][0]['HostPort'])
+    logger.info("Selected port: %d" % port)
 
-            guacamole_service.create_connection(guacamole_username=container.guacamole_username,
-                                                guacamole_password=container.guacamole_password,
-                                                guacamole_connection_name=container.container_name,
-                                                guacamole_protocol=PROTOCOL,
-                                                vnc_password=container.vnc_password,
-                                                container_ip=settings.REMOTE_MACHINE_IP,
-                                                container_port=port)
-
-        except Exception as e:
-            logger.debug(errorFormatting.format(e))
-            return JSONResponse({'error': errorFormatting.format(e)}, status=status.HTTP_400_BAD_REQUEST)
-
-        return JSONResponse(serializer.data, status=status.HTTP_201_CREATED)
+    try:
+        guacamole_service.create_connection(guacamole_username=container.guacamole_username,
+                                            guacamole_password=container.guacamole_password,
+                                            guacamole_connection_name=container.container_name,
+                                            guacamole_protocol=PROTOCOL,
+                                            vnc_password=container.vnc_password,
+                                            container_ip=settings.REMOTE_MACHINE_IP,
+                                            container_port=port)
 
     except Exception as e:
-        logger.debug(e)
+        logger.error(errorFormatting.format(e))
         return JSONResponse({'error': errorFormatting.format(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+    return JSONResponse(serializer.data, status=status.HTTP_201_CREATED)
 
 
 class GetContainersByUserName(ListAPIView):
