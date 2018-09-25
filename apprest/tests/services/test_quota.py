@@ -22,11 +22,14 @@ class CalipsoUserQuotaTestCase(APITestCase):
     def test_quota_cpu(self):
         self.logger.debug('#### TEST test_quota_cpu START ####')
 
-        container_a = self.containers_service.run_container(username='userB', experiment='EXPERIMENT S/N')
-        container_b = self.containers_service.run_container(username='userB', experiment='EXPERIMENT S/N')
+        container_a = self.containers_service.run_container(username='userB', experiment='EXPERIMENT S/N',
+                                                            container_public_name='base_jupyter')
+        container_b = self.containers_service.run_container(username='userB', experiment='EXPERIMENT S/N',
+                                                            container_public_name='base_jupyter')
 
         with self.assertRaisesMessage(QuotaCpuExceeded, 'Max cpus exceeded'):
-            self.containers_service.run_container(username='userB', experiment='EXPERIMENT S/N')
+            self.containers_service.run_container(username='userB', experiment='EXPERIMENT S/N',
+                                                  container_public_name='base_jupyter')
 
         self.containers_service.stop_container(container_name=container_a.container_name)
         self.containers_service.rm_container(container_name=container_a.container_name)
@@ -40,11 +43,14 @@ class CalipsoUserQuotaTestCase(APITestCase):
     def test_quota_memory(self):
         self.logger.debug('#### TEST test_quota_cpu START ####')
 
-        container_a = self.containers_service.run_container(username='userC', experiment='EXPERIMENT S/N')
-        container_b = self.containers_service.run_container(username='userC', experiment='EXPERIMENT S/N')
+        container_a = self.containers_service.run_container(username='userC', experiment='EXPERIMENT S/N',
+                                                            container_public_name='base_jupyter')
+        container_b = self.containers_service.run_container(username='userC', experiment='EXPERIMENT S/N',
+                                                            container_public_name='base_jupyter')
 
         with self.assertRaisesMessage(QuotaMemoryExceeded, 'Max memory exceeded'):
-            self.containers_service.run_container(username='userC', experiment='EXPERIMENT S/N')
+            self.containers_service.run_container(username='userC', experiment='EXPERIMENT S/N',
+                                                  container_public_name='base_jupyter')
 
         self.containers_service.stop_container(container_name=container_a.container_name)
         self.containers_service.rm_container(container_name=container_a.container_name)
@@ -58,11 +64,14 @@ class CalipsoUserQuotaTestCase(APITestCase):
     def test_quota_hdd(self):
         self.logger.debug('#### TEST test_quota_hdd START ####')
 
-        container_a = self.containers_service.run_container(username='userD', experiment='EXPERIMENT S/N')
-        container_b = self.containers_service.run_container(username='userD', experiment='EXPERIMENT S/N')
+        container_a = self.containers_service.run_container(username='userD', experiment='EXPERIMENT S/N',
+                                                            container_public_name='base_jupyter')
+        container_b = self.containers_service.run_container(username='userD', experiment='EXPERIMENT S/N',
+                                                            container_public_name='base_jupyter')
 
         with self.assertRaisesMessage(QuotaHddExceeded, 'Max hdd exceeded'):
-            self.containers_service.run_container(username='userD', experiment='EXPERIMENT S/N')
+            self.containers_service.run_container(username='userD', experiment='EXPERIMENT S/N',
+                                                  container_public_name='base_jupyter')
 
         self.containers_service.stop_container(container_name=container_a.container_name)
         self.containers_service.rm_container(container_name=container_a.container_name)

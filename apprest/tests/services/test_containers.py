@@ -7,6 +7,7 @@ from apprest.services.quota import CalipsoUserQuotaServices
 
 logger = logging.getLogger(__name__)
 
+
 class CalipsoContainerServiceTestCase(APITestCase):
     logger = logging.getLogger(__name__)
     fixtures = ['users.json', 'images.json', 'quotas.json']
@@ -22,7 +23,8 @@ class CalipsoContainerServiceTestCase(APITestCase):
     def test_service_run_stop_rm_container_with_default_quota(self):
         self.logger.debug('#### TEST test_service_run_stop_rm_container_with_default_quota START ####')
 
-        container = self.containers_service.run_container(username='userA', experiment='55555')
+        container = self.containers_service.run_container(username='userA', experiment='55555',
+                                                          container_public_name='base_jupyter')
 
         self.assertEqual(len(container.container_id), 64)
         self.assertEqual(container.container_status, 'created')
@@ -42,7 +44,8 @@ class CalipsoContainerServiceTestCase(APITestCase):
 
         for x in range(0, quota.max_simultaneous):
             self.logger.debug('append container %d' % x)
-            all_container_responses.append(self.containers_service.run_container(username='userA', experiment=str(x)))
+            all_container_responses.append(self.containers_service.run_container(username='userA', experiment=str(x),
+                                                                                 container_public_name='base_jupyter'))
             self.assertNotEquals(all_container_responses[x], None)
 
         # stop all
