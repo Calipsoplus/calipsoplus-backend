@@ -1,7 +1,9 @@
 import json
 import logging
+import pdb
+import re
+import time
 import uuid
-
 import docker
 
 from apprest.models.container import CalipsoContainer
@@ -27,7 +29,6 @@ class CalipsoContainersServices:
         except Exception as e:
             self.logger.critical("Docker deamon not found.")
             self.logger.critical(e)
-
 
     def run_container(self, username, experiment, container_public_name):
         """
@@ -111,23 +112,28 @@ class CalipsoContainersServices:
                                                           publish_all_ports=True,
                                                           mem_limit=image_selected.memory,
                                                           memswap_limit=-1,
-                                                          cpu_count=image_selected.cpu
+                                                          cpu_count=image_selected.cpu,
+                                                          environment=["PYTHONUNBUFFERED=0"]
                                                           )
-            """
-            storage_opt={'size': '120G'})
-            for log in docker_container.logs(stream=True):
-                print(log)
-            """
+            time.sleep(1.5)
+            logs = str(docker_container.logs(stream=False))
+            result = re.findall('token=(?:[-\w.]|(?:%[\da-fA-F]{2}))+', logs)
 
             new_container.container_id = docker_container.id
             new_container.container_name = docker_container.name
             new_container.container_status = docker_container.status
             new_container.container_info = self.client.api.inspect_container(docker_container.id)
 
-            new_container.host_port = "still not used"
+            for key, val in new_container.container_info['NetworkSettings']['Ports'].items():
+                port = int(val[0]['HostPort'])
+                break
+
+            if (len(result) > 0):
+                new_container.host_port = "http://" + settings.REMOTE_MACHINE_IP + ":" + str(port) + "/?" + result[0]
 
             new_container.save()
 
+            self.logger.debug('Return a new container, image:%s',image_selected.image)
             return new_container
 
         except Exception as e:

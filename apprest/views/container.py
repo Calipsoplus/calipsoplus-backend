@@ -80,15 +80,9 @@ def run_container(request, username, experiment, public_name):
     serializer = CalipsoContainerSerializer(container)
 
     port = 0
-    try:
-        port = int(container.container_info['NetworkSettings']['Ports']['5901/tcp'][0]['HostPort'])
-    except Exception as e:
-        logger.error(e)
-        logger.error("Error obtaining port")
-        for key, val in container.container_info['NetworkSettings']['Ports'].items():
-            port = int(val[0]['HostPort'])
-            logger.info("Found port: %d" % port)
-            break
+    for key, val in container.container_info['NetworkSettings']['Ports'].items():
+        port = int(val[0]['HostPort'])
+        break
 
     logger.info("Selected port: %d" % port)
 

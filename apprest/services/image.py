@@ -14,12 +14,11 @@ class CalipsoAvailableImagesServices:
         self.logger.debug('Getting one get_available_image: %s' % public_name)
         try:
             selected_image = CalipsoAvailableImages.objects.filter(public_name=public_name)
-
-            if len(selected_image) > 0:
-                self.logger.debug('Available image got')
-                return selected_image
-            else:
+            if len(selected_image) == 0:
                 raise NotFound
+
+            self.logger.debug('Available image got')
+            return selected_image
 
         except Exception as e:
             self.logger.error("%s not found." % public_name)
