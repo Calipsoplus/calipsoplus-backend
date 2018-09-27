@@ -129,4 +129,6 @@ class ContainerViewsTestCase(CalipsoTestCase):
 
         self.assertEqual(response_run.status_code, status.HTTP_201_CREATED)
 
+        self.stop_remove_container(container_response=response_run, username='userA')
+
         self.logger.debug('#### TEST test_read_logs_from_container END ####')
