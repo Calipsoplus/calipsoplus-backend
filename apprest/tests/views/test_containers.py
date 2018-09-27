@@ -34,7 +34,8 @@ class ContainerViewsTestCase(CalipsoTestCase):
 
         # run
         response_run = self.client.get(reverse('run_container',
-                                               kwargs={'username': 'userA', 'experiment': 'EXPERIMENT_SN'}))
+                                               kwargs={'username': 'userA', 'experiment': 'EXPERIMENT_SN',
+                                                       'public_name': 'base_jupyter'}))
         self.assertEqual(response_run.status_code, status.HTTP_201_CREATED)
 
         json_content = json.loads(response_run.content.decode("utf-8"))
@@ -57,7 +58,8 @@ class ContainerViewsTestCase(CalipsoTestCase):
         self.logger.debug('#### TEST test_user_HTTP_403_FORBIDDEN START ####')
 
         response_run = self.client.get(reverse('run_container',
-                                               kwargs={'username': 'userA', 'experiment': 'EXPERIMENT_SN'}))
+                                               kwargs={'username': 'userA', 'experiment': 'EXPERIMENT_SN',
+                                                       'public_name': 'base_jupyter'}))
         self.assertEqual(response_run.status_code, status.HTTP_403_FORBIDDEN)
 
         self.logger.debug('#### TEST test_user_HTTP_403_FORBIDDEN END ####')
@@ -75,14 +77,17 @@ class ContainerViewsTestCase(CalipsoTestCase):
         all_container_responses = []
 
         quota = self.quota_service.get_default_quota(username=self.scientist_1.user.username)[0]
+        logger.info("MAX SIM:" + str(quota.max_simultaneous))
 
         for x in range(0, quota.max_simultaneous):
             all_container_responses.append(self.client.get(
-                reverse('run_container', kwargs={'username': 'userA', 'experiment': 'EXPERIMENTS'})))
+                reverse('run_container',
+                        kwargs={'username': 'userA', 'experiment': 'EXPERIMENTS', 'public_name': 'base_jupyter'})))
             self.assertEqual(all_container_responses[x].status_code, status.HTTP_201_CREATED)
 
         last_fail_container = self.client.get(
-                reverse('run_container', kwargs={'username': 'userA', 'experiment': 'EXPERIMENT_LAST'}))
+            reverse('run_container',
+                    kwargs={'username': 'userA', 'experiment': 'EXPERIMENT_LAST', 'public_name': 'base_jupyter'}))
 
         self.assertEqual(last_fail_container.status_code, status.HTTP_204_NO_CONTENT)
 
@@ -105,3 +110,25 @@ class ContainerViewsTestCase(CalipsoTestCase):
         response_rm = self.client.get(
             reverse('rm_container', kwargs={'username': username, 'container_name': container_name}))
         self.assertEqual(response_rm.status_code, status.HTTP_200_OK)
+
+    def test_read_logs_from_container(self):
+
+        self.logger.debug('#### TEST test_read_logs_from_container START ####')
+        base_url = '/container/list/%s/'
+
+        # Not authenticated -> 403
+        url = base_url % self.scientist_1.user.username
+
+        # Login and check methods
+        self.login_and_check_http_methods(self.scientist_1.user.username, url, ['GET', 'HEAD', 'OPTIONS'])
+
+        # run
+        response_run = self.client.get(reverse('run_container',
+                                               kwargs={'username': 'userA', 'experiment': 'EXPERIMENT_SN',
+                                                       'public_name': 'base_jupyter'}))
+
+        self.assertEqual(response_run.status_code, status.HTTP_201_CREATED)
+
+        self.stop_remove_container(container_response=response_run, username='userA')
+
+        self.logger.debug('#### TEST test_read_logs_from_container END ####')

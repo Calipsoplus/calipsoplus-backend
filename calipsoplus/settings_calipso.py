@@ -11,4 +11,4 @@ PAGE_SIZE_EXPERIMENTS = 7
 
 # 0: This would only allow Umbrella authentication. By default, the system does only allow Umbrella authentication.
 # 1: This would allow the user to show the form in order to authenticate locally
-ALLOW_LOCAL_AUTHENTICATION = 0
+ALLOW_LOCAL_AUTHENTICATION = 1
