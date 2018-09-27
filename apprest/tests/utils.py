@@ -41,7 +41,7 @@ class CalipsoTestCase(testcases.TestCase):
 
     def allowed_http_methods_testing(self, test_url, allowed_http_methods):
         self.logger.debug('#### START Testing allowed HTTP methods ####')
-        self.logger.debug(test_url + " - " + str(allowed_http_methods))
+        self.logger.debug("%s - %s" % (test_url, str(allowed_http_methods)))
         if test_url and isinstance(allowed_http_methods, list):
             if 'GET' not in allowed_http_methods:
                 response = self.client.get(test_url)

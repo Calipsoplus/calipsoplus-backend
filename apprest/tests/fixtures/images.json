@@ -10,5 +10,17 @@
       "memory": "4G",
       "hdd": "10G"
     }
+  },
+  {
+    "model": "apprest.CalipsoAvailableImages",
+    "pk": 2,
+    "fields": {
+      "public_name": "base_jupyter",
+      "docker_daemon": "tcp://192.168.33.13:2375",
+      "image": "jupyter/scipy-notebook",
+      "cpu": 2,
+      "memory": "4G",
+      "hdd": "10G"
+    }
   }
 ]

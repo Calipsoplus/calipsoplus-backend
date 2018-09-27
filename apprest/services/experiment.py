@@ -12,7 +12,7 @@ class CalipsoExperimentsServices:
         self.logger = logging.getLogger(__name__)
 
     def get_user_experiments(self, username):
-        self.logger.debug('Getting get_user_experiments from user_id %s', username)
+        self.logger.debug('Getting get_user_experiments from user_id %s' %  username)
         try:
             user = User.objects.get(username=username)
             calipso_user = CalipsoUser.objects.get(user=user)
