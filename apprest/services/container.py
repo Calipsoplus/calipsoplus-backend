@@ -1,8 +1,5 @@
-import json
 import logging
-import pdb
 import re
-import time
 import uuid
 import docker
 
@@ -14,6 +11,9 @@ from django.conf import settings
 from apprest.services.quota import CalipsoUserQuotaServices
 from apprest.utils.exceptions import QuotaMaxSimultaneousExceeded, QuotaHddExceeded, QuotaMemoryExceeded, \
     QuotaCpuExceeded
+
+JUPYTER_REGEX_LOGS = 'token=(?:[-\w.]|(?:%[\da-fA-F]{2}))+'
+DESKTOP_REGEX_LOGS = 'connect via'
 
 quota_service = CalipsoUserQuotaServices()
 image_service = CalipsoAvailableImagesServices()
@@ -115,10 +115,6 @@ class CalipsoContainersServices:
                                                           cpu_count=image_selected.cpu,
                                                           environment=["PYTHONUNBUFFERED=0"]
                                                           )
-            time.sleep(1.5)
-            logs = str(docker_container.logs(stream=False))
-            result = re.findall('token=(?:[-\w.]|(?:%[\da-fA-F]{2}))+', logs)
-
             new_container.container_id = docker_container.id
             new_container.container_name = docker_container.name
             new_container.container_status = docker_container.status
@@ -128,12 +124,19 @@ class CalipsoContainersServices:
                 port = int(val[0]['HostPort'])
                 break
 
-            if (len(result) > 0):
-                new_container.host_port = "http://" + settings.REMOTE_MACHINE_IP + ":" + str(port) + "/?" + result[0]
+            result_jupyter = ""
+            for log in docker_container.logs(stream=True):
+                result_jupyter = re.findall(JUPYTER_REGEX_LOGS, str(log))
+                result_desktop = re.findall(DESKTOP_REGEX_LOGS, str(log))
+                if result_jupyter or result_desktop:
+                    break
+
+            if result_jupyter:
+                new_container.host_port = "http://" + settings.REMOTE_MACHINE_IP + ":" + str(port) + "/?" + result_jupyter[0]
 
             new_container.save()
 
-            self.logger.debug('Return a new container, image:%s',image_selected.image)
+            self.logger.debug('Return a new container, image:%s', image_selected.image)
             return new_container
 
         except Exception as e:
