@@ -79,10 +79,11 @@ def run_container(request, username, experiment, public_name):
 
     serializer = CalipsoContainerSerializer(container)
 
-    port = 0
+    port=0
     for key, val in container.container_info['NetworkSettings']['Ports'].items():
-        port = int(val[0]['HostPort'])
-        break
+        bport = int(val[0]['HostPort']) 
+        if(bport>port):
+            port = bport
 
     logger.info("Selected port: %d" % port)
 
