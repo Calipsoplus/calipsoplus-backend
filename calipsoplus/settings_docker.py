@@ -1,6 +1,6 @@
 from calipsoplus.settings import *
 
-DEBUG = True
+DEBUG = False
 CORS_ORIGIN_ALLOW_ALL = False
 
 ALLOWED_HOSTS = ['web-back']
@@ -31,8 +31,8 @@ UMBRELLA_LOGOUT = BACKEND_CALIPSO + "/Shibboleth.sso/Logout?return=" + FRONTEND_
 UMBRELLA_LOGIN = BACKEND_CALIPSO + "/Shibboleth.sso/Login?target=" + BACKEND_CALIPSO + "/calipsoplus-services/umbrella/frontend/"
 
 # User Office backend API login
-BACKEND_UO_LOGIN = "https://misapptest.cells.es/duo-services/login/"
-BACKEND_UO_HASH = "https://misapptest.cells.es/duo-services/login/umbrella/"
+BACKEND_UO_LOGIN = "http://mock-login:8000/login/"
+BACKEND_UO_HASH = "http://mock-login:8000/login/umbrella/"
 
 #database
 DATABASES = {
