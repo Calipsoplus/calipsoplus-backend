@@ -10,8 +10,8 @@ CORS_ORIGIN_WHITELIST = ['web-front','web-back']
 DJANGO_ENV = 'DOCKER'
 
 # docker location
-DOCKER_URL_DAEMON = "tcp://calipsotest.cells.es:2375"
-REMOTE_MACHINE_IP = "calipsotest.cells.es"
+DOCKER_URL_DAEMON = "tcp://104.248.47.215:2375"
+REMOTE_MACHINE_IP = "104.248.47.215"
 
 # logs
 LOGGING['loggers']['django']['handlers'] = ['console']
