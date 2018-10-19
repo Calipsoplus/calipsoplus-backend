@@ -1,0 +1,17 @@
+*.pyc
+*/*.pyc
+**/*.pyc
+.project
+.pydevproject
+*/.project
+*/.pydevproject
+env/
+/.settings/
+*.cnf
+*.log
+*.prefs
+*/*.prefs
+**/*.prefs
+.idea
+*/.idea
+*.sqlite

@@ -1,0 +1,23 @@
+[
+  {
+    "model": "apprest.CalipsoExperiment",
+    "pk": 1,
+    "fields": {
+      "subject":"Experiment 1",
+      "body":"Description of experiment 1",
+      "serial_number":"2018091622",
+      "beam_line":"MIDAS"
+    }
+  },
+  {
+    "model": "apprest.CalipsoExperiment",
+    "pk": 2,
+    "fields": {
+      "subject":"Experiment 2",
+      "body":"Description of experiment 2",
+      "serial_number":"2018091632",
+      "beam_line":"MIDAS"
+    }
+  }
+
+]
