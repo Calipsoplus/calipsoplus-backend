@@ -120,10 +120,13 @@ class CalipsoContainersServices:
             new_container.container_status = docker_container.status
             new_container.container_info = self.client.api.inspect_container(docker_container.id)
 
+            port=0
             for key, val in new_container.container_info['NetworkSettings']['Ports'].items():
-                port = int(val[0]['HostPort'])
-                break
-
+                bport = int(val[0]['HostPort']) 
+                if(bport>port):
+                    port = bport
+                
+                
             result_jupyter = ""
             for log in docker_container.logs(stream=True):
                 result_jupyter = re.findall(JUPYTER_REGEX_LOGS, str(log))

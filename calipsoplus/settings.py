@@ -88,13 +88,6 @@ DATABASES = {
             'read_default_file': os.path.join(BASE_DIR, '..', 'config', 'database', 'default.cnf'),
         }
     },
-    'auth_db': {
-        'ENGINE': 'django.db.backends.mysql',
-        'STORAGE_ENGINE': 'INNODB',
-        'OPTIONS': {
-            'read_default_file': os.path.join(BASE_DIR, '..', 'config', 'database', 'auth_db.cnf'),
-        }
-    },
     'guacamole': {
         'ENGINE': 'django.db.backends.mysql',
         'STORAGE_ENGINE': 'INNODB',
