@@ -1,0 +1,20 @@
+[
+  {
+    "model": "apprest.CalipsoUserExperiment",
+    "pk": 1,
+    "fields": {
+      "favorite": 0,
+      "calipso_user_id": 1,
+      "calipso_experiment_id": 1
+    }
+  },
+  {
+    "model": "apprest.CalipsoUserExperiment",
+    "pk": 2,
+    "fields": {
+      "favorite": 0,
+      "calipso_user_id": 1,
+      "calipso_experiment_id": 2
+    }
+  }
+]

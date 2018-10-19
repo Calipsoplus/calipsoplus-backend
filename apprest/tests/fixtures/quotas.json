@@ -1,0 +1,49 @@
+[
+
+    {
+      "model": "apprest.CalipsoUserQuota",
+      "pk": 1,
+      "fields": {
+        "calipso_user": 1,
+        "max_simultaneous": 3,
+        "cpu": 8,
+        "memory": "40G",
+        "hdd": "50G"
+      }
+    },
+    {
+      "model": "apprest.CalipsoUserQuota",
+      "pk": 2,
+      "fields": {
+        "calipso_user": 2,
+        "max_simultaneous": 3,
+        "cpu": 4,
+        "memory": "8G",
+        "hdd": "25G"
+      }
+    },
+    {
+      "model": "apprest.CalipsoUserQuota",
+      "pk": 3,
+      "fields": {
+        "calipso_user": 3,
+        "max_simultaneous": 3,
+        "cpu": 6,
+        "memory": "8G",
+        "hdd": "25G"
+      }
+    },
+    {
+      "model": "apprest.CalipsoUserQuota",
+      "pk": 4,
+      "fields": {
+        "calipso_user": 4,
+        "max_simultaneous": 3,
+        "cpu": 10,
+        "memory": "50G",
+        "hdd": "20G"
+      }
+    }
+]
+
+
