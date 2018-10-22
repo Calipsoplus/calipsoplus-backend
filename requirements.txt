@@ -16,7 +16,5 @@ urllib3==1.22
 websocket-client==0.47.0
 django>=2.0.8
 gunicorn>=19.5.0
-
-
-
+django-filter==2.0.0
 
