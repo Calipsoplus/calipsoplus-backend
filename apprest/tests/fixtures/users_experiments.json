@@ -16,5 +16,14 @@
       "calipso_user_id": 1,
       "calipso_experiment_id": 2
     }
+  },
+   {
+    "model": "apprest.CalipsoUserExperiment",
+    "pk": 3,
+    "fields": {
+      "favorite": 0,
+      "calipso_user_id": 2,
+      "calipso_experiment_id": 1
+    }
   }
 ]

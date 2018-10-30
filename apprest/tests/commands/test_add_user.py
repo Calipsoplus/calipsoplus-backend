@@ -24,3 +24,12 @@ class AddUserCommandTest(TestCase):
         call_command('add_user', '--userlogin=userA', '--public_number=2018091632', stdout=out)
         self.assertIn("Successfully added experiment", out.getvalue())
 
+    def test_command_add_same_experiment_to_two_users(self):
+        out = StringIO()
+
+        call_command('add_user', '--userlogin=userA', '--public_number=2018091632', stdout=out)
+        self.assertIn("Successfully added experiment", out.getvalue())
+
+        call_command('add_user', '--userlogin=userB', '--public_number=2018091632', stdout=out)
+        self.assertIn("Successfully added experiment", out.getvalue())
+
