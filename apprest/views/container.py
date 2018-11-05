@@ -10,15 +10,15 @@ from rest_framework.permissions import IsAuthenticated
 from apprest.serializers.container import CalipsoContainerSerializer
 from apprest.services.container import CalipsoContainersServices
 from apprest.services.guacamole import CalipsoGuacamoleServices
+from apprest.services.image import CalipsoAvailableImagesServices
 
 from apprest.utils.request import JSONResponse, ErrorFormatting
 
 from django.conf import settings
 
-PROTOCOL = "vnc"
-
 container_service = CalipsoContainersServices()
 guacamole_service = CalipsoGuacamoleServices()
+image_service = CalipsoAvailableImagesServices()
 
 logger = logging.getLogger(__name__)
 errorFormatting = ErrorFormatting()
@@ -64,6 +64,8 @@ def stop_container(request, username, container_name):
         return JSONResponse({'error': errorFormatting.format(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
+
+
 @api_view(['GET'])
 @authentication_classes((SessionAuthentication, BasicAuthentication,))
 @permission_classes((IsAuthenticated,))
@@ -78,20 +80,23 @@ def run_container(request, username, experiment, public_name):
         return JSONResponse({'error': errorFormatting.format(e)}, status=status.HTTP_204_NO_CONTENT)
 
     serializer = CalipsoContainerSerializer(container)
+    image_selected = image_service.get_available_image(public_name=public_name)[0]
 
-    port=0
-    for key, val in container.container_info['NetworkSettings']['Ports'].items():
-        bport = int(val[0]['HostPort']) 
-        if(bport>port):
-            port = bport
+    logger.debug("Searching... port")
 
-    logger.info("Selected port: %d" % port)
+    try:
+        port = int(container.container_info['NetworkSettings']['Ports'][image_selected.port_hook][0]['HostPort'])
+    except Exception as e:
+        port = 0
+
+    logger.debug("Selected port: %d" % port)
+
 
     try:
         guacamole_service.create_connection(guacamole_username=container.guacamole_username,
                                             guacamole_password=container.guacamole_password,
                                             guacamole_connection_name=container.container_name,
-                                            guacamole_protocol=PROTOCOL,
+                                            guacamole_protocol=image_selected.protocol,
                                             vnc_password=container.vnc_password,
                                             container_ip=settings.REMOTE_MACHINE_IP,
                                             container_port=port)

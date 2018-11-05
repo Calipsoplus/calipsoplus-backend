@@ -12,9 +12,6 @@ from apprest.services.quota import CalipsoUserQuotaServices
 from apprest.utils.exceptions import QuotaMaxSimultaneousExceeded, QuotaHddExceeded, QuotaMemoryExceeded, \
     QuotaCpuExceeded
 
-JUPYTER_REGEX_LOGS = 'token=(?:[-\w.]|(?:%[\da-fA-F]{2}))+'
-DESKTOP_REGEX_LOGS = 'connect via'
-
 quota_service = CalipsoUserQuotaServices()
 image_service = CalipsoAvailableImagesServices()
 
@@ -45,7 +42,6 @@ class CalipsoContainersServices:
         max_hdd = 0
 
         self.logger.debug('Attempting to run a new container')
-        # ports = {'5901/tcp': 5901} to assign specific port
 
         list_of_containers = self.list_container(username=username)
 
@@ -91,8 +87,6 @@ class CalipsoContainersServices:
             guacamole_password = uuid.uuid4().hex
 
             vnc_password = 'vncpassword'
-            # add to the img vncpassword
-            # select img
 
             new_container = CalipsoContainer.objects.create(calipso_user=username,
                                                             calipso_experiment=experiment,
@@ -103,11 +97,10 @@ class CalipsoContainersServices:
                                                             guacamole_username=guacamole_username,
                                                             guacamole_password=guacamole_password,
                                                             vnc_password=vnc_password,
-                                                            public_name=image_selected.public_name
+                                                            public_name=container_public_name
                                                             )
 
             docker_container = self.client.containers.run(image=image_selected.image,
-                                                          # ports=ports,
                                                           detach=True,
                                                           publish_all_ports=True,
                                                           mem_limit=image_selected.memory,
@@ -120,22 +113,20 @@ class CalipsoContainersServices:
             new_container.container_status = docker_container.status
             new_container.container_info = self.client.api.inspect_container(docker_container.id)
 
-            port=0
+            port = 0
             for key, val in new_container.container_info['NetworkSettings']['Ports'].items():
-                bport = int(val[0]['HostPort']) 
-                if(bport>port):
+                bport = int(val[0]['HostPort'])
+                if (bport > port):
                     port = bport
-                
-                
-            result_jupyter = ""
+
+            result_er = ""
             for log in docker_container.logs(stream=True):
-                result_jupyter = re.findall(JUPYTER_REGEX_LOGS, str(log))
-                result_desktop = re.findall(DESKTOP_REGEX_LOGS, str(log))
-                if result_jupyter or result_desktop:
+                result_er = re.findall(image_selected.logs_er, str(log))
+                if result_er:
                     break
 
-            if result_jupyter:
-                new_container.host_port = "http://" + settings.REMOTE_MACHINE_IP + ":" + str(port) + "/?" + result_jupyter[0]
+            if result_er[0] != image_selected.logs_er:
+                new_container.host_port = "http://" + settings.REMOTE_MACHINE_IP + ":" + str(port) + "/?" + result_er[0]
 
             new_container.save()
 
