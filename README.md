@@ -82,7 +82,7 @@ The application has its own unit testing settings, which will create a mock data
 ```bash
 cd calipsoplus
 source ~/.virtualenvs/calipsoenv/bin/activate
-./manage.py test --settings=calipsoplus.settings
+./manage.py test --settings=calipsoplus.settings_unittests
 ```
 
 ## Deploy
