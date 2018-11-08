@@ -64,8 +64,6 @@ def stop_container(request, username, container_name):
         return JSONResponse({'error': errorFormatting.format(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
-
-
 @api_view(['GET'])
 @authentication_classes((SessionAuthentication, BasicAuthentication,))
 @permission_classes((IsAuthenticated,))
@@ -91,15 +89,17 @@ def run_container(request, username, experiment, public_name):
 
     logger.debug("Selected port: %d" % port)
 
-
     try:
-        guacamole_service.create_connection(guacamole_username=container.guacamole_username,
-                                            guacamole_password=container.guacamole_password,
-                                            guacamole_connection_name=container.container_name,
-                                            guacamole_protocol=image_selected.protocol,
-                                            vnc_password=container.vnc_password,
-                                            container_ip=settings.REMOTE_MACHINE_IP,
-                                            container_port=port)
+
+        params = {'guacamole_username': container.guacamole_username,
+                  'guacamole_password': container.guacamole_password,
+                  'guacamole_connection_name': container.container_name,
+                  'guacamole_protocol': image_selected.protocol,
+                  'vnc_password': container.vnc_password,
+                  'container_ip': settings.REMOTE_MACHINE_IP,
+                  'container_port': port}
+
+        guacamole_service.create_connection(params)
 
     except Exception as e:
         logger.error(errorFormatting.format(e))
