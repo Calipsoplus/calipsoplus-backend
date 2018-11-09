@@ -32,16 +32,6 @@ vi auth_db.cnf #user office db
 vi default.cnf #calipso db
 ```
 
-Add the following content to the **auth_db.cnf** file
-```bash
-[client]
-database = useroffice
-host = misdbtest
-port = 3306
-user = ****
-password = ****
-default-character-set = utf
-```
 Add the following content to the **default.cnf** file
 ```bash
 [client]
@@ -63,10 +53,9 @@ password = *****
 default-character-set = utf8
 ```
 
-Set **auth_db.cnf** and **default.cnf** files as read only
+Set **default.cnf** and **guacamole.cnf** files as read only
 
 ```bash
-chmod 555 auth_db.cnf
 chmod 555 default.cnf
 chmod 555 guacamole.cnf
 ```
@@ -93,7 +82,7 @@ The application has its own unit testing settings, which will create a mock data
 ```bash
 cd calipsoplus
 source ~/.virtualenvs/calipsoenv/bin/activate
-./manage.py test --settings=calipsoplus.settings
+./manage.py test --settings=calipsoplus.settings_unittests
 ```
 
 ## Deploy

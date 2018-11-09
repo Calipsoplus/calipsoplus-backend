@@ -9,7 +9,6 @@ service = CalipsoFacilityServices()
 
 class GetAllFacilities(ListAPIView):
     authentication_classes = (SessionAuthentication, BasicAuthentication)
-    # permission_classes = (IsAuthenticated,)
     serializer_class = CalipsoFacilitySerializer
     pagination_class = None
 

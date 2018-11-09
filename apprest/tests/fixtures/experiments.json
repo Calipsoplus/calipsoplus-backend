@@ -18,6 +18,17 @@
       "serial_number":"2018091632",
       "beam_line":"MIDAS"
     }
+  },
+  {
+    "model": "apprest.CalipsoExperiment",
+    "pk": 3,
+    "fields": {
+      "subject":"Experiment 3",
+      "body":"Description of experiment 3",
+      "serial_number":"2018091633",
+      "beam_line":"MIDAS2"
+    }
   }
+
 
 ]
