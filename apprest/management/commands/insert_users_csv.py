@@ -36,7 +36,7 @@ class Command(BaseCommand):
                         self.stdout.write(
                             self.style.SUCCESS('line %d Successfully inserted user %s' % (line, username)))
                         done += 1
-                        pass
+
 
             self.stdout.write(self.style.SUCCESS('File processed. %d/%d done.!' % (done, line-1)))
 

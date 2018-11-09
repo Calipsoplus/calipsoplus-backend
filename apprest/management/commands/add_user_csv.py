@@ -33,7 +33,7 @@ class Command(BaseCommand):
                     except Exception as e:
                         self.stdout.write(
                             self.style.ERROR('line %d .%s. %s Error! e:%s' % (line, userlogin, public_number, e)))
-                        pass
+
 
             self.stdout.write(self.style.SUCCESS('File processed. %d/%d done.!' % (done, line-1)))
 

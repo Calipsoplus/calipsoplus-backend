@@ -1,12 +1,15 @@
-from django.contrib.auth.models import User
 from rest_framework import serializers
 from apprest.models.experiment import CalipsoExperiment
 from apprest.models.user import CalipsoUser
+from apprest.serializers.session import CalipsoSessionSerializer
 
 
 class CalipsoExperimentSerializer(serializers.ModelSerializer):
+
+    sessions = CalipsoSessionSerializer(many=True)
+
     class Meta:
-        fields = ('serial_number', 'subject', 'body', 'beam_line')
+        fields = ('serial_number', 'subject', 'body', 'beam_line', 'sessions')
         model = CalipsoExperiment
 
     def to_representation(self, instance):

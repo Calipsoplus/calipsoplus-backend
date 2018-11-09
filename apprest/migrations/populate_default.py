@@ -8,7 +8,7 @@ def create_image_default(apps, schema_editor):
          'consol/centos-xfce-vnc:latest',
          'tcp://calipsotest.cells.es:2375',
          '192.168.33.13',
-         '3389/tcp',
+         '5901/tcp',
          'connect via',
          'vnc',
          1,
@@ -50,12 +50,13 @@ def create_image_default(apps, schema_editor):
         memory = image_data[8]
         hdd = image_data[9]
 
-        try:
-            CalipsoAvailableImages.objects.create(public_name=public_name, image=image, docker_daemon=docker_daemon,
+        if len(CalipsoAvailableImages.objects.filter(public_name=public_name)) == 0 :
+            try:
+                CalipsoAvailableImages.objects.create(public_name=public_name, image=image, docker_daemon=docker_daemon,
                                                   host_domain=host_domain, port_hook=port_hook, logs_er=logs_er,
                                                   protocol=protocol, cpu=cpu, memory=memory, hdd=hdd)
-        except Exception as e:
-            print('Error creating image_default: %s' % e)
+            except Exception as e:
+                print('Error creating image_default: %s' % e)
 
 
 class Migration(migrations.Migration):
