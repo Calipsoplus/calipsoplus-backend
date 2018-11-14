@@ -4,39 +4,12 @@ from apprest.models.image import CalipsoAvailableImages
 
 def create_image_default(apps, schema_editor):
     default_data_image = [
-        ('base_image',
-         'consol/centos-xfce-vnc:latest',
-         'tcp://calipsotest.cells.es:2375',
-         '192.168.33.13',
-         '5901/tcp',
-         'connect via',
-         'vnc',
-         1,
-         '3G',
-         '5G',
-         ),
-        ('base_jupyter',
-         'jupyter/scipy-notebook',
-         'tcp://192.168.33.13:2375',
-         '192.168.33.13',
-         '3389/tcp',
-         'token=(?:[-\w.]|(?:%[\da-fA-F]{2}))+',
-         'vnc',
-         1,
-         '3G',
-         '5G',
-         ),
-        ('base_image_ubuntu',
-         'danielguerra/ubuntu-xrdp',
-         'tcp://192.168.33.13:2375',
-         '192.168.33.13',
-         '3389/tcp',
-         'startsecs',
-         'rdp',
-         1,
-         '3G',
-         '5G',
-         )]
+        ('base_image', 'consol/centos-xfce-vnc:latest', 'tcp://:2375', '', '5901/tcp', 'connect via',
+         'vnc', 1, '3G', '5G',),
+        ('base_jupyter', 'jupyter/scipy-notebook', 'tcp://:2375', '', '3389/tcp',
+         'token=(?:[-\w.]|(?:%[\da-fA-F]{2}))+', 'vnc', 1, '3G', '5G',),
+        ('base_image_ubuntu', 'danielguerra/ubuntu-xrdp', 'tcp://:2375', '', '3389/tcp', 'startsecs',
+         'rdp', 1, '3G', '5G',)]
 
     for image_data in default_data_image:
         public_name = image_data[0]
@@ -50,11 +23,11 @@ def create_image_default(apps, schema_editor):
         memory = image_data[8]
         hdd = image_data[9]
 
-        if len(CalipsoAvailableImages.objects.filter(public_name=public_name)) == 0 :
+        if len(CalipsoAvailableImages.objects.filter(public_name=public_name)) == 0:
             try:
                 CalipsoAvailableImages.objects.create(public_name=public_name, image=image, docker_daemon=docker_daemon,
-                                                  host_domain=host_domain, port_hook=port_hook, logs_er=logs_er,
-                                                  protocol=protocol, cpu=cpu, memory=memory, hdd=hdd)
+                                                      host_domain=host_domain, port_hook=port_hook, logs_er=logs_er,
+                                                      protocol=protocol, cpu=cpu, memory=memory, hdd=hdd)
             except Exception as e:
                 print('Error creating image_default: %s' % e)
 
