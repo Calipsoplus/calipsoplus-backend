@@ -74,7 +74,7 @@ def run_container(request, username, experiment, public_name):
     try:
         container = container_service.run_container(username, experiment, public_name)
     except Exception as e:
-        logger.error("Error after run_container : %s " % e)
+        logger.debug("Error after run_container : %s " % e)
         return JSONResponse({'error': errorFormatting.format(e)}, status=status.HTTP_204_NO_CONTENT)
 
     serializer = CalipsoContainerSerializer(container)
@@ -102,7 +102,7 @@ def run_container(request, username, experiment, public_name):
         guacamole_service.create_connection(params)
 
     except Exception as e:
-        logger.error(errorFormatting.format(e))
+        logger.debug(errorFormatting.format(e))
         return JSONResponse({'error': errorFormatting.format(e)}, status=status.HTTP_400_BAD_REQUEST)
 
     return JSONResponse(serializer.data, status=status.HTTP_201_CREATED)

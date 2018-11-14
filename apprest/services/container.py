@@ -9,11 +9,13 @@ from apprest.services.image import CalipsoAvailableImagesServices
 from django.conf import settings
 
 from apprest.services.quota import CalipsoUserQuotaServices
+from apprest.services.session import CalipsoSessionsServices
 from apprest.utils.exceptions import QuotaMaxSimultaneousExceeded, QuotaHddExceeded, QuotaMemoryExceeded, \
     QuotaCpuExceeded
 
 quota_service = CalipsoUserQuotaServices()
 image_service = CalipsoAvailableImagesServices()
+session_service = CalipsoSessionsServices()
 
 
 class CalipsoContainersServices:
@@ -88,6 +90,13 @@ class CalipsoContainersServices:
 
             vnc_password = 'vncpassword'
 
+            try:
+                volume = session_service.get_volumes_from_session(session_number=experiment)
+            except Exception as e:
+                volume = ""
+
+            self.logger.debug('volume set to :%s', volume)
+
             new_container = CalipsoContainer.objects.create(calipso_user=username,
                                                             calipso_experiment=experiment,
                                                             container_id='not created yet',
@@ -106,7 +115,9 @@ class CalipsoContainersServices:
                                                           mem_limit=image_selected.memory,
                                                           memswap_limit=-1,
                                                           cpu_count=image_selected.cpu,
-                                                          environment=["PYTHONUNBUFFERED=0"]
+                                                          environment=["PYTHONUNBUFFERED=0"],
+                                                          working_dir="/tmp/results",
+                                                          volumes=volume
                                                           )
             new_container.container_id = docker_container.id
             new_container.container_name = docker_container.name

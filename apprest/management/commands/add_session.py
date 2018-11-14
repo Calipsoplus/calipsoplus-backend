@@ -44,10 +44,15 @@ class Command(BaseCommand):
         try:
             experiment = CalipsoExperiment.objects.get(serial_number=public_number)
 
-            self.session_services.create_session_to_experiment(session_number=session_number, start_date=start_date,
-                                                               end_date=end_date, subject=subject,
-                                                               body=body,
-                                                               data_set_path=data_set_path, experiment=experiment)
+            params = {'session_number': session_number,
+                      'start_date': start_date,
+                      'end_date': end_date,
+                      'subject': subject,
+                      'body': body,
+                      'data_set_path': data_set_path}
+
+
+            self.session_services.create_session_to_experiment(params=params, experiment=experiment)
 
             self.stdout.write(self.style.SUCCESS('Successfully added session to experiment "%s"' % public_number))
 
