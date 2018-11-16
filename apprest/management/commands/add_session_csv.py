@@ -38,11 +38,15 @@ class Command(BaseCommand):
 
                         experiment = CalipsoExperiment.objects.get(serial_number=public_number)
 
-                        self.sessions_services.create_session_to_experiment(session_number=session_number,
-                                                                           start_date=start_date,
-                                                                           end_date=end_date, subject=subject,
-                                                                           body=body,
-                                                                           data_set_path=data_set_path,
+                        params = {'session_number': session_number,
+                                  'start_date': start_date,
+                                  'end_date': end_date,
+                                  'subject': subject,
+                                  'body': body,
+                                  'data_set_path': data_set_path}
+
+
+                        self.sessions_services.create_session_to_experiment(params=params,
                                                                            experiment=experiment)
 
 
@@ -50,7 +54,6 @@ class Command(BaseCommand):
                         done += 1
                     except Exception as e:
                         self.stdout.write(self.style.ERROR('line %d error:%s' % (line, e)))
-                        pass
 
             self.stdout.write(self.style.SUCCESS('File processed. %d/%d done.!' % (done, line-1)))
 
