@@ -34,7 +34,7 @@ class Command(BaseCommand):
                         done += 1
                     except Exception as e:
                         self.stdout.write(self.style.ERROR('line %d error:%s' % (line, e)))
-                        pass
+
 
             self.stdout.write(self.style.SUCCESS('File processed. %d/%d done.!' % (done, line-1)))
 

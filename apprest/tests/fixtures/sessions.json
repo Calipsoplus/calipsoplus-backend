@@ -1,0 +1,41 @@
+[
+  {
+    "model": "apprest.CalipsoSession",
+    "pk": 1,
+    "fields": {
+      "session_number": "S_01",
+      "start_date":"2017-06-08T00:00:00",
+      "end_date":"2017-06-08T00:00:00",
+      "subject": "Subject session 1",
+      "body": "Body session 1",
+      "data_set_path": "{'/var/www/': {'bind': '/mnt/www', 'mode': 'rw'},'/var/log': {'bind': '/mnt/log', 'mode': 'ro'}}",
+      "experiment_id": 1
+    }
+  },
+  {
+    "model": "apprest.CalipsoSession",
+    "pk": 2,
+    "fields": {
+      "session_number": "S_02",
+      "start_date":"2017-06-28T00:00:00",
+      "end_date":"2017-06-28T00:00:00",
+      "subject": "Subject session 2",
+      "body": "Body session 2",
+      "data_set_path": "{'/var/www/': {'bind': '/mnt/www', 'mode': 'rw'},'/var/log': {'bind': '/mnt/log', 'mode': 'ro'}}",
+      "experiment_id": 1
+    }
+  },
+  {
+    "model": "apprest.CalipsoSession",
+    "pk": 3,
+    "fields": {
+      "session_number": "S_03",
+      "start_date":"2017-06-18T00:00:00",
+      "end_date":"2017-06-18T00:00:00",
+      "subject": "Subject session 3",
+      "body": "Body session 3",
+      "data_set_path": "{'/var/www/': {'bind': '/mnt/www', 'mode': 'rw'},'/var/log': {'bind': '/mnt/log', 'mode': 'ro'}}",
+      "experiment_id": 2
+    }
+  }
+]
