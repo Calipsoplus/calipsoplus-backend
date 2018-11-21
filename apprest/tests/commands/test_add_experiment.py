@@ -29,17 +29,17 @@ class AddExperimentCommandTest(TestCase):
 
     def test_command_add_three_experiments(self):
         out = StringIO()
-        call_command('add_experiment', '--public_number=2018CODE000', '--title=TITLE001ashd', '--description=my desc',
+        call_command('add_experiment', '--public_number=2018CODE000', '--title=TITLE001', '--description=my desc',
                      '--beamline_code="COPRS"', stdout=out)
 
         self.assertIn("Successfully added experiment", out.getvalue())
 
-        call_command('add_experiment', '--public_number=2017CODE000', '--title=TITLE001ashd', '--description=my desc',
+        call_command('add_experiment', '--public_number=2017CODE000', '--title=TITLE002', '--description=my desc',
                      '--beamline_code="COPRS"', stdout=out)
 
         self.assertIn("Successfully added experiment", out.getvalue())
 
-        call_command('add_experiment', '--public_number=2016CODE000', '--title=TITLE001ashd', '--description=my desc',
+        call_command('add_experiment', '--public_number=2016CODE000', '--title=TITLE003', '--description=my desc',
                      '--beamline_code="COPRS"', stdout=out)
 
         self.assertIn("Successfully added experiment", out.getvalue())
