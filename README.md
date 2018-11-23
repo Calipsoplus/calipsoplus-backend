@@ -28,7 +28,7 @@ CREATE DATABASE `calipsoplus`;
 cd calipsoplus
 mkdir config & cd config
 mkdir database & cd database
-vi auth_db.cnf #user office db
+vi guacamole.cnf #guacamole db
 vi default.cnf #calipso db
 ```
 
@@ -70,7 +70,7 @@ env/bin/python backend/manage.py migrate --settings=calipsoplus.settings_[local|
 Once the environment and the database are configured...
 
 ```bash
-./manage.py runserver 127.0.0.1:8000 settings=calipsoplus.settings
+./manage.py runserver 127.0.0.1:8000 settings=calipsoplus.settings_local
 ```
 
 The service should be available at [http://127.0.0.1:8000](http://127.0.0.1:8000)

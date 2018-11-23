@@ -35,5 +35,3 @@ UMBRELLA_LOGIN = BACKEND_CALIPSO + "/Shibboleth.sso/Login?target=" + BACKEND_CAL
 BACKEND_UO_LOGIN = "https://misapptest.cells.es/duo-services/login/"
 BACKEND_UO_HASH = "https://misapptest.cells.es/duo-services/login/umbrella/"
 
-
-
