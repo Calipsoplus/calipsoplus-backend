@@ -7,7 +7,6 @@ from apprest.views.favorite import CalipsoExperimentFavorite
 from apprest.views.image import GetUsedQuotaFromUser, GetInfoImage
 from apprest.views.login import login_user, logout_user, get_calipso_settings
 from apprest.views.quota import QuotaView
-from apprest.views.user import CalipsoUserView
 
 urlpatterns = [
     url(r'^container/', include('apprest.urls.container')),
@@ -21,5 +20,4 @@ urlpatterns = [
     path('login/', login_user),
     path('logout/', logout_user),
     path('settings/', get_calipso_settings),
-    path('users/', CalipsoUserView.as_view())
 ]
