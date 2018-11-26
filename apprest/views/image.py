@@ -1,8 +1,11 @@
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.exceptions import PermissionDenied
+from rest_framework.response import Response
 from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.views import APIView
 
+from apprest.serializers.image import CalipsoImageSerializer
 from apprest.serializers.quota import CalipsoUserQuotaSerializer
 from apprest.services.image import CalipsoAvailableImagesServices
 
@@ -24,15 +27,16 @@ class GetUsedQuotaFromUser(ListAPIView):
             raise PermissionDenied
 
 
-class GetInfoImage(ListAPIView):
+class GetInfoImage(APIView):
     authentication_classes = (SessionAuthentication, BasicAuthentication)
     permission_classes = (IsAuthenticated,)
-    serializer_class = CalipsoUserQuotaSerializer
+    serializer_class = CalipsoImageSerializer
 
     pagination_class = None
 
-    def get_queryset(self):
+    def get(self, *args, **kwargs):
         service = CalipsoAvailableImagesServices()
         public_name = self.kwargs.get('public_name')
-
-        return service.get_available_image(public_name=public_name)
+        image = service.get_available_image(public_name=public_name)
+        serializer_class = CalipsoImageSerializer(image)
+        return Response(serializer_class.data)

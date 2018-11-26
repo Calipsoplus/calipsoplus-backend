@@ -13,15 +13,13 @@ class CalipsoAvailableImagesServices:
     def get_available_image(self, public_name):
         self.logger.debug('Getting one get_available_image: %s' % public_name)
         try:
-            selected_image = CalipsoAvailableImages.objects.filter(public_name=public_name)
-            if len(selected_image) == 0:
-                raise NotFound
-
+            selected_image = CalipsoAvailableImages.objects.get(public_name=public_name)
             self.logger.debug('Available image got')
             return selected_image
 
         except Exception as e:
             self.logger.error("%s not found." % public_name)
+            self.logger.error(e)
             raise NotFound
 
     def get_sum_containers_quota(self, username):
