@@ -1,5 +1,7 @@
 import logging
 
+from apprest.models import CalipsoUser
+
 
 class CalipsoUserServices:
     def __init__(self):
@@ -18,3 +20,6 @@ class CalipsoUserServices:
 
         except KeyError:
             return None
+
+    def get_all_users(self, request):
+        return CalipsoUser.objects.all()
