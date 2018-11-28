@@ -3,6 +3,7 @@ from rest_framework.exceptions import PermissionDenied
 from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAuthenticated
 
+from apprest.serializers.image import CalipsoImageSerializer
 from apprest.serializers.quota import CalipsoUserQuotaSerializer
 from apprest.services.image import CalipsoAvailableImagesServices
 
@@ -36,3 +37,16 @@ class GetInfoImage(ListAPIView):
         public_name = self.kwargs.get('public_name')
 
         return service.get_available_image(public_name=public_name)
+
+
+class GetAllImages(ListAPIView):
+    authentication_classes = (SessionAuthentication, BasicAuthentication)
+    permission_classes = (IsAuthenticated,)
+    serializer_class = CalipsoImageSerializer
+
+    pagination_class = None
+
+    def get_queryset(self):
+        service = CalipsoAvailableImagesServices()
+
+        return service.get_all_images()
