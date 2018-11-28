@@ -132,3 +132,37 @@ class ContainerViewsTestCase(CalipsoTestCase):
         self.stop_remove_container(container_response=response_run, username='userA')
 
         self.logger.debug('#### TEST test_read_logs_from_container END ####')
+
+
+    def test_own_resources_container(self):
+        self.logger.debug('#### TEST test_own_resources_container START ####')
+
+        base_url = '/container/list/%s/'
+
+        # Not authenticated -> 403
+        url = base_url % self.scientist_1.user.username
+
+        # Login and check methods
+        self.login_and_check_http_methods(self.scientist_1.user.username, url, ['GET', 'HEAD', 'OPTIONS'])
+
+        # run
+        response_run = self.client.get(reverse('run_container',
+                                               kwargs={'username': 'userA', 'experiment': 'userA',
+                                                       'public_name': 'base_jupyter'}))
+        self.assertEqual(response_run.status_code, status.HTTP_201_CREATED)
+
+        json_content = json.loads(response_run.content.decode("utf-8"))
+
+        container_name = json_content['container_name']
+
+        # stop
+        response_stop = self.client.get(
+            reverse('stop_container', kwargs={'username': 'userA', 'container_name': container_name}))
+        self.assertEqual(response_stop.status_code, status.HTTP_200_OK)
+
+        # remove
+        response_rm = self.client.get(
+            reverse('rm_container', kwargs={'username': 'userA', 'container_name': container_name}))
+        self.assertEqual(response_rm.status_code, status.HTTP_200_OK)
+
+        self.logger.debug('#### TEST test_own_resources_container END ####')
