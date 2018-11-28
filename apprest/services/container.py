@@ -93,7 +93,8 @@ class CalipsoContainersServices:
             try:
                 volume = session_service.get_volumes_from_session(session_number=experiment)
             except Exception as e:
-                volume = ""
+                self.logger.debug('volume not found, set volume to default')
+                volume = {"/tmp/results/"+username: {"bind": "/tmp/results/"+username, "mode": "rw"}, "/tmp/data/"+username: {"bind": "/tmp/data/"+username, "mode": "ro"}}
 
             self.logger.debug('volume set to :%s', volume)
 
@@ -116,7 +117,7 @@ class CalipsoContainersServices:
                                                           memswap_limit=-1,
                                                           cpu_count=image_selected.cpu,
                                                           environment=["PYTHONUNBUFFERED=0"],
-                                                          working_dir="/tmp/results",
+                                                          working_dir="/tmp/results/"+username,
                                                           volumes=volume
                                                           )
             new_container.container_id = docker_container.id
