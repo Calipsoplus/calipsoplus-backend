@@ -44,6 +44,5 @@ def get_calipso_settings(request):
 
 @api_view(['GET'])
 def get_login_type(request):
-    # json_settings_data = {'is_staff': request.user.is_staff}
     json_settings_data = {'is_staff': True}
     return JsonResponse(json_settings_data)
