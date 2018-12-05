@@ -34,6 +34,10 @@ UMBRELLA_LOGIN = BACKEND_CALIPSO + "/Shibboleth.sso/Login?target=" + BACKEND_CAL
 BACKEND_UO_LOGIN = "http://mock-login:8000/login/"
 BACKEND_UO_HASH = "http://mock-login:8000/login/umbrella/"
 
+# which indicates the REST endpoint to be connected against, if the DYNAMIC_EXPERIMENTS_DATA_RETRIEVAL flag is set to 1.
+# Note: endpoint should contain: login, number of items (pagination), offset (from and to), and keyword (optional)
+DYNAMIC_EXPERIMENTS_DATA_RETRIEVAL_ENDPOINT = "http://mock-login:8000/experiments/$USERNAME/"
+
 #database
 DATABASES = {
     'default': {
