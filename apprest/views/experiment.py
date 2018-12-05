@@ -1,4 +1,9 @@
-from rest_framework import pagination, filters
+import logging
+
+from django.core import serializers
+from django.http import HttpResponse
+from rest_framework import pagination, filters, status
+from rest_framework.decorators import api_view
 from rest_framework.exceptions import PermissionDenied
 
 from rest_framework.generics import ListAPIView
@@ -8,11 +13,17 @@ from rest_framework.response import Response
 
 from apprest.serializers.experiment import CalipsoExperimentSerializer
 from apprest.services.experiment import CalipsoExperimentsServices
-from calipsoplus.settings_calipso import PAGE_SIZE_EXPERIMENTS
+from apprest.utils.request import JSONResponse
+
+from calipsoplus.settings_calipso import PAGE_SIZE_EXPERIMENTS, DYNAMIC_EXPERIMENTS_DATA_RETRIEVAL
+
+import pdb
 
 from django_filters.rest_framework import DjangoFilterBackend
 
 service = CalipsoExperimentsServices()
+
+logger = logging.getLogger(__name__)
 
 
 class ExperimentsPagination(pagination.PageNumberPagination):
@@ -43,7 +54,26 @@ class GetExperimentsByUserName(ListAPIView):
     def get_queryset(self):
         username = self.kwargs.get('username')
         if username == self.request.user.username:
-            experiments_list = service.get_user_experiments(self.kwargs.get('username'))
+            logger.debug('experiments get from db')
+            experiments_list = service.get_user_experiments(username)
             return experiments_list
         else:
             raise PermissionDenied
+
+    def get(self, request, *args, **kwargs):
+        if DYNAMIC_EXPERIMENTS_DATA_RETRIEVAL == 0:
+            return super(GetExperimentsByUserName, self).get(self, request, *args, **kwargs)
+        else:
+            username = self.kwargs.get('username')
+            if username == self.request.user.username:
+
+                query = {"page": request.GET.get('page'),
+                         "ordering": request.GET.get('ordering'),
+                         "search": request.GET.get('search'),
+                         "calipsouserexperiment__favorite": request.GET.get('calipsouserexperiment__favorite')}
+
+                experiments_list = service.get_external_user_experiments(username, query)
+
+                return JSONResponse(experiments_list, status=status.HTTP_200_OK)
+            else:
+                raise PermissionDenied
