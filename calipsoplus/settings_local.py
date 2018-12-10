@@ -35,3 +35,8 @@ UMBRELLA_LOGIN = BACKEND_CALIPSO + "/Shibboleth.sso/Login?target=" + BACKEND_CAL
 BACKEND_UO_LOGIN = "https://misapptest.cells.es/duo-services/login/"
 BACKEND_UO_HASH = "https://misapptest.cells.es/duo-services/login/umbrella/"
 
+# which indicates the REST endpoint to be connected against, if the DYNAMIC_EXPERIMENTS_DATA_RETRIEVAL flag is set to 1.
+# Note: endpoint should contain: login, number of items (pagination), offset (from and to), and keyword (optional)
+DYNAMIC_EXPERIMENTS_DATA_RETRIEVAL_ENDPOINT = "https://misapptest.cells.es/duo-services/experiments/$USERNAME/"
+
+

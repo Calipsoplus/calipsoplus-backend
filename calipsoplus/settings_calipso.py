@@ -16,3 +16,6 @@ ALLOW_LOCAL_AUTHENTICATION = 1
 EXPERIMENTS_DATASETS_ROOT = "/tmp/data"
 EXPERIMENTS_OUTPUT = "/tmp/results"
 
+#which indicates whether getting the information from a REST endpoint (1) or the DB (0)
+DYNAMIC_EXPERIMENTS_DATA_RETRIEVAL = 0
+
