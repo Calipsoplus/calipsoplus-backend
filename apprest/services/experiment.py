@@ -98,6 +98,9 @@ class CalipsoExperimentsServices:
             self.logger.debug('calling external endpoint %s' % url)
             # response = requests.get(url, params=query, verify=False)
 
+            headers = {'Content-type': 'application/json'}
+            response = requests.get(url, params=query, headers=headers)
+
             """
                 next
                 previous
@@ -196,10 +199,22 @@ class CalipsoExperimentsServices:
                 "page_size": 7
             }
 
-            # return HttpResponse(response, status=200)
-            return experiments_list
+            return response.json()
+
 
 
         except Exception as e:
             self.logger.debug(e)
             raise e
+
+
+"""
+            client = requests.session()
+            client.get(URL)
+
+            cookies = dict(client.cookies)
+            r = requests.post(URL + "au", data=json.dumps(data), headers=headers, cookies=cookies)
+
+            response = requests.get(url, params=query)
+
+"""
