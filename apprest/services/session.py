@@ -71,3 +71,14 @@ class CalipsoSessionsServices:
 
         except Exception as e:
             raise e
+
+    def find_experiment_from_session(self, session_number):
+        self.logger.debug("find_experiment_from_session %s" % session_number)
+
+        try:
+            session = CalipsoSession.objects.get(session_number=session_number)
+            return session.experiment.serial_number
+
+        except Exception as e:
+            self.logger.debug("session %s, not found" % session_number)
+            return session_number
