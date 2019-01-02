@@ -3,6 +3,7 @@ import re
 import uuid
 import docker
 
+from apprest.models import CalipsoSession
 from apprest.models.container import CalipsoContainer
 from apprest.services.image import CalipsoAvailableImagesServices
 
@@ -11,7 +12,7 @@ from django.conf import settings
 from apprest.services.quota import CalipsoUserQuotaServices
 from apprest.services.session import CalipsoSessionsServices
 from apprest.utils.exceptions import QuotaMaxSimultaneousExceeded, QuotaHddExceeded, QuotaMemoryExceeded, \
-    QuotaCpuExceeded
+    QuotaCpuExceeded, DockerExceptionNotFound
 
 quota_service = CalipsoUserQuotaServices()
 image_service = CalipsoAvailableImagesServices()
@@ -44,6 +45,12 @@ class CalipsoContainersServices:
         max_hdd = 0
 
         self.logger.debug('Attempting to run a new container')
+
+        try:
+            self.client.ping()
+        except Exception as e:
+            self.logger.debug('Docker daemon not found.')
+            raise DockerExceptionNotFound("Docker daemon not found.")
 
         list_of_containers = self.list_container(username=username)
 
@@ -89,12 +96,16 @@ class CalipsoContainersServices:
             guacamole_password = uuid.uuid4().hex
 
             vnc_password = 'vncpassword'
+            experiment_serial_number = "0"
 
             try:
                 volume = session_service.get_volumes_from_session(session_number=experiment)
+                experiment_serial_number = session_service.find_experiment_from_session(session_number=experiment)
+
             except Exception as e:
                 self.logger.debug('volume not found, set volume to default')
-                volume = {"/tmp/results/"+username: {"bind": "/tmp/results/"+username, "mode": "rw"}, "/tmp/data/"+username: {"bind": "/tmp/data/"+username, "mode": "ro"}}
+                volume = {"/tmp/results/" + username: {"bind": "/tmp/results/" + username, "mode": "rw"},
+                          "/tmp/data/" + username: {"bind": "/tmp/data/" + username, "mode": "ro"}}
 
             self.logger.debug('volume set to :%s', volume)
 
@@ -117,9 +128,14 @@ class CalipsoContainersServices:
                                                           memswap_limit=-1,
                                                           cpu_count=image_selected.cpu,
                                                           environment=["PYTHONUNBUFFERED=0"],
-                                                          working_dir="/tmp/results/"+username,
+                                                          working_dir="/tmp/results/" + username,
                                                           volumes=volume
                                                           )
+
+
+
+
+
             new_container.container_id = docker_container.id
             new_container.container_name = docker_container.name
             new_container.container_status = docker_container.status
@@ -158,6 +174,12 @@ class CalipsoContainersServices:
         self.logger.debug('Attempting to remove container %s' % container_name)
 
         try:
+            self.client.ping()
+        except Exception as e:
+            self.logger.debug('Docker daemon not found.')
+            raise DockerExceptionNotFound("Docker daemon not found.")
+
+        try:
             self.client.api.remove_container(container_name)
 
             container = CalipsoContainer.objects.get(container_name=container_name, container_status='stopped')
@@ -180,7 +202,12 @@ class CalipsoContainersServices:
         :return: none
         """
         self.logger.debug('Attempting to stop a container %s' % container_name)
-
+        try:
+            self.client.ping()
+        except Exception as e:
+            self.logger.debug('Docker daemon not found.')
+            raise DockerExceptionNotFound("Docker daemon not found.")
+        
         try:
             self.client.api.stop(container_name)
 

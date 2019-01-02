@@ -17,3 +17,6 @@ class QuotaMemoryExceeded(QuotaExceptionExceeded):
 class QuotaHddExceeded(QuotaExceptionExceeded):
     pass
 
+
+class DockerExceptionNotFound(Exception):
+    pass

@@ -1,6 +1,10 @@
 import logging
 
+import requests
+from django.conf import settings
 from django.contrib.auth.models import User
+from django.http import HttpResponse
+
 from rest_framework.exceptions import NotFound
 
 from apprest.models.experiment import CalipsoExperiment, CalipsoUserExperiment
@@ -12,7 +16,7 @@ class CalipsoExperimentsServices:
         self.logger = logging.getLogger(__name__)
 
     def get_user_experiments(self, username):
-        self.logger.debug('Getting get_user_experiments from user_id %s' %  username)
+        self.logger.debug('Getting get_user_experiments from user_id %s' % username)
         try:
             user = User.objects.get(username=username)
             calipso_user = CalipsoUser.objects.get(user=user)
@@ -81,3 +85,136 @@ class CalipsoExperimentsServices:
             calipso_experiment.beam_line = beamline_code
 
         calipso_experiment.save()
+
+    def get_external_user_experiments(self, username, query):
+        self.logger.debug('Getting get_external_user_experiments from user:%s' % username)
+        """
+         query = {page, ordering, search, calipsouserexperiment__favorite}
+        """
+
+        try:
+            url = settings.DYNAMIC_EXPERIMENTS_DATA_RETRIEVAL_ENDPOINT.replace('$USERNAME', username)
+
+            self.logger.debug('calling external endpoint %s' % url)
+            # response = requests.get(url, params=query, verify=False)
+
+            headers = {'Content-type': 'application/json'}
+            response = requests.get(url, params=query, headers=headers)
+
+            """
+                next
+                previous
+                cont
+                results
+                    serial_number
+                    subject
+                    body
+                    beam_line
+                    sessions
+                        session_number
+                        start_date
+                        end_date
+                        subject
+                        body
+                        data_set_path
+                    id
+                    favorite
+                page_size
+            """
+
+            experiments_list = {
+                "next": None,
+                "previous": None,
+                "count": 2,
+                "results": [
+                    {
+                        "serial_number": "A0001",
+                        "subject": "Title un",
+                        "body": "Description 1",
+                        "beam_line": "BL_A",
+                        "sessions": [
+                            {
+                                "session_number": "S0011",
+                                "start_date": "2018-10-10T10:30:00",
+                                "end_date": "2018-10-11T18:00:00",
+                                "subject": "SUBJECT S11",
+                                "body": "BODY S11",
+                                "data_set_path": "{'/tmp/results/': {'bind': '', 'mode': 'rw'},'/tmp/data/': {'bind': '', 'mode': 'ro'}}"
+                            },
+                            {
+                                "session_number": "S0012",
+                                "start_date": "2018-10-10T11:00:00",
+                                "end_date": "2018-10-12T18:00:00",
+                                "subject": "SUBJECT S12",
+                                "body": "BODY S12",
+                                "data_set_path": "{'/tmp/results/': {'bind': '', 'mode': 'rw'},'/tmp/data/': {'bind': '', 'mode': 'ro'}}"
+                            },
+                            {
+                                "session_number": "S0013",
+                                "start_date": "2018-10-11T12:30:00",
+                                "end_date": "2018-10-13T18:00:00",
+                                "subject": "SUBJECT S13",
+                                "body": "BODY S13",
+                                "data_set_path": "{'/tmp/results/': {'bind': '', 'mode': 'rw'},'/tmp/data/': {'bind': '', 'mode': 'ro'}}"
+                            },
+                            {
+                                "session_number": "S0014",
+                                "start_date": "2018-10-12T13:00:00",
+                                "end_date": "2018-10-14T18:00:00",
+                                "subject": "SUBJECT S14",
+                                "body": "BODY S14",
+                                "data_set_path": "{'/tmp/results/': {'bind': '', 'mode': 'rw'},'/tmp/data/': {'bind': '', 'mode': 'ro'}}"
+                            }
+                        ],
+                        "id": 1,
+                        "favorite": False
+                    },
+                    {
+                        "serial_number": "A0002",
+                        "subject": "Title dos",
+                        "body": "Description 2",
+                        "beam_line": "BL_A",
+                        "sessions": [
+                            {
+                                "session_number": "S0021",
+                                "start_date": "2018-10-13T08:00:00",
+                                "end_date": "2018-10-15T18:00:00",
+                                "subject": "SUBJECT S21",
+                                "body": "BODY S21",
+                                "data_set_path": "{'/tmp/results/': {'bind': '', 'mode': 'rw'},'/tmp/data/': {'bind': '', 'mode': 'ro'}}"
+                            },
+                            {
+                                "session_number": "S0022",
+                                "start_date": "2018-10-14T09:30:00",
+                                "end_date": "2018-10-16T18:00:00",
+                                "subject": "SUBJECT S22",
+                                "body": "BODY S22",
+                                "data_set_path": "{'/tmp/results/': {'bind': '', 'mode': 'rw'},'/tmp/data/': {'bind': '', 'mode': 'ro'}}"
+                            }
+                        ],
+                        "id": 2,
+                        "favorite": True
+                    }
+                ],
+                "page_size": 7
+            }
+
+            return response.json()
+
+
+
+        except Exception as e:
+            self.logger.debug(e)
+            raise e
+
+
+"""
+            client = requests.session()
+            client.get(URL)
+
+            cookies = dict(client.cookies)
+            r = requests.post(URL + "au", data=json.dumps(data), headers=headers, cookies=cookies)
+
+            response = requests.get(url, params=query)
+
+"""
