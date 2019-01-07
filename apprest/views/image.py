@@ -4,6 +4,8 @@ from rest_framework.response import Response
 from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
+from rest_framework import status
+
 
 from apprest.serializers.image import CalipsoImageSerializer
 from apprest.serializers.quota import CalipsoUserQuotaSerializer
@@ -26,10 +28,9 @@ class GetUsedQuotaFromUser(ListAPIView):
         else:
             raise PermissionDenied
 
-
 class GetInfoImage(APIView):
-    authentication_classes = (SessionAuthentication, BasicAuthentication)
-    permission_classes = (IsAuthenticated,)
+    # authentication_classes = (SessionAuthentication, BasicAuthentication)
+    # permission_classes = (IsAuthenticated,)
     serializer_class = CalipsoImageSerializer
 
     pagination_class = None
@@ -39,4 +40,36 @@ class GetInfoImage(APIView):
         public_name = self.kwargs.get('public_name')
         image = service.get_available_image(public_name=public_name)
         serializer_class = CalipsoImageSerializer(image)
+        return Response(serializer_class.data)
+
+    def post(self, request, *args, **kwargs):
+        service = CalipsoAvailableImagesServices()
+        public_name = self.kwargs.get('public_name')
+        service.add_new_image(public_name=public_name, image=request.data.get('image'),
+                             port_hook=request.data.get('port_hook'), logs_er=request.data.get('logs_er'),
+                             protocol=request.data.get('protocol'), cpu=request.data.get('cpu'),
+                             memory=request.data.get('memory'), hdd=request.data.get('hdd'))
+        return Response(status=status.HTTP_201_CREATED)
+
+
+    def put(self, request, *args, **kwargs):
+        service = CalipsoAvailableImagesServices()
+        public_name = self.kwargs.get('public_name')
+        service.modify_image(public_name=public_name, image=request.data.get('image'),
+                             port_hook=request.data.get('port_hook'), logs_er=request.data.get('logs_er'),
+                             protocol=request.data.get('protocol'), cpu=request.data.get('cpu'),
+                             memory=request.data.get('memory'), hdd=request.data.get('hdd'))
+        return Response(status=status.HTTP_200_OK)
+
+    def delete(self, *args, **kwargs):
+        service = CalipsoAvailableImagesServices()
+        service.delete_image(self.kwargs.get('public_name'))
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+class GetAllImages(APIView):
+
+    def get(self, *args, **kwargs):
+        service = CalipsoAvailableImagesServices()
+        images = service.get_all_images()
+        serializer_class = CalipsoImageSerializer(images, many=True)
         return Response(serializer_class.data)
