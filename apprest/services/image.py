@@ -22,6 +22,54 @@ class CalipsoAvailableImagesServices:
             self.logger.error(e)
             raise NotFound
 
+    def get_all_images(self):
+        self.logger.debug('Getting all available images')
+        try:
+            images = CalipsoAvailableImages.objects.all()
+            self.logger.debug("Retrieved all images")
+            return images
+        except Exception as e:
+            self.logger.error(e)
+            raise Exception
+
+    def add_new_image(self, public_name, image, port_hook, logs_er, protocol, cpu, memory, hdd):
+        self.logger.debug('Add new image')
+        try:
+            image = CalipsoAvailableImages(public_name=public_name, image=image, docker_daemon='tcp://:2375',
+                                           host_domain='', port_hook=port_hook, logs_er=logs_er,
+                                           protocol=protocol, cpu=cpu, memory=memory, hdd=hdd)
+            image.save()
+            self.logger.debug('Added new image: %s' % public_name)
+        except Exception as e:
+            self.logger.error(e)
+
+    def modify_image(self, public_name, image, port_hook, logs_er, protocol, cpu, memory, hdd):
+        self.logger.debug('Modifying image %s' % public_name)
+        try:
+            selected_image = self.get_available_image(public_name)
+            selected_image.image = image
+            selected_image.port_hook = port_hook
+            selected_image.logs_er = logs_er
+            selected_image.protocol = protocol
+            selected_image.cpu = cpu
+            selected_image.memory = memory
+            selected_image.hdd = hdd
+
+            selected_image.save()
+            self.logger.debug('Image: %s has been updated' % public_name)
+        except Exception as e:
+            self.logger.error(e)
+
+    def delete_image(self, public_name):
+        self.logger.debug('Attempting to delete image %s' % public_name)
+        try:
+            selected_image = self.get_available_image(public_name)
+            selected_image.delete()
+            self.logger.debug('Image %s successfully deleted' % public_name)
+        except Exception as e:
+            self.logger.error(e)
+
+
     def get_sum_containers_quota(self, username):
         self.logger.debug('Getting get_sum_containers_quota quota')
 
