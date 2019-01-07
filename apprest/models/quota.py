@@ -8,10 +8,10 @@ from calipsoplus.settings_calipso import MAX_CONTAINER_PER_USER, MAX_STORAGE_PER
 
 class CalipsoUserQuota(models.Model):
     calipso_user = models.OneToOneField(CalipsoUser, on_delete=models.CASCADE, blank=True)
-    max_simultaneous = models.IntegerField(default=5)
-    cpu = models.IntegerField(default=5)
-    memory = models.CharField(default="30G", max_length=100)
-    hdd = models.CharField(default="80G", max_length=100)
+    max_simultaneous = models.IntegerField(default=MAX_CONTAINER_PER_USER)
+    cpu = models.IntegerField(default=MAX_CPU_PER_USER)
+    memory = models.CharField(default=MAX_RAM_PER_USER, max_length=100)
+    hdd = models.CharField(default=MAX_STORAGE_PER_USER, max_length=100)
 
     history = HistoricalRecords()
 

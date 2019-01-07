@@ -12,25 +12,43 @@ from apprest.serializers.quota import CalipsoUserQuotaSerializer
 from apprest.services.image import CalipsoAvailableImagesServices
 
 
-class GetUsedQuotaFromUser(ListAPIView):
+class GetUsedQuotaFromUser(APIView):
+    """
+    get:
+    Return the used quota for given user
+    """
     authentication_classes = (SessionAuthentication, BasicAuthentication)
     permission_classes = (IsAuthenticated,)
-    serializer_class = CalipsoUserQuotaSerializer
 
     pagination_class = None
 
-    def get_queryset(self):
+    def get(self, *args, **kwargs):
         service = CalipsoAvailableImagesServices()
-
         username = self.kwargs.get('username')
         if username == self.request.user.username:
-            return service.get_sum_containers_quota(username=username)
+            quota = service.get_sum_containers_quota(username=username)
+            serializer_class = CalipsoUserQuotaSerializer(quota)
+            return Response(serializer_class.data)
         else:
             raise PermissionDenied
 
 class GetInfoImage(APIView):
-    # authentication_classes = (SessionAuthentication, BasicAuthentication)
-    # permission_classes = (IsAuthenticated,)
+    """
+    get:
+    Return the given image
+
+    post:
+    Add a new image instance
+
+    put:
+    Modify an existing image instance
+
+    delete:
+    Delete the given image
+    """
+
+    authentication_classes = (SessionAuthentication, BasicAuthentication)
+    permission_classes = (IsAuthenticated,)
     serializer_class = CalipsoImageSerializer
 
     pagination_class = None
@@ -67,6 +85,12 @@ class GetInfoImage(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 class GetAllImages(APIView):
+    """
+       get:
+       Return all images
+    """
+    authentication_classes = (SessionAuthentication, BasicAuthentication)
+    permission_classes = (IsAuthenticated,)
 
     def get(self, *args, **kwargs):
         service = CalipsoAvailableImagesServices()
