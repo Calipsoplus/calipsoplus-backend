@@ -29,8 +29,8 @@ class GetUsedQuotaFromUser(ListAPIView):
             raise PermissionDenied
 
 class GetInfoImage(APIView):
-    # authentication_classes = (SessionAuthentication, BasicAuthentication)
-    # permission_classes = (IsAuthenticated,)
+    authentication_classes = (SessionAuthentication, BasicAuthentication)
+    permission_classes = (IsAuthenticated,)
     serializer_class = CalipsoImageSerializer
 
     pagination_class = None
@@ -67,6 +67,8 @@ class GetInfoImage(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 class GetAllImages(APIView):
+    authentication_classes = (SessionAuthentication, BasicAuthentication)
+    permission_classes = (IsAuthenticated,)
 
     def get(self, *args, **kwargs):
         service = CalipsoAvailableImagesServices()
