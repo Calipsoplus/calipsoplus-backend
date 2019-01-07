@@ -12,7 +12,7 @@ The user will need to install Python 3+, python-pip and python-virtualenv. Some 
 mkdir calipsoplus & cd calipsoplus
 mkdir logs
 virtualenv ~/.virtualenvs/calipsoenv/bin/activate
-git clone git@git.cells.es:mis/calipsoplus-backend.git -b develop backend
+git clone https://github.com/Calipsoplus/calipsoplus-backend.git -b develop backend
 env/bin/pip install -r calipsoplus/requirements.txt
 ```
 
@@ -70,7 +70,7 @@ env/bin/python backend/manage.py migrate --settings=calipsoplus.settings_[local|
 Once the environment and the database are configured...
 
 ```bash
-./manage.py runserver 127.0.0.1:8000 settings=calipsoplus.settings_local
+python manage.py runserver 127.0.0.1:8000 --settings=calipsoplus.settings_local
 ```
 
 The service should be available at [http://127.0.0.1:8000](http://127.0.0.1:8000)
