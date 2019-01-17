@@ -4,21 +4,21 @@ The aim of this project is to provide a backend RESTful service for  CalipsoPlus
 
 ### Contents
 
-*  [Architecture](#Architecture)
-    *  [Additional components](#Additional-components)
-        *  [Guacamole](#Guacamole)
-        *  [Umbrella](#Umbrella)
-    *  [Versions and major dependencies](#Versions-and-major-dependencies)
-*  [Requirements](#Requirements)
-*  [Build & Development](#Build-&-Development)
-    *  [Database configuration](#Database-configuration)
-    *  [Migrate](#Migrate)
-    *  [Run](#Run)
-*  [Testing](#Testing)
-*  [Deploy](#Deploy)
-    *  [Configure uswgi](#Configure-uswgi)
-    *  [Restart the service](#Restart-the-service)
-*  [API](#API)
+*  [Architecture](#architecture)
+    *  [Additional components](#additional-components)
+        *  [Guacamole](#guacamole)
+        *  [Umbrella](#umbrella)
+    *  [Versions and major dependencies](#versions-and-major-dependencies)
+*  [Requirements](#requirements)
+*  [Build & Development](#build-&-development)
+    *  [Database configuration](#database-configuration)
+    *  [Migrate](#migrate)
+    *  [Run](#run)
+*  [Testing](#testing)
+*  [Deploy](#deploy)
+    *  [Configure uswgi](#configure-uswgi)
+    *  [Restart the service](#restart-the-service)
+*  [API](#api)
 
 ## Architecture
 
@@ -167,4 +167,4 @@ sudo service apache2 restart
 
 ## API
 
-(TODO: Link to external file? -> [API.md](API.md)) 
+(TODO: Link to external file? -> [API.md](API.md))
