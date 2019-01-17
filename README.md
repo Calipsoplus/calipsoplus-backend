@@ -1,10 +1,13 @@
 # CalipsoPlus Backend
 
-The aim of this project is to provide a backend RESTful service for CELLS' CalipsoPlus project.
+The aim of this project is to provide a backend RESTful service for  CalipsoPlus JRA2 Demonstrator project.
 
 ### Contents
 
 *  [Architecture](#Architecture)
+    *  [Additional components](#Additional-components)
+        *  [Guacamole](#Guacamole)
+        *  [Umbrella](#Umbrella)
     *  [Versions and major dependencies](#Versions-and-major-dependencies)
 *  [Requirements](#Requirements)
 *  [Build & Development](#Build-&-Development)
@@ -15,6 +18,7 @@ The aim of this project is to provide a backend RESTful service for CELLS' Calip
 *  [Deploy](#Deploy)
     *  [Configure uswgi](#Configure-uswgi)
     *  [Restart the service](#Restart-the-service)
+*  [API](#API)
 
 ## Architecture
 
@@ -22,7 +26,15 @@ This backend is built using the [Django](https://www.djangoproject.com/) and [Dj
 
 Additionally, this application is configured to use a MySQL database (versions 5.6 and higher are supported). Other database backends are also supported by the Django framework (PostgreSQL, Oracle, SQLite), but require changes in the settings of the application. Check the relevant [Django documentation](https://docs.djangoproject.com/en/2.0/intro/tutorial02/#database-setup) for further details.
 
-(TODO: Guacamole, Docker, Umbrella/Shibboleth)
+### Additional components
+#### Guacamole
+To connect with the resources (Docker containers, virtual machines...) requisitioned by the application users, this application interfaces with an [Apache Guacamole](https://guacamole.apache.org/) service, which provides VNC or RDP connections through HTTP.
+
+#### Umbrella
+
+In addition to local authentication schemes implemented in each facility, this application is also designed to provide access via the [Umbrella](https://umbrellaid.org/) federated authentication service.
+
+(TODO: Shibboleth)
 
 ### Versions and major dependencies
 
@@ -39,10 +51,6 @@ For a minimal deployment of the backend segment of this application, the followi
 *  A server running the Shibboleth identity provider (required to support the Umbrella federated authentication system).
 *  A server running Guacamole (TODO: depending on usage, may share the application server? To check)
 *  A server to use as host to the docker containers the users may requisition.
-
-## API
-
-(TODO: Link to external file?)
 
 ## Build & Development
 
@@ -155,3 +163,8 @@ ln -s ../apps-available/calipsoplus-backend.conf XX-calipsoplus-backend.conf
 ```bash
 sudo service apache2 restart
 ```
+
+
+## API
+
+(TODO: Link to external file? -> [API.md](API.md)) 
