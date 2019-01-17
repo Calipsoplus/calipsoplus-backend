@@ -2,23 +2,7 @@
 
 The aim of this project is to provide a backend RESTful service for  CalipsoPlus JRA2 Demonstrator project.
 
-### Contents
-
-*  [Architecture](#Architecture)
-    *  [Additional components](#Additional-components)
-        *  [Guacamole](#Guacamole)
-        *  [Umbrella](#Umbrella)
-    *  [Versions and major dependencies](#Versions-and-major-dependencies)
-*  [Requirements](#Requirements)
-*  [Build & Development](#Build-&-Development)
-    *  [Database configuration](#Database-configuration)
-    *  [Migrate](#Migrate)
-    *  [Run](#Run)
-*  [Testing](#Testing)
-*  [Deploy](#Deploy)
-    *  [Configure uswgi](#Configure-uswgi)
-    *  [Restart the service](#Restart-the-service)
-*  [API](#API)
+[[_TOC_]]
 
 ## Architecture
 
