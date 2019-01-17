@@ -1,40 +1,42 @@
 # CalipsoPlus Backend
 
-The aim of this project is to provide a backend RESTful service for  CalipsoPlus JRA2 Demonstrator project.
+The aim of this project is to provide a backend RESTful service for the CalipsoPlus JRA2 Demonstrator project.
 
 ### Contents
 
 *  [Architecture](#architecture)
-    *  [Additional components](#additional-components)
-        *  [Guacamole](#guacamole)
-        *  [Umbrella](#umbrella)
-    *  [Versions and major dependencies](#versions-and-major-dependencies)
+    -  [Additional components](#additional-components)
+        +  [Guacamole](#guacamole)
+        +  [Umbrella](#umbrella)
+    -  [Versions and major dependencies](#versions-and-major-dependencies)
 *  [Requirements](#requirements)
 *  [Build & Development](#build-&-development)
-    *  [Database configuration](#database-configuration)
-    *  [Migrate](#migrate)
-    *  [Run](#run)
+    -  [Database configuration](#database-configuration)
+    -  [Migrate](#migrate)
+    -  [Run](#run)
 *  [Testing](#testing)
 *  [Deploy](#deploy)
-    *  [Configure uswgi](#configure-uswgi)
-    *  [Restart the service](#restart-the-service)
+    -  [Configure uswgi](#configure-uswgi)
+    -  [Restart the service](#restart-the-service)
 *  [API](#api)
-
+---
 ## Architecture
 
 This backend is built using the [Django](https://www.djangoproject.com/) and [Django REST](https://www.django-rest-framework.org/) frameworks, running over Python 3.6 (Python 3.7 and higher should also be supported). You can refer to the documentation of the respective frameworks for more information.
 
 Additionally, this application is configured to use a MySQL database (versions 5.6 and higher are supported). Other database backends are also supported by the Django framework (PostgreSQL, Oracle, SQLite), but require changes in the settings of the application. Check the relevant [Django documentation](https://docs.djangoproject.com/en/2.0/intro/tutorial02/#database-setup) for further details.
 
-### Additional components
+### External components
 #### Guacamole
 To connect with the resources (Docker containers, virtual machines...) requisitioned by the application users, this application interfaces with an [Apache Guacamole](https://guacamole.apache.org/) service, which provides VNC or RDP connections through HTTP.
+
+#### Local authentication provider
+This application is designed to interface via a REST API with an existing authentication service of the facility. Check further details in the [Configuration section](#configuration) of this document.
 
 #### Umbrella
 
 In addition to local authentication schemes implemented in each facility, this application is also designed to provide access via the [Umbrella](https://umbrellaid.org/) federated authentication service.
-
-(TODO: Shibboleth)
+(TODO: Reference to documentation and Shibboleth)
 
 ### Versions and major dependencies
 
@@ -68,7 +70,7 @@ env/bin/pip install -r calipsoplus/requirements.txt
 
 ### Database configuration
 
-By default, the application settings are configured to use MySQL database server, and we need a new schema to manage app's data, with the necessary user and host credentials to manage it. This document will follow default configuration settings.
+By default, the application settings are configured to use a MySQL database server, and we need a new schema to manage app's data, with the necessary user and host credentials to manage it. This document will follow default configuration settings.
 
 ```sql
 CREATE DATABASE `calipsoplus`;
@@ -163,6 +165,9 @@ ln -s ../apps-available/calipsoplus-backend.conf XX-calipsoplus-backend.conf
 ```bash
 sudo service apache2 restart
 ```
+
+### External components
+(TODO: Guacamole and shibboleth)
 
 
 ## API
