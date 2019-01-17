@@ -13,14 +13,18 @@ The aim of this project is to provide a backend RESTful service for the CalipsoP
 *  [Requirements](#requirements)
 *  [Build & Development](#build-&-development)
     -  [Database configuration](#database-configuration)
-    -  [Migrate](#migrate)
+    -  [Migrations](#migrations)
+    -  [External component configuration](#external-component-configuration)
+        +  [Local authentication](#local-authentication)
+        +  [Umbrella authentication](#umbrella-authentication)
+        +  [Dynamic data retrieval](#dynamic-data-retrieval)
+        +  [Guacamole endpoints](#guacamole-endpoints)
     -  [Run](#run)
 *  [Testing](#testing)
 *  [Deploy](#deploy)
     -  [Configure uswgi](#configure-uswgi)
     -  [Configure Apache](#configure-apache)
     -  [Restart the service](#restart-the-service)
-*  [API](#api)
 ---
 ## Architecture
 
@@ -29,15 +33,20 @@ This backend is built using the [Django](https://www.djangoproject.com/) and [Dj
 Additionally, this application is configured to use a MySQL database (versions 5.6 and higher are supported). Other database backends are also supported by the Django framework (PostgreSQL, Oracle, SQLite), but require changes in the settings of the application. Check the relevant [Django documentation](https://docs.djangoproject.com/en/2.0/intro/tutorial02/#database-setup) for further details.
 
 ### External components
+There are several services with which this backend may interact that are not part of this repository.
+
 #### Guacamole
-To connect with the resources (Docker containers, virtual machines...) requisitioned by the application users, this application interfaces with an [Apache Guacamole](https://guacamole.apache.org/) service, which provides VNC or RDP connections through HTTP.
+To connect with the resources (Docker containers, virtual machines...) requisitioned by the application users, this application interfaces with an [Apache Guacamole](https://guacamole.apache.org/) service, which provides VNC or RDP connections through HTTP. Check the relevant [Guacamole endpoints](#guacamole-endpoints) for details on how to set up the connection with the Guacamole service.
+
+#### Local data provider
+This application can be configured to retrieve information about the experiments performed in the facility dynamically via a REST API interface from a provider (eg.: a Web User Office application). Check further details in the [Dynamic data retrieval](#dynamic-data-retrieval) section of this document. The interface the provider must implement is documented in the [API.md](API.md) file of this repository.
 
 #### Local authentication provider
-This application is designed to interface via a REST API with an existing authentication service of the facility. Check further details in the [Configuration section](#configuration) of this document.
+This application is designed to interface via a REST API with an existing authentication service of the facility. Check further details in the [Local authentication](#local-authentication) of this document. As before, the interface the provider must implement is documented in the [API.md](API.md) file of this repository.
 
 #### Umbrella
 
-In addition to local authentication schemes implemented in each facility, this application is also designed to provide access via the [Umbrella](https://umbrellaid.org/) federated authentication service.
+In addition to local authentication schemes implemented in each facility, this application is also designed to provide access via the [Umbrella](https://umbrellaid.org/) federated authentication service. The relevant application settings to enable Umbrella support are detailed in the [Umbrella authentication](#umbrella-authentication) section of this document.
 (TODO: Reference to documentation and Shibboleth)
 
 ### Versions and major dependencies
@@ -114,10 +123,23 @@ chmod 555 default.cnf
 chmod 555 guacamole.cnf
 ```
 
-### Migrate
+### Migrations
+The following command will apply the required migrations to create/update the database schema to the latest version:
 ```
 env/bin/python backend/manage.py migrate --settings=calipsoplus.settings_[local|test|demo|prod]
 ```
+
+### External component configuration
+The following sections detail the settings to be modified in order to properly configure connections to the external components detailed in the [Architecture](#external-components) section.
+
+#### Local authentication
+(TODO)
+#### Umbrella authentication
+(TODO)
+#### Dynamic data retrieval
+(TODO)
+#### Guacamole endpoints
+(TODO)
 
 ### Run
 
@@ -169,8 +191,3 @@ sudo service apache2 restart
 ```
 
 (TODO: Guacamole and shibboleth)
-
-
-## API
-
-(TODO: Link to external file? -> [API.md](API.md))
