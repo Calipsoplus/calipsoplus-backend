@@ -2,6 +2,48 @@
 
 The aim of this project is to provide a backend RESTful service for CELLS' CalipsoPlus project.
 
+### Contents
+
+*  [Architecture](#Architecture)
+    *  [Versions and major dependencies](#Versions-and-major-dependencies)
+*  [Requirements](#Requirements)
+*  [Build & Development](#Build-&-Development)
+    *  [Database configuration](#Database-configuration)
+    *  [Migrate](#Migrate)
+    *  [Run](#Run)
+*  [Testing](#Testing)
+*  [Deploy](#Deploy)
+    *  [Configure uswgi](#Configure-uswgi)
+    *  [Restart the service](#Restart-the-service)
+
+## Architecture
+
+This backend is built using the [Django](https://www.djangoproject.com/) and [Django REST](https://www.django-rest-framework.org/) frameworks, running over Python 3.6 (Python 3.7 and higher should also be supported). You can refer to the documentation of the respective frameworks for more information.
+
+Additionally, this application is configured to use a MySQL database (versions 5.6 and higher are supported). Other database backends are also supported by the Django framework (PostgreSQL, Oracle, SQLite), but require changes in the settings of the application. Check the relevant [Django documentation](https://docs.djangoproject.com/en/2.0/intro/tutorial02/#database-setup) for further details.
+
+(TODO: Guacamole, Docker, Umbrella/Shibboleth)
+
+### Versions and major dependencies
+
+(TODO: do it or skip it? They can check the requirements.txt, maybe link to it? -> [requirements.txt](requirements.txt))
+
+## Requirements
+
+(TODO: detail specs, maybe use a table?)
+
+For a minimal deployment of the backend segment of this application, the following resources are required:
+
+*  An application server to host the Django backend (may also host the frontend application).
+*  A database server.
+*  A server running the Shibboleth identity provider (required to support the Umbrella federated authentication system).
+*  A server running Guacamole (TODO: depending on usage, may share the application server? To check)
+*  A server to use as host to the docker containers the users may requisition.
+
+## API
+
+(TODO: Link to external file?)
+
 ## Build & Development
 
 The project has been developed in Python using Django Framework and the source code can be found in [CELLS' Git repository](https://git.cells.es/mis/calipsoplus-backend).
