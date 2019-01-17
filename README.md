@@ -5,8 +5,9 @@ The aim of this project is to provide a backend RESTful service for the CalipsoP
 ### Contents
 
 *  [Architecture](#architecture)
-    -  [Additional components](#additional-components)
+    -  [External components](#external-components)
         +  [Guacamole](#guacamole)
+        +  [Local authentication provider](#local-authentication-provider)
         +  [Umbrella](#umbrella)
     -  [Versions and major dependencies](#versions-and-major-dependencies)
 *  [Requirements](#requirements)
@@ -17,6 +18,7 @@ The aim of this project is to provide a backend RESTful service for the CalipsoP
 *  [Testing](#testing)
 *  [Deploy](#deploy)
     -  [Configure uswgi](#configure-uswgi)
+    -  [Configure Apache](#configure-apache)
     -  [Restart the service](#restart-the-service)
 *  [API](#api)
 ---
@@ -166,7 +168,6 @@ ln -s ../apps-available/calipsoplus-backend.conf XX-calipsoplus-backend.conf
 sudo service apache2 restart
 ```
 
-### External components
 (TODO: Guacamole and shibboleth)
 
 
