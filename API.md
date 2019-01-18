@@ -1,6 +1,6 @@
 # REST API interfaces
 
-This backend uses a REST interface to communicate with several external services as explained in the [README.md](README.md) file. Currently, this API is used for two services:
+This backend uses a REST interface to communicate with several external services as explained in the [README.md](README.md) file. Currently, this interface is used for two services:
 
 *  Local authentication provider (used both for local authentication, if enabled, and Umbrella hash validation)
 *  Local data provider (in case dynamic experiment data retrieval is enabled)
@@ -17,10 +17,10 @@ To support authentication of users against a local database, a login endpoint ca
 #### Responses
 
 *  **HTTP 200 OK**: The username/password combination exists, the authentication has succeeded.
-*  **HTTP 401 Unauthorized**: The username/password does not exist, the authentication has not succeeded.
+*  **HTTP 401 Unauthorized**: The username/password combination does not exist, the authentication has not succeeded.
 *  **HTTP 400 Bad Request**: Missing arguments or an error has occurred during processing.
 
-### Authorization to use privileged resources
+### Authorization to use privileged resources (POST)
 (TODO: is staff)
 
 ### Umbrella hash validation (POST)
