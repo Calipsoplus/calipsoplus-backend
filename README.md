@@ -5,26 +5,25 @@ The aim of this project is to provide a backend RESTful service for the CalipsoP
 ### Contents
 
 *  [Architecture](#architecture)
-    -  [External components](#external-components)
-        +  [Guacamole](#guacamole)
-        +  [Local authentication provider](#local-authentication-provider)
-        +  [Umbrella](#umbrella)
-    -  [Versions and major dependencies](#versions-and-major-dependencies)
+    *  [External components](#external-components)
+        *  [Guacamole](#guacamole)
+        *  [Local authentication provider](#local-authentication-provider)
+        *  [Umbrella](#umbrella)
+    *  [Versions and major dependencies](#versions-and-major-dependencies)
 *  [Requirements](#requirements)
 *  [Build & Development](#build-&-development)
-    -  [Database configuration](#database-configuration)
-    -  [Migrations](#migrations)
-    -  [External component configuration](#external-component-configuration)
-        +  [Local authentication](#local-authentication)
-        +  [Umbrella authentication](#umbrella-authentication)
-        +  [Dynamic data retrieval](#dynamic-data-retrieval)
-        +  [Guacamole endpoints](#guacamole-endpoints)
-    -  [Run](#run)
+    *  [Database configuration](#database-configuration)
+    *  [Migrations](#migrations)
+    *  [External component configuration](#external-component-configuration)
+        *  [Local authentication](#local-authentication)
+        *  [Umbrella authentication](#umbrella-authentication)
+        *  [Dynamic data retrieval](#dynamic-data-retrieval)
+    *  [Run](#run)
 *  [Testing](#testing)
 *  [Deploy](#deploy)
-    -  [Configure uswgi](#configure-uswgi)
-    -  [Configure Apache](#configure-apache)
-    -  [Restart the service](#restart-the-service)
+    *  [Configure uswgi](#configure-uswgi)
+    *  [Configure Apache](#configure-apache)
+    *  [Restart the service](#restart-the-service)
 ---
 ## Architecture
 
@@ -36,7 +35,9 @@ Additionally, this application is configured to use a MySQL database (versions 5
 There are several services with which this backend may interact that are not part of this repository.
 
 #### Guacamole
-To connect with the resources (Docker containers, virtual machines...) requisitioned by the application users, this application interfaces with an [Apache Guacamole](https://guacamole.apache.org/) service, which provides VNC or RDP connections through HTTP. Check the relevant [Guacamole endpoints](#guacamole-endpoints) for details on how to set up the connection with the Guacamole service.
+To connect with the resources (Docker containers, virtual machines...) requisitioned by the application users, this application interfaces with an [Apache Guacamole](https://guacamole.apache.org/) service, which provides VNC or RDP connections through HTTP. 
+
+The only settings required in the backend segment is the connection to the database of your Guacamole instance, which will be used to keep track of the active resources and their access credentials (check the [Database configuration](#database-configuration) section).
 
 #### Local data provider
 This application can be configured to retrieve information about the experiments performed in the facility dynamically via a REST API interface from a provider (eg.: a Web User Office application). Check further details in the [Dynamic data retrieval](#dynamic-data-retrieval) section of this document. The interface the provider must implement is documented in the [API.md](API.md) file of this repository.
@@ -48,10 +49,6 @@ This application is designed to interface via a REST API with an existing authen
 
 In addition to local authentication schemes implemented in each facility, this application is also designed to provide access via the [Umbrella](https://umbrellaid.org/) federated authentication service. The relevant application settings to enable Umbrella support are detailed in the [Umbrella authentication](#umbrella-authentication) section of this document.
 (TODO: Reference to documentation and Shibboleth)
-
-### Versions and major dependencies
-
-(TODO: do it or skip it? They can check the requirements.txt, maybe link to it? -> [requirements.txt](requirements.txt))
 
 ## Requirements
 
@@ -95,7 +92,7 @@ vi guacamole.cnf #guacamole db
 vi default.cnf #calipso db
 ```
 
-Add the following content to the **default.cnf** file
+Add the following content to the **default.cnf** file to configure the connection to the application database
 ```bash
 [client]
 database = calipsoplus
@@ -105,7 +102,7 @@ user = *****
 password = *****
 default-character-set = utf8
 ```
-Add the following content to the **guacamole.cnf** file
+Add the following content to the **guacamole.cnf** file to configure the connection to the Apache Guacamole database
 ```bash
 [client]
 database = guacamoledb
@@ -130,16 +127,22 @@ env/bin/python backend/manage.py migrate --settings=calipsoplus.settings_[local|
 ```
 
 ### External component configuration
-The following sections detail the settings to be modified in order to properly configure connections to the external components detailed in the [Architecture](#external-components) section.
+This section details the settings that need to be modified in order to properly configure connections to the external components described in the [Architecture](#external-components) section.
 
 #### Local authentication
-(TODO)
+In the **calipsoplus/settings_calypso.py** file, you can set whether local authentication is allowed or not. Set the "ALLOW_LOCAL_AUTHENTICATION" setting to 1 to enable this feature.
+
+The next step to take to configure local authentication is to define the login endpoint. In the **calipsoplus/settings_[local|test|demo|prod].py** file (choose the one you will use according to your environment), find the "BACKEND_UO_LOGIN" setting and replace the URL with the endpoint of your provider. This endpoint must implement the expected REST API as described in the [API.md](API.md) file.
+
+(TODO: HTTP AUTH and service login)
 #### Umbrella authentication
-(TODO)
+In order to enable support for the Umbrella federated authentication service, set the relevant endpoints of your Shibboleth identity provider in the **calipsoplus/settings_[local|test|demo|prod].py** file (choose the one you will use according to your environment). Two endpoints need to be set: "UMBRELLA_LOGIN" and "UMBRELLA_LOGOUT".
+
+Additionally, an endpoint must be set for a REST service that will authenticate the Umbrella hash against your user records, "BACKEND_UO_HASH". This endpoint must implement the expected REST API as described in the [API.md](API.md) file.
 #### Dynamic data retrieval
-(TODO)
-#### Guacamole endpoints
-(TODO)
+This application can be set to dynamically retrieve data of the experiments performed in the site from a REST service. To enable this feature, go to **calipsoplus/settings_calypso.py** and set the "DYNAMIC_EXPERIMENTS_DATA_RETRIEVAL" setting to one.
+
+The endpoint used to retrieve the experiment data is defined in the **calipsoplus/settings_[local|test|demo|prod].py** file (choose the one you will use according to your environment) as the "DYNAMIC_EXPERIMENTS_DATA_RETRIEVAL_ENDPOINT" setting. This endpoint must implement the expected REST API as described in the [API.md](API.md) file.
 
 ### Run
 
@@ -189,5 +192,3 @@ ln -s ../apps-available/calipsoplus-backend.conf XX-calipsoplus-backend.conf
 ```bash
 sudo service apache2 restart
 ```
-
-(TODO: Guacamole and shibboleth)
