@@ -9,7 +9,6 @@ The aim of this project is to provide a backend RESTful service for the CalipsoP
         *  [Guacamole](#guacamole)
         *  [Local authentication provider](#local-authentication-provider)
         *  [Umbrella](#umbrella)
-    *  [Versions and major dependencies](#versions-and-major-dependencies)
 *  [Requirements](#requirements)
 *  [Build & Development](#build-&-development)
     *  [Database configuration](#database-configuration)
