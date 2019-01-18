@@ -1,6 +1,6 @@
 # CalipsoPlus Backend
 
-The aim of this project is to provide a backend RESTful service for the CalipsoPlus JRA2 Demonstrator project.
+The aim of this project is to provide a backend RESTful service for the CalipsoPlus JRA2 Demonstrator application.
 
 ### Contents
 
