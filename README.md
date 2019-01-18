@@ -186,6 +186,33 @@ First of all, review the calipsoplus-backend.ini file to be sure every property 
 
 After that, we need to edit the configuration file with correct environment configuration in terms of project location, Django's environment settings and database configuration.
 
+An example of a **calipsoPlus.ini** configuration file would be as follows:
+```
+[uwsgi]
+socket = 127.0.0.1:{PORT}
+master=True
+chdir={CALIPSO_BACKEND_FOLDER}
+module=calipsoplus.wsgi:application
+home={VIRTUAL_ENV_FOLDER}
+logger = file:{CALIPSO_UWSGI_LOG_LOCATION}
+pidfile = {CALIPSO_UWSGI_PID_FILE}
+stats = /tmp/calipsoplus-stats
+touch-reload = {RELOAD_FILE}
+env = DJANGO_SETTINGS_MODULE={ENVIRONMENT_SETTINGS_FILE}
+processes = 4
+threads = 2
+```
+Replace the placeholders with the following:
+*  **PORT**: Port to which UWSGI will map the application (you can proxy this later with an Apache frontend)
+*  **CALIPSO_BACKEND_FOLDER**: Folder which contains the **manage.py** file of the backend.
+*  **VIRTUAL_ENV_FOLDER**: Location of the Python virtual environment used for the application.
+*  **CALIPSO_UWSGI_LOG_LOCATION**: Location where you want to save the UWSGI request logs.
+*  **CALIPSO_UWSGI_PID_FILE**: Location where the application PID file will be saved (this is usually UWSGI_DIR/config/pid/calipsoplus.pid).
+*  **RELOAD_FILE**: A file UWSGI watches for changes to trigger a hot reload of the application (usually we use the README of the application).
+*  **ENVIRONMENT_SETTINGS_FILE**: The settings file used for this deployment, one of **settings_[test|demo|prod]** (depending on which environment you are deploying).
+
+This file should be stored in the apps_available folder inside UWSGI_DIR/config, and sym-linked to the apps_enabled folder.
+
 ### Configure Apache
 
 Go to Apache's directory which contains the apps-available and apps-enabled directories. We will name it APACHE_DIR.
