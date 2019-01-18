@@ -17,6 +17,9 @@ The aim of this project is to provide a backend RESTful service for the CalipsoP
         *  [Local authentication](#local-authentication)
         *  [Umbrella authentication](#umbrella-authentication)
         *  [Dynamic data retrieval](#dynamic-data-retrieval)
+    *  [Other relevant application settings](#other-relevant-application-settings)
+        *  [Configure resource quotas per user](#configure-resource-quotas-per-user)
+        *  [Set the storage root path](#set-the-storage-root-path)
     *  [Run](#run)
 *  [Testing](#testing)
 *  [Deploy](#deploy)
@@ -131,17 +134,25 @@ This section details the settings that need to be modified in order to properly 
 #### Local authentication
 In the **calipsoplus/settings_calypso.py** file, you can set whether local authentication is allowed or not. Set the "ALLOW_LOCAL_AUTHENTICATION" setting to 1 to enable this feature.
 
-The next step to take to configure local authentication is to define the login endpoint. In the **calipsoplus/settings_[local|test|demo|prod].py** file (choose the one you will use according to your environment), find the "BACKEND_UO_LOGIN" setting and replace the URL with the endpoint of your provider. This endpoint must implement the expected REST API as described in the [API.md](API.md) file.
+The next step to take to configure local authentication is to define the login endpoint. In the **calipsoplus/settings_[local|test|demo|prod].py** file, find the "BACKEND_UO_LOGIN" setting and replace the URL with the endpoint of your provider. This endpoint must implement the expected REST API as described in the [API.md](API.md) file.
 
 (TODO: HTTP AUTH and service login)
 #### Umbrella authentication
-In order to enable support for the Umbrella federated authentication service, set the relevant endpoints of your Shibboleth identity provider in the **calipsoplus/settings_[local|test|demo|prod].py** file (choose the one you will use according to your environment). Two endpoints need to be set: "UMBRELLA_LOGIN" and "UMBRELLA_LOGOUT".
+In order to enable support for the Umbrella federated authentication service, set the relevant endpoints of your Shibboleth identity provider in the **calipsoplus/settings_[local|test|demo|prod].py** file. Two endpoints need to be set: "UMBRELLA_LOGIN" and "UMBRELLA_LOGOUT".
 
 Additionally, an endpoint must be set for a REST service that will authenticate the Umbrella hash against your user records, "BACKEND_UO_HASH". This endpoint must implement the expected REST API as described in the [API.md](API.md) file.
+
 #### Dynamic data retrieval
 This application can be set to dynamically retrieve data of the experiments performed in the site from a REST service. To enable this feature, go to **calipsoplus/settings_calypso.py** and set the "DYNAMIC_EXPERIMENTS_DATA_RETRIEVAL" setting to one.
 
-The endpoint used to retrieve the experiment data is defined in the **calipsoplus/settings_[local|test|demo|prod].py** file (choose the one you will use according to your environment) as the "DYNAMIC_EXPERIMENTS_DATA_RETRIEVAL_ENDPOINT" setting. This endpoint must implement the expected REST API as described in the [API.md](API.md) file.
+The endpoint used to retrieve the experiment data is defined in the **calipsoplus/settings_[local|test|demo|prod].py** file as the "DYNAMIC_EXPERIMENTS_DATA_RETRIEVAL_ENDPOINT" setting. This endpoint must implement the expected REST API as described in the [API.md](API.md) file.
+
+### Other relevant application settings
+#### Configure resource quotas per user
+To configure the resource quotas to which users are limited, modify the relevant settings in the **calipsoplus/settings_calipso.py** file. Currently, you can set the maximum number of containers, and total RAM, CPU, and Storage a user is allowed to requisition.
+
+#### Set the storage root path
+Paths to the datasets of an experiment are built dynamically, but the root path to the storage mounting needs to be defined in the **calipsoplus/settings_calipso.py** file. Use "EXPERIMENTS_DATASETS_ROOT" for datasets that will be mounted in "read-only" mode, and "EXPERIMENTS_OUTPUT" for the results of operations performed in the requisitioned resource.
 
 ### Run
 
