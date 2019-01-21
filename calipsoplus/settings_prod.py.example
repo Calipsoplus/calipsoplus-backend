@@ -4,14 +4,14 @@ DEBUG = False
 CORS_ORIGIN_ALLOW_ALL = False
 
 # Whitelist your deployment server
-ALLOWED_HOSTS = ['calipsotest.cells.es']
-CORS_ORIGIN_WHITELIST = ['calipsotest.cells.es', ]
+ALLOWED_HOSTS = ['calipsobackend.domain.tld']
+CORS_ORIGIN_WHITELIST = ['calipsobackend.domain.tld']
 
 DJANGO_ENV = 'PROD'
 
 # Docker daemon location, replace this with your own server
-DOCKER_URL_DAEMON = "tcp://calipsotest.cells.es:2375"
-REMOTE_MACHINE_IP = "calipsotest.cells.es"
+DOCKER_URL_DAEMON = "tcp://dockerhost.domain.tld:port"
+REMOTE_MACHINE_IP = "dockerhost.domain.tld"
 
 # Logs
 LOGGING['loggers']['django']['handlers'] = ['file']

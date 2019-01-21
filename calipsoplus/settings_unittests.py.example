@@ -1,8 +1,8 @@
 from calipsoplus.settings import *
 
 # Whitelist your deployment server
-ALLOWED_HOSTS = ['192.168.33.11']
-CORS_ORIGIN_WHITELIST = ['192.168.33.11']
+ALLOWED_HOSTS = ['calipsobackend.domain.tld']
+CORS_ORIGIN_WHITELIST = ['calipsobackend.domain.tld']
 
 DJANGO_ENV = 'LOCAL'
 
