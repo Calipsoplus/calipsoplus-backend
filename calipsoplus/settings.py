@@ -16,11 +16,13 @@ logger = logging.getLogger(__name__)
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-# Quick-start development settings - unsuitable for production
+# Base settings. Do not use directly (import this file in your environment setting, eg: settings_local.py)
+# Make sure you check your production checkings
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '7@=x7lhgpx_1weud8l9!r2@av)p_y)x9vl2379em))l3gi=0&*'
+with open(os.path.join(BASE_DIR, '..', 'config', 'secrets', 'secret_key.cnf')) as f:
+    SECRET_KEY = f.read().strip()
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
