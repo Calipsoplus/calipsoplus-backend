@@ -102,7 +102,7 @@ vi guacamole.cnf #guacamole db
 ```
 
 Add the following content to the **default.cnf** file to configure the connection to the application database:
-```bash
+```ini
 [client]
 database = calipsoplus
 host = localhost
@@ -112,7 +112,7 @@ password = *****
 default-character-set = utf8
 ```
 Add the following content to the **guacamole.cnf** file to configure the connection to the Apache Guacamole database:
-```bash
+```ini
 [client]
 database = guacamoledb
 host = localhost
@@ -130,7 +130,7 @@ chmod 555 default.cnf guacamole.cnf
 
 ### Migrations
 Navigate to the backend folder. The following command will apply the required migrations to create/update the database schema to the latest version:
-```
+```bash
 python manage.py migrate --settings=calipsoplus.settings_[local|test|demo|prod]
 ```
 
@@ -192,7 +192,7 @@ Follow the same steps as in the **Build & Development** section except the **Run
 Go to uwsgi's directory which contains the apps-available and apps-enabled directories. We will name it UWSGI_DIR.
 
 Create a new .ini file, **calipsoPlus.ini** in the apps-available folder, an example of the configuration file would be as follows:
-```
+```ini
 [uwsgi]
 socket = 127.0.0.1:{PORT}
 master=True
