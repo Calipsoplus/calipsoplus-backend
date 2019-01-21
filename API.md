@@ -42,7 +42,7 @@ This endpoint **must** be implemented by a service that can check this hash agai
 If the dynamic retrieval of experimental data is enabled, the endpoint defined in the "DYNAMIC_EXPERIMENTS_DATA_RETRIEVAL_ENDPOINT" of the **calipsoplus/settings_[local|test|demo|prod].py** file will be queried on demand to load the experiment data associated with a given account. The output of this endpoint is expected to be paginated.
 
 #### Arguments
-*  **username**: String. Name of the account to retrieve experiments from (is provided as part of the URL path)
+*  **username**: String. Name of the account to retrieve experiments from (is provided as part of the URL path).
 *  **search**: String. Query argument (optional). String to be searched for in either experiment subject, body, beamline, or serial number.
 *  **ordering**: String. Query argument (optional). Field by which to order ('-' preceding the name indicates descending order). The supported fields are:
     *  **serial_number**
