@@ -12,6 +12,8 @@ The aim of this project is to provide a backend RESTful service for the CalipsoP
 *  [Requirements](#requirements)
 *  [Build & Development](#build-development)
     *  [Database configuration](#database-configuration)
+    *  [Environment configuration files](#environment-configuration-files)
+    *  [Secret key](#secret-key)
     *  [Migrations](#migrations)
     *  [External component configuration](#external-component-configuration)
         *  [Local authentication](#local-authentication)
@@ -128,8 +130,20 @@ Set **default.cnf** and **guacamole.cnf** files as read only
 chmod 555 default.cnf guacamole.cnf
 ```
 
+### Environment configuration files
+The base configuration settings for the application are specified in the **backend/calipsoplus/settings.py** file. You will want to override part or add to these settings depending on your environment (local development, unit testing, integration, production...), to that end we create environment setting files (eg.: settings_local.py) that will import the main settings file. You can find some example files in the **backend/calipsoplus** folder for reference use.
+
+To use a specific settings file, use the `--settings=calipsoplus.settings_[env]` argument when executing any `manage.py` command.
+
+Note that the .gitignore file of this project is set to ignore any environment setting files (any file matching **backend/calipsoplus/settings__*.py**), so they will not get committed to the repository.
+
+### Secret key
+Django uses a variable called "SECRET_KEY" as the basis for its encryption functionality (sessions, cryptographic signing...). This variable should be something long, unique and random. Check the relevant [Django documentation](https://docs.djangoproject.com/en/2.0/ref/settings/#std:setting-SECRET_KEY) for more details.
+
+The base settings of the application are already set up to read this value from a configuration file (in **config/secrets/secret_key.cnf**).
+
 ### Migrations
-Navigate to the backend folder. The following command will apply the required migrations to create/update the database schema to the latest version:
+Navigate to the **backend** folder. The following command will apply the required migrations to create/update the database schema to the latest version:
 ```bash
 python manage.py migrate --settings=calipsoplus.settings_[local|test|demo|prod]
 ```
@@ -220,7 +234,7 @@ Once you are sure the values are correct, sym-link it to the apps-enabled folder
 
 ### Configure Apache
 
-Go to Apache's directory which contains the apps-available and apps-enabled directories, we will name it APACHE_DIR. SOURCE_DIR is the folder containing the manage.py file.
+Go to Apache's directory which contains the **apps-available** and **apps-enabled** directories, we will name it APACHE_DIR. SOURCE_DIR is the folder containing the **manage.py** file.
 
 ```bash
 cd APACHE_DIR/apps-available
