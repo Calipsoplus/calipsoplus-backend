@@ -80,11 +80,13 @@ git clone git@git.cells.es:mis/calipsoplus-backend.git -b develop backend
 pip install -r backend/requirements.txt
 ```
 
+**N.B.:** Throughout the rest of this readme, we will assume the virtual environment is activated (you should see "(env)" in your shell of choice).
+
 ### Database configuration
 
 By default, the application settings are configured to use a MySQL database server, and we need a new schema to manage app's data, with the necessary user and host credentials to manage it. This document will follow default configuration settings.
 
-Create a new database for the application:
+Create a new database for the application (in mysql shell/IDE):
 
 ```sql
 CREATE DATABASE `calipsoplus`;
@@ -93,6 +95,7 @@ CREATE DATABASE `calipsoplus`;
 And the configuration files for the connections:
 
 ```bash
+# Assuming we are in the level holding the 'logs' and 'backend' folders...
 mkdir config && cd config
 mkdir database && cd database
 vi default.cnf #calipso db
@@ -127,9 +130,9 @@ chmod 555 default.cnf guacamole.cnf
 ```
 
 ### Migrations
-The following command will apply the required migrations to create/update the database schema to the latest version:
+Navigate to the backend folder. The following command will apply the required migrations to create/update the database schema to the latest version:
 ```
-python backend/manage.py migrate --settings=calipsoplus.settings_[local|test|demo|prod]
+python manage.py migrate --settings=calipsoplus.settings_[local|test|demo|prod]
 ```
 
 ### External component configuration
@@ -168,7 +171,7 @@ In order to requisition new docker containers, the application has to communicat
 Once the environment and the database are configured...
 
 ```bash
-./manage.py runserver 127.0.0.1:8000 settings=calipsoplus.settings_local
+python manage.py runserver 127.0.0.1:8000 settings=calipsoplus.settings_local
 ```
 
 The service should be available at [http://127.0.0.1:8000](http://127.0.0.1:8000)
@@ -178,9 +181,7 @@ The service should be available at [http://127.0.0.1:8000](http://127.0.0.1:8000
 The application has its own unit testing settings, which will create a mock database using SQLite and will store it in local memory. This way the testing is faster than using MySQL.
 
 ```bash
-cd calipsoplus
-source env/bin/activate
-./backend/manage.py test --settings=calipsoplus.settings_unittests
+python manage.py test --settings=calipsoplus.settings_unittests
 ```
 
 ## Deploy
