@@ -1,0 +1,40 @@
+from calipsoplus.settings import *
+
+DEBUG = False
+CORS_ORIGIN_ALLOW_ALL = False
+
+# Whitelist your deployment server
+ALLOWED_HOSTS = ['calipsotest.cells.es']
+CORS_ORIGIN_WHITELIST = ['calipsotest.cells.es', ]
+
+DJANGO_ENV = 'PROD'
+
+# Docker daemon location, replace this with your own server
+DOCKER_URL_DAEMON = "tcp://calipsotest.cells.es:2375"
+REMOTE_MACHINE_IP = "calipsotest.cells.es"
+
+# Logs
+LOGGING['loggers']['django']['handlers'] = ['file']
+LOGGING['loggers']['django_cron']['handlers'] = ['file']
+LOGGING['loggers']['apprest']['handlers'] = ['file']
+
+# Location of backend (eg.: https://calipsobackend.domain.tld)
+BACKEND_CALIPSO = 
+
+# Location of frontend (eg.: https://calipsofrontend.domain.tld))
+FRONTEND_CALIPSO = 
+
+# Umbrella logout endpoint (should point to a Shibboleth IDP and have a return argument to point to the frontend)
+UMBRELLA_LOGOUT = BACKEND_CALIPSO + "/Shibboleth.sso/Logout?return=" + FRONTEND_CALIPSO
+
+# Umbrella login endpoint
+UMBRELLA_LOGIN = BACKEND_CALIPSO + "/Shibboleth.sso/Login?target=" + BACKEND_CALIPSO + "/calipsoplus-services/umbrella/frontend/"
+
+# User Office backend API login (check API.md)
+BACKEND_UO_LOGIN =
+BACKEND_UO_HASH =
+
+# Endpoint to the information provider (ignore if Dynamic Data Retrieval is not enabled). Check API.md.
+# Example: "https://data.domain.tld/services/experiments/$USERNAME/" 
+# N.B.: $USERNAME is replaced by the application with the account name.
+DYNAMIC_EXPERIMENTS_DATA_RETRIEVAL_ENDPOINT = 
