@@ -234,7 +234,7 @@ cd ../apps-enabled
 ln -s ../apps-available/calipsoplus-backend.conf XX-calipsoplus-backend.conf
 ```
 
-Modify the file as needed to point to the locations of your project.
+Modify the file as needed to point to the locations and WSGI port of your project.
 
 ### Restart the service
 
