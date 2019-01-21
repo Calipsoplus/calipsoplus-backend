@@ -26,7 +26,6 @@ The aim of this project is to provide a backend RESTful service for the CalipsoP
 *  [Deploy](#deploy)
     *  [Configure uswgi](#configure-uswgi)
     *  [Configure Apache](#configure-apache)
-    *  [Restart the service](#restart-the-service)
 ---
 ## Architecture
 
@@ -192,11 +191,7 @@ Follow the same steps as in the **Build & Development** section except the **Run
 
 Go to uwsgi's directory which contains the apps-available and apps-enabled directories. We will name it UWSGI_DIR.
 
-First of all, review the calipsoplus-backend.ini file to be sure every property is set correctly.
-
-After that, we need to edit the configuration file with correct environment configuration in terms of project location, Django's environment settings and database configuration.
-
-An example of a **calipsoPlus.ini** configuration file would be as follows:
+Create a new .ini file, **calipsoPlus.ini** in the apps-available folder, an example of the configuration file would be as follows:
 ```
 [uwsgi]
 socket = 127.0.0.1:{PORT}
@@ -221,7 +216,7 @@ Replace the placeholders with the following:
 *  **RELOAD_FILE**: A file UWSGI watches for changes to trigger a hot reload of the application (usually we use the README of the application).
 *  **ENVIRONMENT_SETTINGS_FILE**: The settings file used for this deployment, one of **settings_[test|demo|prod]** (depending on which environment you are deploying).
 
-This file should be stored in the apps_available folder inside UWSGI_DIR/config, and sym-linked to the apps_enabled folder.
+Once you are sure the values are correct, sym-link it to the apps-enabled folder and restart the UWSGI service.
 
 ### Configure Apache
 
@@ -234,10 +229,8 @@ cd ../apps-enabled
 ln -s ../apps-available/calipsoplus-backend.conf XX-calipsoplus-backend.conf
 ```
 
-Modify the file as needed to point to the locations and WSGI port of your project.
-
-### Restart the service
+Modify the file as needed to point to the locations and WSGI port of your project. When you are done, reload the configuration files:
 
 ```bash
-sudo service apache2 restart
+sudo service apache2 reload
 ```
