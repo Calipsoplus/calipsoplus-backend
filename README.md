@@ -66,7 +66,7 @@ For a minimal deployment of the backend segment of this application, the followi
 
 ## Build & Development
 
-The project has been developed in Python using Django Framework and the source code can be found in [CELLS' Git repository](https://git.cells.es/mis/calipsoplus-backend).
+The project has been developed in Python using Django Framework and the source code can be found in the [Github repository](https://github.com/Calipsoplus/calipsoplus-backend).
 
 The prerequisites for this project is a working installation of Python 3.6+ and pip. The following snippet will clone the repository, set up and enable a Python virtual environment, and install the required dependencies:
 
@@ -75,7 +75,7 @@ mkdir calipsoplus && cd calipsoplus
 mkdir logs
 python3 -m venv env
 source env/bin/activate
-git clone git@git.cells.es:mis/calipsoplus-backend.git -b develop backend
+git clone git@github.com:Calipsoplus/calipsoplus-backend.git -b develop backend
 pip install -r backend/requirements.txt
 ```
 
@@ -185,7 +185,7 @@ python manage.py test --settings=calipsoplus.settings_unittests
 
 ## Deploy
 
-Follow the same steps as in the **Build & Development** section except the **Run** subsection
+Follow the same steps as in the **Build & Development** section except the **Run** subsection.
 
 ### Configure uswgi
 
