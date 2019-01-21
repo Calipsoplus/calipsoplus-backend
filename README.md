@@ -10,7 +10,7 @@ The aim of this project is to provide a backend RESTful service for the CalipsoP
         *  [Local authentication provider](#local-authentication-provider)
         *  [Umbrella](#umbrella)
 *  [Requirements](#requirements)
-*  [Build & Development](#build-&-development)
+*  [Build & Development](#build-development)
     *  [Database configuration](#database-configuration)
     *  [Migrations](#migrations)
     *  [External component configuration](#external-component-configuration)
@@ -20,6 +20,7 @@ The aim of this project is to provide a backend RESTful service for the CalipsoP
     *  [Other relevant application settings](#other-relevant-application-settings)
         *  [Configure resource quotas per user](#configure-resource-quotas-per-user)
         *  [Set the storage root path](#set-the-storage-root-path)
+        *  [Set the docker daemon endpoint](#set-the-docker-daemon-endpoint)
     *  [Run](#run)
 *  [Testing](#testing)
 *  [Deploy](#deploy)
@@ -61,40 +62,44 @@ For a minimal deployment of the backend segment of this application, the followi
 *  An application server to host the Django backend (may also host the frontend application).
 *  A database server.
 *  A server running the Shibboleth identity provider (required to support the Umbrella federated authentication system).
-*  A server running Guacamole (TODO: depending on usage, may share the application server? To check)
+*  A server running an Apache Guacamole service
 *  A server to use as host to the docker containers the users may requisition.
 
 ## Build & Development
 
 The project has been developed in Python using Django Framework and the source code can be found in [CELLS' Git repository](https://git.cells.es/mis/calipsoplus-backend).
 
-The user will need to install Python 3+, python-pip and python-virtualenv. Some other packages could be required.
+The prerequisites for this project is a working installation of Python 3.6+ and pip. The following snippet will clone the repository, set up and enable a Python virtual environment, and install the required dependencies:
 
 ```bash
-mkdir calipsoplus & cd calipsoplus
+mkdir calipsoplus && cd calipsoplus
 mkdir logs
-virtualenv ~/.virtualenvs/calipsoenv/bin/activate
+python3 -m venv env
+source env/bin/activate
 git clone git@git.cells.es:mis/calipsoplus-backend.git -b develop backend
-env/bin/pip install -r calipsoplus/requirements.txt
+pip install -r backend/requirements.txt
 ```
 
 ### Database configuration
 
 By default, the application settings are configured to use a MySQL database server, and we need a new schema to manage app's data, with the necessary user and host credentials to manage it. This document will follow default configuration settings.
 
+Create a new database for the application:
+
 ```sql
 CREATE DATABASE `calipsoplus`;
 ```
 
+And the configuration files for the connections:
+
 ```bash
-cd calipsoplus
-mkdir config & cd config
-mkdir database & cd database
-vi guacamole.cnf #guacamole db
+mkdir config && cd config
+mkdir database && cd database
 vi default.cnf #calipso db
+vi guacamole.cnf #guacamole db
 ```
 
-Add the following content to the **default.cnf** file to configure the connection to the application database
+Add the following content to the **default.cnf** file to configure the connection to the application database:
 ```bash
 [client]
 database = calipsoplus
@@ -104,7 +109,7 @@ user = *****
 password = *****
 default-character-set = utf8
 ```
-Add the following content to the **guacamole.cnf** file to configure the connection to the Apache Guacamole database
+Add the following content to the **guacamole.cnf** file to configure the connection to the Apache Guacamole database:
 ```bash
 [client]
 database = guacamoledb
@@ -118,14 +123,13 @@ default-character-set = utf8
 Set **default.cnf** and **guacamole.cnf** files as read only
 
 ```bash
-chmod 555 default.cnf
-chmod 555 guacamole.cnf
+chmod 555 default.cnf guacamole.cnf
 ```
 
 ### Migrations
 The following command will apply the required migrations to create/update the database schema to the latest version:
 ```
-env/bin/python backend/manage.py migrate --settings=calipsoplus.settings_[local|test|demo|prod]
+python backend/manage.py migrate --settings=calipsoplus.settings_[local|test|demo|prod]
 ```
 
 ### External component configuration
@@ -154,6 +158,11 @@ To configure the resource quotas to which users are limited, modify the relevant
 #### Set the storage root path
 Paths to the datasets of an experiment are built dynamically, but the root path to the storage mounting needs to be defined in the **calipsoplus/settings_calipso.py** file. Use "EXPERIMENTS_DATASETS_ROOT" for datasets that will be mounted in "read-only" mode, and "EXPERIMENTS_OUTPUT" for the results of operations performed in the requisitioned resource.
 
+#### Set the docker daemon endpoint
+In order to requisition new docker containers, the application has to communicate with an existing Docker daemon. The endpoints to contact with this service are set in the relevant settings.py file (eg.: settings_local.py). There are two variables that need to be set:
+*  **DOCKER_URL_DAEMON**: takes the form of "tcp://MACHINE_IP:DOCKER_PORT", where "MACHINE_IP" is the IP of the machine that hosts the Docker daemon and "DOCKER_PORT" is the port the daemon is listening to.
+*  **REMOTE_MACHINE_IP**: the IP of the mchine that hosts the Docker daemon.
+
 ### Run
 
 Once the environment and the database are configured...
@@ -170,8 +179,8 @@ The application has its own unit testing settings, which will create a mock data
 
 ```bash
 cd calipsoplus
-source ~/.virtualenvs/calipsoenv/bin/activate
-./manage.py test --settings=calipsoplus.settings_unittests
+source env/bin/activate
+./backend/manage.py test --settings=calipsoplus.settings_unittests
 ```
 
 ## Deploy
@@ -215,14 +224,16 @@ This file should be stored in the apps_available folder inside UWSGI_DIR/config,
 
 ### Configure Apache
 
-Go to Apache's directory which contains the apps-available and apps-enabled directories. We will name it APACHE_DIR.
+Go to Apache's directory which contains the apps-available and apps-enabled directories, we will name it APACHE_DIR. SOURCE_DIR is the folder containing the manage.py file.
 
 ```bash
 cd APACHE_DIR/apps-available
-cp SOURCE_DIR/settings/config/apache/calipsoplus-backend.conf .
+cp SOURCE_DIR/calipsoplus/config/apache/calipsoplus-backend.conf .
 cd ../apps-enabled
 ln -s ../apps-available/calipsoplus-backend.conf XX-calipsoplus-backend.conf
 ```
+
+Modify the file as needed to point to the locations of your project.
 
 ### Restart the service
 
