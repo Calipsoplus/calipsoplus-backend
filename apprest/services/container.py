@@ -96,11 +96,9 @@ class CalipsoContainersServices:
             guacamole_password = uuid.uuid4().hex
 
             vnc_password = 'vncpassword'
-            experiment_serial_number = "0"
 
             try:
                 volume = session_service.get_volumes_from_session(session_number=experiment)
-                experiment_serial_number = session_service.find_experiment_from_session(session_number=experiment)
 
             except Exception as e:
                 self.logger.debug('volume not found, set volume to default')
@@ -131,10 +129,6 @@ class CalipsoContainersServices:
                                                           working_dir="/tmp/results/" + username,
                                                           volumes=volume
                                                           )
-
-
-
-
 
             new_container.container_id = docker_container.id
             new_container.container_name = docker_container.name
@@ -207,7 +201,7 @@ class CalipsoContainersServices:
         except Exception as e:
             self.logger.debug('Docker daemon not found.')
             raise DockerExceptionNotFound("Docker daemon not found.")
-        
+
         try:
             self.client.api.stop(container_name)
 

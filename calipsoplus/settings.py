@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/2.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.0/ref/settings/
 """
+import json
 import logging
 import os
 
@@ -191,8 +192,26 @@ AUTHENTICATION_BACKENDS = (
     'apprest.views.auth_umbrella.ExternalUmbrellaServiceAuthenticationBackend',
 )
 
+# REST Framework configuration
 REST_FRAMEWORK = {
-    'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend',)
+    'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend',),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.AllowAny',),
 }
+
+# ACCESS_CONTROL config
+try:
+    data = open(os.path.join(BASE_DIR, '..', 'config/auth',
+                             'access_control.cnf')).read()  # opens the json file and saves the raw contents
+    access_control_conf = json.loads(data)
+except Exception as e:
+    logging.error(e)
+    access_control_conf = {'host': '', 'username': '', 'password': ''}
+
+ACCESS_CONTROL_USERNAME = access_control_conf['username']
+ACCESS_CONTROL_PASSWORD = access_control_conf['password']
 
 CORS_ALLOW_CREDENTIALS = True

@@ -1,9 +1,7 @@
 import logging
 
-from django.core import serializers
-from django.http import HttpResponse
 from rest_framework import pagination, filters, status
-from rest_framework.decorators import api_view
+
 from rest_framework.exceptions import PermissionDenied
 
 from rest_framework.generics import ListAPIView
@@ -16,8 +14,6 @@ from apprest.services.experiment import CalipsoExperimentsServices
 from apprest.utils.request import JSONResponse
 
 from calipsoplus.settings_calipso import PAGE_SIZE_EXPERIMENTS, DYNAMIC_EXPERIMENTS_DATA_RETRIEVAL
-
-import pdb
 
 from django_filters.rest_framework import DjangoFilterBackend
 
@@ -67,12 +63,14 @@ class GetExperimentsByUserName(ListAPIView):
             username = self.kwargs.get('username')
             if username == self.request.user.username:
 
-                query = {"page": request.GET.get('page'),
+                query = {"page_size": PAGE_SIZE_EXPERIMENTS,
+                         "page": request.GET.get('page'),
                          "ordering": request.GET.get('ordering'),
                          "search": request.GET.get('search'),
                          "calipsouserexperiment__favorite": request.GET.get('calipsouserexperiment__favorite')}
 
                 experiments_list = service.get_external_user_experiments(username, query)
+                experiments_list['page_size'] = PAGE_SIZE_EXPERIMENTS
 
                 return JSONResponse(experiments_list, status=status.HTTP_200_OK)
             else:
