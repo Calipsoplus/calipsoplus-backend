@@ -202,10 +202,10 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.AllowAny',),
 }
 
-# ACCESS_CONTROL config
+# Credentials to interact with Local Auth provider
 try:
     data = open(os.path.join(BASE_DIR, '..', 'config/auth',
-                             'access_control.cnf')).read()  # opens the json file and saves the raw contents
+                             'local_auth.cnf')).read()  # opens the json file and saves the raw contents
     access_conf = json.loads(data)
 except Exception as e:
     logging.error(e)
