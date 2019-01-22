@@ -206,12 +206,12 @@ REST_FRAMEWORK = {
 try:
     data = open(os.path.join(BASE_DIR, '..', 'config/auth',
                              'access_control.cnf')).read()  # opens the json file and saves the raw contents
-    access_control_conf = json.loads(data)
+    access_conf = json.loads(data)
 except Exception as e:
     logging.error(e)
-    access_control_conf = {'host': '', 'username': '', 'password': ''}
+    access_conf = {'host': '', 'username': '', 'password': ''}
 
-ACCESS_CONTROL_USERNAME = access_control_conf['username']
-ACCESS_CONTROL_PASSWORD = access_control_conf['password']
+LOCAL_ACCESS_USERNAME = access_conf['username']
+LOCAL_ACCESS_PASSWORD = access_conf['password']
 
 CORS_ALLOW_CREDENTIALS = True

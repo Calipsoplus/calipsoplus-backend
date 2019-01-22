@@ -96,7 +96,7 @@ class CalipsoExperimentsServices:
             self.logger.debug('calling external endpoint %s' % url)
 
             response = requests.get(url, params=query, auth=(
-                settings.ACCESS_CONTROL_USERNAME, settings.ACCESS_CONTROL_PASSWORD))
+                settings.LOCAL_ACCESS_USERNAME, settings.LOCAL_ACCESS_PASSWORD))
 
             return response.json()
 
@@ -112,7 +112,7 @@ class CalipsoExperimentsServices:
 
         headers = {'Content-type': 'application/json'}
         response = requests.post(url, data=json.dumps(post_data), headers=headers, auth=(
-            settings.ACCESS_CONTROL_USERNAME, settings.ACCESS_CONTROL_PASSWORD))
+            settings.LOCAL_ACCESS_USERNAME, settings.LOCAL_ACCESS_PASSWORD))
 
         return response.json()
 
