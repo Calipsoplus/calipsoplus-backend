@@ -18,6 +18,7 @@ The aim of this project is to provide a backend RESTful service for the CalipsoP
     *  [External component configuration](#external-component-configuration)
         *  [Local authentication](#local-authentication)
         *  [Umbrella authentication](#umbrella-authentication)
+        *  [Local resource authorization](#local-resource-authorization)
         *  [Dynamic data retrieval](#dynamic-data-retrieval)
     *  [Other relevant application settings](#other-relevant-application-settings)
         *  [Configure resource quotas per user](#configure-resource-quotas-per-user)
@@ -156,16 +157,22 @@ In the **calipsoplus/settings_calypso.py** file, you can set whether local authe
 
 The next step to take to configure local authentication is to define the login endpoint. In the **calipsoplus/settings_[local|test|demo|prod].py** file, find the "BACKEND_UO_LOGIN" setting and replace the URL with the endpoint of your provider. This endpoint must implement the expected REST API as described in the [API.md](API.md) file.
 
-(TODO: HTTP AUTH and service login)
 #### Umbrella authentication
 In order to enable support for the Umbrella federated authentication service, set the relevant endpoints of your Shibboleth identity provider in the **calipsoplus/settings_[local|test|demo|prod].py** file. Two endpoints need to be set: "UMBRELLA_LOGIN" and "UMBRELLA_LOGOUT".
 
 Additionally, an endpoint must be set for a REST service that will authenticate the Umbrella hash against your user records, "BACKEND_UO_HASH". This endpoint must implement the expected REST API as described in the [API.md](API.md) file.
 
+#### Local resource authorization
+If the facility provides local resources to users (virtual machines or desktops, independent of experiments performed in the site), you can control the access to these resources via the "BACKEND_UO_IS_STAFF" endpoint, defined in the **calipsoplus/settings_[local|test|demo|prod].py** file. Check the [API.md](API.md) file for details on the implementation of this endpoint.
+
+This endpoint uses HTTP Basic Authentication as an additional security measure, with credentials set as the **LOCAL_ACCESS_USERNAME** and **LOCAL_ACCESS_PASSWORD** variables in **calipsoplus/settings.py** file.
+
 #### Dynamic data retrieval
 This application can be set to dynamically retrieve data of the experiments performed in the site from a REST service. To enable this feature, go to **calipsoplus/settings_calypso.py** and set the "DYNAMIC_EXPERIMENTS_DATA_RETRIEVAL" setting to one.
 
 The endpoint used to retrieve the experiment data is defined in the **calipsoplus/settings_[local|test|demo|prod].py** file as the "DYNAMIC_EXPERIMENTS_DATA_RETRIEVAL_ENDPOINT" setting. This endpoint must implement the expected REST API as described in the [API.md](API.md) file.
+
+This endpoint uses HTTP Basic Authentication as an additional security measure, with credentials set as the **LOCAL_ACCESS_USERNAME** and **LOCAL_ACCESS_PASSWORD** variables in **calipsoplus/settings.py** file.
 
 ### Other relevant application settings
 #### Configure resource quotas per user
