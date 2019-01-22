@@ -191,7 +191,7 @@ In order to requisition new docker containers, the application has to communicat
 Once the environment and the database are configured...
 
 ```bash
-python manage.py runserver 127.0.0.1:8000 settings=calipsoplus.settings_local
+python manage.py runserver 127.0.0.1:8000 --settings=calipsoplus.settings_local
 ```
 
 The service should be available at [http://127.0.0.1:8000](http://127.0.0.1:8000)

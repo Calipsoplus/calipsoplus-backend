@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework import status
+import logging
 
 from apprest.serializers.quota import CalipsoUserQuotaSerializer
 from apprest.services.quota import CalipsoUserQuotaServices
@@ -14,12 +15,17 @@ class QuotaView(APIView):
     permission_classes = (IsAuthenticated,)
     pagination_class = None
 
+
     def get(self, request, username):
         service = CalipsoUserQuotaServices()
         username = self.kwargs.get('username')
+
+        self.logger = logging.getLogger(__name__)
+
         if username == self.request.user.username:
             quote = service.get_default_quota(username=username)
-            serializer_class = CalipsoUserQuotaSerializer(quote, many=True)
+            serializer_class = CalipsoUserQuotaSerializer(quote, many=False)
+
             return Response(serializer_class.data)
         else:
             raise PermissionDenied
