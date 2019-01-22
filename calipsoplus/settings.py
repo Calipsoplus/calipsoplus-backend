@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/2.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.0/ref/settings/
 """
+import json
 import logging
 import os
 
@@ -191,8 +192,26 @@ AUTHENTICATION_BACKENDS = (
     'apprest.views.auth_umbrella.ExternalUmbrellaServiceAuthenticationBackend',
 )
 
+# REST Framework configuration
 REST_FRAMEWORK = {
-    'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend',)
+    'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend',),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.AllowAny',),
 }
+
+# Credentials to interact with Local Auth provider
+try:
+    data = open(os.path.join(BASE_DIR, '..', 'config/auth',
+                             'local_auth.cnf')).read()  # opens the json file and saves the raw contents
+    access_conf = json.loads(data)
+except Exception as e:
+    logging.error(e)
+    access_conf = {'host': '', 'username': '', 'password': ''}
+
+LOCAL_ACCESS_USERNAME = access_conf['username']
+LOCAL_ACCESS_PASSWORD = access_conf['password']
 
 CORS_ALLOW_CREDENTIALS = True

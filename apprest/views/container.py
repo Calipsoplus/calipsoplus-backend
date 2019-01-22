@@ -70,11 +70,22 @@ def stop_container(request, username, container_name):
 @authentication_classes((SessionAuthentication, BasicAuthentication,))
 @permission_classes((IsAuthenticated,))
 def run_container(request, username, experiment, public_name):
+    experiment_session = experiment.split("~")
+
+    if len(experiment_session) == 2:
+        experiment_serial_number = experiment_session[0]
+        session_number = experiment_session[1]
+    else:
+        experiment_serial_number = experiment
+        session_number = experiment
+
+    logger.debug("Running session:%s from experiment:%s" % (experiment_serial_number, session_number))
+
     if username != request.user.username:
         return JSONResponse("username mismatch", status=status.HTTP_403_FORBIDDEN)
 
     try:
-        container = container_service.run_container(username, experiment, public_name)
+        container = container_service.run_container(username, session_number, public_name)
     except Exception as e:
         logger.debug("Error after run_container : %s " % e)
         return JSONResponse({'error': errorFormatting.format(e)}, status=status.HTTP_204_NO_CONTENT)
@@ -87,8 +98,6 @@ def run_container(request, username, experiment, public_name):
         port = int(container.container_info['NetworkSettings']['Ports'][image_selected.port_hook][0]['HostPort'])
     except Exception as e:
         port = 0
-
-    experiment_serial_number = session_service.find_experiment_from_session(session_number=experiment)
 
     container.container_info = experiment_serial_number
     container.save()
