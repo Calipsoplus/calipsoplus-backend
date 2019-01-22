@@ -1,9 +1,9 @@
+import json
 import logging
 
 import requests
 from django.conf import settings
 from django.contrib.auth.models import User
-from django.http import HttpResponse
 
 from rest_framework.exceptions import NotFound
 
@@ -91,130 +91,29 @@ class CalipsoExperimentsServices:
         """
          query = {page, ordering, search, calipsouserexperiment__favorite}
         """
-
         try:
             url = settings.DYNAMIC_EXPERIMENTS_DATA_RETRIEVAL_ENDPOINT.replace('$USERNAME', username)
-
             self.logger.debug('calling external endpoint %s' % url)
-            # response = requests.get(url, params=query, verify=False)
 
-            headers = {'Content-type': 'application/json'}
-            response = requests.get(url, params=query, headers=headers)
-
-            """
-                next
-                previous
-                cont
-                results
-                    serial_number
-                    subject
-                    body
-                    beam_line
-                    sessions
-                        session_number
-                        start_date
-                        end_date
-                        subject
-                        body
-                        data_set_path
-                    id
-                    favorite
-                page_size
-            """
-
-            experiments_list = {
-                "next": None,
-                "previous": None,
-                "count": 2,
-                "results": [
-                    {
-                        "serial_number": "A0001",
-                        "subject": "Title un",
-                        "body": "Description 1",
-                        "beam_line": "BL_A",
-                        "sessions": [
-                            {
-                                "session_number": "S0011",
-                                "start_date": "2018-10-10T10:30:00",
-                                "end_date": "2018-10-11T18:00:00",
-                                "subject": "SUBJECT S11",
-                                "body": "BODY S11",
-                                "data_set_path": "{'/tmp/results/': {'bind': '', 'mode': 'rw'},'/tmp/data/': {'bind': '', 'mode': 'ro'}}"
-                            },
-                            {
-                                "session_number": "S0012",
-                                "start_date": "2018-10-10T11:00:00",
-                                "end_date": "2018-10-12T18:00:00",
-                                "subject": "SUBJECT S12",
-                                "body": "BODY S12",
-                                "data_set_path": "{'/tmp/results/': {'bind': '', 'mode': 'rw'},'/tmp/data/': {'bind': '', 'mode': 'ro'}}"
-                            },
-                            {
-                                "session_number": "S0013",
-                                "start_date": "2018-10-11T12:30:00",
-                                "end_date": "2018-10-13T18:00:00",
-                                "subject": "SUBJECT S13",
-                                "body": "BODY S13",
-                                "data_set_path": "{'/tmp/results/': {'bind': '', 'mode': 'rw'},'/tmp/data/': {'bind': '', 'mode': 'ro'}}"
-                            },
-                            {
-                                "session_number": "S0014",
-                                "start_date": "2018-10-12T13:00:00",
-                                "end_date": "2018-10-14T18:00:00",
-                                "subject": "SUBJECT S14",
-                                "body": "BODY S14",
-                                "data_set_path": "{'/tmp/results/': {'bind': '', 'mode': 'rw'},'/tmp/data/': {'bind': '', 'mode': 'ro'}}"
-                            }
-                        ],
-                        "id": 1,
-                        "favorite": False
-                    },
-                    {
-                        "serial_number": "A0002",
-                        "subject": "Title dos",
-                        "body": "Description 2",
-                        "beam_line": "BL_A",
-                        "sessions": [
-                            {
-                                "session_number": "S0021",
-                                "start_date": "2018-10-13T08:00:00",
-                                "end_date": "2018-10-15T18:00:00",
-                                "subject": "SUBJECT S21",
-                                "body": "BODY S21",
-                                "data_set_path": "{'/tmp/results/': {'bind': '', 'mode': 'rw'},'/tmp/data/': {'bind': '', 'mode': 'ro'}}"
-                            },
-                            {
-                                "session_number": "S0022",
-                                "start_date": "2018-10-14T09:30:00",
-                                "end_date": "2018-10-16T18:00:00",
-                                "subject": "SUBJECT S22",
-                                "body": "BODY S22",
-                                "data_set_path": "{'/tmp/results/': {'bind': '', 'mode': 'rw'},'/tmp/data/': {'bind': '', 'mode': 'ro'}}"
-                            }
-                        ],
-                        "id": 2,
-                        "favorite": True
-                    }
-                ],
-                "page_size": 7
-            }
+            response = requests.get(url, params=query, auth=(
+                settings.LOCAL_ACCESS_USERNAME, settings.LOCAL_ACCESS_PASSWORD))
 
             return response.json()
-
-
 
         except Exception as e:
             self.logger.debug(e)
             raise e
 
+    def get_external_is_staff(self, username):
+        url = settings.BACKEND_UO_IS_AUTHORIZED
+        self.logger.debug('calling external endpoint to obtain if is staff (%s)' % url)
 
-"""
-            client = requests.session()
-            client.get(URL)
+        post_data = {'login': username}
 
-            cookies = dict(client.cookies)
-            r = requests.post(URL + "au", data=json.dumps(data), headers=headers, cookies=cookies)
+        headers = {'Content-type': 'application/json'}
+        response = requests.post(url, data=json.dumps(post_data), headers=headers, auth=(
+            settings.LOCAL_ACCESS_USERNAME, settings.LOCAL_ACCESS_PASSWORD))
 
-            response = requests.get(url, params=query)
+        return response.json()
 
-"""
+
