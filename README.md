@@ -163,7 +163,7 @@ In order to enable support for the Umbrella federated authentication service, se
 Additionally, an endpoint must be set for a REST service that will authenticate the Umbrella hash against your user records, "BACKEND_UO_HASH". This endpoint must implement the expected REST API as described in the [API.md](API.md) file.
 
 #### Local resource authorization
-If the facility provides local resources to users (virtual machines or desktops, independent of experiments performed in the site), you can control the access to these resources via the "BACKEND_UO_IS_STAFF" endpoint, defined in the **calipsoplus/settings_[local|test|demo|prod].py** file. Check the [API.md](API.md) file for details on the implementation of this endpoint.
+If the facility provides local resources to users (virtual machines or desktops, independent of experiments performed in the site), you can control the access to these resources via the "BACKEND_UO_IS_AUTHORIZED" endpoint, defined in the **calipsoplus/settings_[local|test|demo|prod].py** file. Check the [API.md](API.md) file for details on the implementation of this endpoint.
 
 This endpoint uses HTTP Basic Authentication as an additional security measure, with credentials set as the **LOCAL_ACCESS_USERNAME** and **LOCAL_ACCESS_PASSWORD** variables in **calipsoplus/settings.py** file.
 

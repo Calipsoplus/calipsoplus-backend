@@ -105,7 +105,7 @@ class CalipsoExperimentsServices:
             raise e
 
     def get_external_is_staff(self, username):
-        url = settings.BACKEND_UO_IS_STAFF
+        url = settings.BACKEND_UO_IS_AUTHORIZED
         self.logger.debug('calling external endpoint to obtain if is staff (%s)' % url)
 
         post_data = {'login': username}
