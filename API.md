@@ -38,7 +38,7 @@ This endpoint **must** be implemented by a service that can check this hash agai
 
 ## Authorization endpoints
 ### Authorization to use privileged facility resources (POST)
-To validate access to other, permanent resources available for users this endpoint is called on demand with the account name. The service providing this endpoint will need to decide if the user is authorized to access these resources.
+To validate access to other, permanent resources available for users this endpoint is called on demand with the account name. This endpoint can be defined in the "BACKEND_UO_IS_AUTHORIZED" setting of the **calipsoplus/settings_[local|test|demo|prod].py** file. The service providing this endpoint will need to decide if the user is authorized to access these resources.
 
 This endpoint is secured with [HTTP Basic Authentication](https://www.django-rest-framework.org/api-guide/authentication/#basicauthentication).
 
