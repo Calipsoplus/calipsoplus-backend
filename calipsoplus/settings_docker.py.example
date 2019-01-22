@@ -32,7 +32,6 @@ UMBRELLA_LOGIN = BACKEND_CALIPSO + "/Shibboleth.sso/Login?target=" + BACKEND_CAL
 
 # User Office backend API login
 BACKEND_UO_LOGIN = "http://mock-login:8000/login/"
-BACKEND_UO_LOGOUT = "http://mock-login:8000/logout/"
 BACKEND_UO_HASH = "http://mock-login:80000/login/umbrella/"
 BACKEND_UO_IS_STAFF = "http://mock-login:8000/is_staff/"
 

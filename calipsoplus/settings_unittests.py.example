@@ -38,6 +38,7 @@ UMBRELLA_LOGIN = BACKEND_CALIPSO + "/Shibboleth.sso/Login?target=" + BACKEND_CAL
 # User Office backend API login (check API.md)
 BACKEND_UO_LOGIN =
 BACKEND_UO_HASH =
+BACKEND_UO_IS_STAFF =
 
 # Endpoint to the information provider (ignore if Dynamic Data Retrieval is not enabled). Check API.md.
 # Example: "https://data.domain.tld/services/experiments/$USERNAME/" 
