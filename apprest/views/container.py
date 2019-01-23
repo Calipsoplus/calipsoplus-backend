@@ -73,13 +73,13 @@ def run_container(request, username, experiment, public_name):
     experiment_session = experiment.split("~")
 
     if len(experiment_session) == 2:
-        experiment_serial_number = experiment_session[0]
+        experiment_proposal_id = experiment_session[0]
         session_number = experiment_session[1]
     else:
-        experiment_serial_number = experiment
+        experiment_proposal_id = experiment
         session_number = experiment
 
-    logger.debug("Running session:%s from experiment:%s" % (experiment_serial_number, session_number))
+    logger.debug("Running session:%s from experiment:%s" % (experiment_proposal_id, session_number))
 
     if username != request.user.username:
         return JSONResponse("username mismatch", status=status.HTTP_403_FORBIDDEN)
@@ -99,7 +99,7 @@ def run_container(request, username, experiment, public_name):
     except Exception as e:
         port = 0
 
-    container.container_info = experiment_serial_number
+    container.container_info = experiment_proposal_id
     container.save()
 
     serializer = CalipsoContainerSerializer(container)

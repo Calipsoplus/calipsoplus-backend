@@ -76,7 +76,7 @@ class ContainerViewsTestCase(CalipsoTestCase):
 
         all_container_responses = []
 
-        quota = self.quota_service.get_default_quota(username=self.scientist_1.user.username)[0]
+        quota = self.quota_service.get_default_quota(username=self.scientist_1.user.username)
         logger.info("MAX SIM:" + str(quota.max_simultaneous))
 
         for x in range(0, quota.max_simultaneous):

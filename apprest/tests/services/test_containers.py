@@ -39,7 +39,7 @@ class CalipsoContainerServiceTestCase(APITestCase):
 
         all_container_responses = []
 
-        quota = self.containers_quota.get_default_quota(username='userA')[0]
+        quota = self.containers_quota.get_default_quota(username='userA')
         self.logger.debug('quota found .. max:%d' % quota.max_simultaneous)
 
         for x in range(0, quota.max_simultaneous):

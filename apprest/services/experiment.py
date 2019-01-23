@@ -33,7 +33,7 @@ class CalipsoExperimentsServices:
         self.logger.debug('Adding user: %s to experiment: %s' % (username, public_number))
         user = User.objects.get(username=username)
         calipso_user = CalipsoUser.objects.get(user=user)
-        experiment = CalipsoExperiment.objects.get(serial_number=public_number)
+        experiment = CalipsoExperiment.objects.get(proposal_id=public_number)
 
         calipso_user_experiment = CalipsoUserExperiment.objects.filter(calipso_user=calipso_user,
                                                                        calipso_experiment=experiment)
@@ -46,13 +46,13 @@ class CalipsoExperimentsServices:
 
     def add_experiment(self, public_number, title, description, beamline_code):
         self.logger.debug('Try to add experiment %s' % public_number)
-        calipso_experiment = CalipsoExperiment.objects.filter(serial_number=public_number)
+        calipso_experiment = CalipsoExperiment.objects.filter(proposal_id=public_number)
         if len(calipso_experiment) > 0:
             raise Exception('Experiment %s already exists.' % public_number)
         else:
             calipso_experiment = CalipsoExperiment()
             calipso_experiment.subject = title
-            calipso_experiment.serial_number = public_number
+            calipso_experiment.proposal_id = public_number
             calipso_experiment.body = description
             calipso_experiment.beam_line = beamline_code
 
@@ -60,13 +60,13 @@ class CalipsoExperimentsServices:
 
     def remove_experiment(self, public_number):
         self.logger.debug('Try to remove experiment %s' % public_number)
-        CalipsoExperiment.objects.get(serial_number=public_number).delete()
+        CalipsoExperiment.objects.get(proposal_id=public_number).delete()
 
     def remove_user_from_experiment(self, username, public_number):
         self.logger.debug('Try to remove user %s from experiment %s' % (username, public_number))
         user = User.objects.get(username=username)
         calipso_user = CalipsoUser.objects.get(user=user)
-        calipso_experiment = CalipsoExperiment.objects.get(serial_number=public_number)
+        calipso_experiment = CalipsoExperiment.objects.get(proposal_id=public_number)
 
         calipso_user_experiment = CalipsoUserExperiment.objects.get(calipso_user=calipso_user,
                                                                     calipso_experiment=calipso_experiment)
@@ -75,7 +75,7 @@ class CalipsoExperimentsServices:
 
     def update_experiment(self, beamline_code, description, public_number, title):
         self.logger.debug('Try to update experiment %s' % public_number)
-        calipso_experiment = CalipsoExperiment.objects.get(serial_number=public_number)
+        calipso_experiment = CalipsoExperiment.objects.get(proposal_id=public_number)
 
         if title:
             calipso_experiment.subject = title
