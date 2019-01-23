@@ -2,8 +2,6 @@ from django.db import models
 from simple_history.models import HistoricalRecords
 
 from apprest.models.user import CalipsoUser
-from calipsoplus.settings_calipso import MAX_CONTAINER_PER_USER, MAX_STORAGE_PER_USER, MAX_RAM_PER_USER, \
-    MAX_CPU_PER_USER
 
 
 class CalipsoUserQuota(models.Model):

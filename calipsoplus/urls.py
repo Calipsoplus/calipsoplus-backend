@@ -15,6 +15,7 @@ urlpatterns = [
     url(r'^favorite/(?P<pk>[0-9]+)/$', CalipsoExperimentFavorite.as_view()),
     path('quota/<username>/', QuotaView.as_view()),
     path('used_quota/<username>/', GetUsedQuotaFromUser.as_view()),
+    path('images/', GetAllImages.as_view()),
     path('image/<public_name>/', GetInfoImage.as_view()),
     path('images/', GetAllImages.as_view()),
     path('facility/', GetAllFacilities.as_view()),

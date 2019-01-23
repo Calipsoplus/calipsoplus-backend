@@ -90,7 +90,7 @@ def run_container(request, username, experiment, public_name):
         logger.debug("Error after run_container : %s " % e)
         return JSONResponse({'error': errorFormatting.format(e)}, status=status.HTTP_204_NO_CONTENT)
 
-    image_selected = image_service.get_available_image(public_name=public_name)[0]
+    image_selected = image_service.get_available_image(public_name=public_name)
 
     logger.debug("Searching... port")
 

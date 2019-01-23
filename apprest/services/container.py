@@ -55,7 +55,7 @@ class CalipsoContainersServices:
         list_of_containers = self.list_container(username=username)
 
         for container in list_of_containers:
-            image = image_service.get_available_image(public_name=container.public_name)[0]
+            image = image_service.get_available_image(public_name=container.public_name)
             max_simultaneous += 1
             max_cpu += image.cpu
             max_memory += int(image.memory[:-1])
@@ -63,7 +63,7 @@ class CalipsoContainersServices:
             self.logger.debug("container with public_name=%s" % container.public_name)
 
         try:
-            quota_per_user = quota_service.get_default_quota(username=username)[0]
+            quota_per_user = quota_service.get_default_quota(username=username)
         except Exception as e:
             self.logger.error("Problem to get quota from %s user" % username)
             self.logger.error(e)
@@ -88,7 +88,7 @@ class CalipsoContainersServices:
             self.logger.warning('user:%s max_hdd:%dG quota.max_hdd:%s' % (username, max_hdd, quota_per_user.hdd))
             raise QuotaHddExceeded("Max hdd exceeded")
 
-        image_selected = image_service.get_available_image(public_name=container_public_name)[0]
+        image_selected = image_service.get_available_image(public_name=container_public_name)
 
         try:
             # generate random values for guacamole credentials
@@ -138,6 +138,7 @@ class CalipsoContainersServices:
             port = 0
             for key, val in new_container.container_info['NetworkSettings']['Ports'].items():
                 bport = int(val[0]['HostPort'])
+
                 if (bport > port):
                     port = bport
 
