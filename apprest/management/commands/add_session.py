@@ -42,7 +42,7 @@ class Command(BaseCommand):
                 ' --session_number session_number --start_date start_date --end_date end_date  --subject subject --body body --data_set_path data_set_path')
 
         try:
-            experiment = CalipsoExperiment.objects.get(serial_number=public_number)
+            experiment = CalipsoExperiment.objects.get(proposal_id=public_number)
 
             params = {'session_number': session_number,
                       'start_date': start_date,

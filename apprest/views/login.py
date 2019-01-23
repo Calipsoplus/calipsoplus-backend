@@ -4,6 +4,7 @@ from django.http import JsonResponse
 from rest_framework import status
 from rest_framework.decorators import api_view
 
+from apprest.services.experiment import CalipsoExperimentsServices
 from apprest.utils.request import JSONResponse
 from calipsoplus.settings_calipso import ALLOW_LOCAL_AUTHENTICATION
 
@@ -40,3 +41,12 @@ def logout_user(request):
 def get_calipso_settings(request):
     json_settings_data = {'local_auth': (ALLOW_LOCAL_AUTHENTICATION == 1)}
     return JsonResponse(json_settings_data)
+
+
+@api_view(['GET'])
+def get_login_type(request):
+
+    calipso_experiment_services = CalipsoExperimentsServices()
+    json_settings_data = calipso_experiment_services.get_external_is_staff(request.user.username)
+    return JsonResponse(json_settings_data)
+

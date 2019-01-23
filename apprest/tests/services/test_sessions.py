@@ -5,7 +5,6 @@ from rest_framework.test import APITestCase
 
 import logging
 
-from apprest.models import CalipsoSession
 from apprest.models.experiment import CalipsoExperiment
 from apprest.services.session import CalipsoSessionsServices
 from calipsoplus.settings_calipso import EXPERIMENTS_DATASETS_ROOT, EXPERIMENTS_OUTPUT

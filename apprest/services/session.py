@@ -10,7 +10,7 @@ class CalipsoSessionsServices:
         self.logger = logging.getLogger(__name__)
 
     def get_sessions_from_experiment(self, experiment):
-        self.logger.debug('get_sessions_from_experiment from experiment %s' % experiment.serial_number)
+        self.logger.debug('get_sessions_from_experiment from experiment %s' % experiment.proposal_id)
         try:
             sessions = CalipsoSession.objects.filter(experiment_id=experiment.id).all()
             return sessions
@@ -28,7 +28,7 @@ class CalipsoSessionsServices:
         body = params["body"]
         data_set_path = params["data_set_path"]
 
-        self.logger.debug('create_session_to_experiment from experiment %s' % experiment.serial_number)
+        self.logger.debug('create_session_to_experiment from experiment %s' % experiment.proposal_id)
 
         calipso_session = CalipsoSession.objects.filter(session_number=session_number)
         if len(calipso_session) > 0:

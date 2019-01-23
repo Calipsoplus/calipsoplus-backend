@@ -126,3 +126,16 @@ class CalipsoAvailableImagesServices:
             self.logger.error('Error to get calipso_user from quota user:%s' % username)
             self.logger.debug(e)
             raise NotFound
+
+
+    def get_all_images(self):
+        self.logger.debug('Getting all images')
+        try:
+            all_facilities = CalipsoAvailableImages.objects.all().order_by('public_name')
+            self.logger.debug('All application facilities got')
+            return all_facilities
+        except Exception as e:
+            self.logger.debug(e)
+            raise NotFound
+
+

@@ -36,7 +36,7 @@ class Command(BaseCommand):
 
                     try:
 
-                        experiment = CalipsoExperiment.objects.get(serial_number=public_number)
+                        experiment = CalipsoExperiment.objects.get(proposal_id=public_number)
 
                         params = {'session_number': session_number,
                                   'start_date': start_date,
