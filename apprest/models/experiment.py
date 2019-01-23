@@ -7,7 +7,7 @@ from apprest.models.user import CalipsoUser
 class CalipsoExperiment(models.Model):
     subject = models.CharField(max_length=255)
     body = models.TextField()
-    serial_number = models.CharField(max_length=50, blank=True)
+    proposal_id = models.CharField(max_length=50, blank=True)
     beam_line = models.CharField(max_length=200, blank=True)
 
     calipso_users = models.ManyToManyField(CalipsoUser, through='CalipsoUserExperiment',
@@ -15,17 +15,17 @@ class CalipsoExperiment(models.Model):
 
     history = HistoricalRecords()
 
-    def create(self, subject, body, serial_number, beam_line):
+    def create(self, subject, body, proposal_id, beam_line):
         self.subject = subject
         self.body = body
-        self.serial_number = serial_number
+        self.proposal_id = proposal_id
         self.beam_line = beam_line
 
     class Meta:
         db_table = 'calipso_experiments'
 
     def __str__(self):
-        return self.serial_number
+        return self.proposal_id
 
 
 class CalipsoUserExperiment(models.Model):
