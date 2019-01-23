@@ -18,8 +18,8 @@ class CalipsoUserQuotaServices:
         try:
             user = User.objects.get(username=username)
             calipso_user = CalipsoUser.objects.get(user=user)
-            result_quota = CalipsoUserQuota.objects.filter(calipso_user=calipso_user)
-            if len(result_quota) == 0:
+            result_quota = CalipsoUserQuota.objects.get(calipso_user=calipso_user)
+            if not result_quota:
                 self.logger.debug('Default quota not found, for user:%s ' % username)
 
                 quota = CalipsoUserQuota()
