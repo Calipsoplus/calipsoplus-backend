@@ -66,7 +66,7 @@ This endpoint is secured with [HTTP Basic Authentication](https://www.django-res
 *  **username**: String. Name of the account to retrieve experiments from (is provided as part of the URL path).
 *  **search**: String. Query argument (optional). String to be searched for in either experiment subject, body, beamline, or serial number.
 *  **ordering**: String. Query argument (optional). Field by which to order ('-' preceding the name indicates descending order). The supported fields are:
-    *  **serial_number**
+    *  **proposal_id**
     *  **subject**
     *  **body**
     *  **beam_line**
@@ -87,7 +87,7 @@ The response is expected in JSON format, in the following structure:
 *  **previous**: String. URL pointing to the previous page (may be null if no previous pages are available).
 *  **results**: List. Contains the experiments the user has participated in. The structure of each element is as follows:
     *  **subject**: String. Title or subject of the experiment.
-    *  **serial_number**: String. Identifier of the experiment (must be unique).
+    *  **proposal_id**: String. Identifier of the experiment (must be unique).
     *  **body**: String. Abstract or description of the experiment.
     *  **beam_line**: String. Name of the beamline associated with the experiment.
     *  **sessions**: List. Contains the data collection sessions of this experiment. The structure of each element is as follows:

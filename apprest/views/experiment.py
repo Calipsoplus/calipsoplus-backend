@@ -42,9 +42,9 @@ class GetExperimentsByUserName(ListAPIView):
     serializer_class = CalipsoExperimentSerializer
     pagination_class = ExperimentsPagination
     filter_backends = (filters.OrderingFilter, filters.SearchFilter, DjangoFilterBackend,)
-    ordering_fields = ('subject', 'body', 'serial_number', 'beam_line', 'calipsouserexperiment__favorite',)
-    ordering = ('serial_number',)
-    search_fields = ('subject', 'body', 'serial_number', 'beam_line', 'calipsouserexperiment__favorite',)
+    ordering_fields = ('subject', 'body', 'proposal_id', 'beam_line', 'calipsouserexperiment__favorite',)
+    ordering = ('proposal_id',)
+    search_fields = ('subject', 'body', 'proposal_id', 'beam_line', 'calipsouserexperiment__favorite',)
     filter_fields = ('calipsouserexperiment__favorite',)
 
     def get_queryset(self):
