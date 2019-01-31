@@ -5,7 +5,7 @@ from apprest.views.experiment import GetExperimentsByUserName
 from apprest.views.facility import GetAllFacilities
 from apprest.views.favorite import CalipsoExperimentFavorite
 from apprest.views.image import GetUsedQuotaFromUser, GetInfoImage, GetAllImages
-from apprest.views.login import login_user, logout_user, get_calipso_settings, get_login_type
+from apprest.views.login import login_user, logout_user, get_calipso_settings, get_login_authorization
 from apprest.views.quota import QuotaView
 
 urlpatterns = [
@@ -22,5 +22,5 @@ urlpatterns = [
     path('login/', login_user),
     path('logout/', logout_user),
     path('settings/', get_calipso_settings),
-    path('login/type/', get_login_type)
+    path('login/type/', get_login_authorization)
 ]
