@@ -62,11 +62,7 @@ class CalipsoContainersServices:
             max_hdd += int(image.hdd[:-1])
             self.logger.debug("container with public_name=%s" % container.public_name)
 
-        try:
-            quota_per_user = quota_service.get_default_quota(username=username)
-        except Exception as e:
-            self.logger.error("Problem to get quota from %s user" % username)
-            self.logger.error(e)
+        quota_per_user = quota_service.get_default_quota(username=username)
 
         self.logger.debug("num_containers_per_user = %d" % len(list_of_containers))
 
