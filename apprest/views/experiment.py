@@ -63,6 +63,9 @@ class GetExperimentsByUserName(ListAPIView):
             username = self.kwargs.get('username')
             if username == self.request.user.username:
 
+                must_be_favorite = request.GET.get('calipsouserexperiment__favorite')
+                logger.debug('must_be_favorite=%s' % must_be_favorite)
+
                 query = {"page_size": PAGE_SIZE_EXPERIMENTS,
                          "page": request.GET.get('page'),
                          "ordering": request.GET.get('ordering'),
@@ -70,8 +73,16 @@ class GetExperimentsByUserName(ListAPIView):
                          "calipsouserexperiment__favorite": request.GET.get('calipsouserexperiment__favorite')}
 
                 experiments_list = service.get_external_user_experiments(username, query)
+                experiments_list = service.update_favorite_from_external_experiments(username, experiments_list)
+
                 experiments_list['page_size'] = PAGE_SIZE_EXPERIMENTS
 
-                return JSONResponse(experiments_list, status=status.HTTP_200_OK)
+                if must_be_favorite is None:
+                    return JSONResponse(experiments_list, status=status.HTTP_200_OK)
+                else:
+                    return super(GetExperimentsByUserName, self).get(self, request, *args, **kwargs)
             else:
                 raise PermissionDenied
+
+
+
