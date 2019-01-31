@@ -137,9 +137,9 @@ class CalipsoExperimentsServices:
         self.logger.debug('filling external experiments with favorite values')
 
         for experiment in experiments_list['results']:
-            favorite = self.persist_proposals_favorites(username, experiment)
-            self.logger.debug("experiment: %s is %s" % (experiment.get('proposal_id'), favorite))
-            experiment['favorite'] = favorite
+            result = self.persist_proposals_favorites(username, experiment)
+            experiment['favorite'] = result[0]
+            experiment['id'] = result[1]
 
         return experiments_list
 
@@ -219,11 +219,12 @@ class CalipsoExperimentsServices:
                     user_experiment = CalipsoUserExperiment(calipso_user=calipso_user, calipso_experiment=exp,
                                                             favorite=False)
                     user_experiment.save()
-                return user_experiment.favorite
+                return user_experiment.favorite, user_experiment.id
 
             except Exception as e:
                 self.logger.debug("UserExperiment not found: %s" % e)
-                return False
+                return False, 0
+
         except Exception as e:
             self.logger.debug("Error CalipsoExperiment creation: %s" % e)
-            return False
+            return False, 0
