@@ -27,10 +27,10 @@ class ExperimentServiceTestCase(APITestCase):
         experiment_2 = CalipsoExperiment.objects.get(pk=2)
 
         self.service.add_user_to_experiment(username=calipso_user.user.username,
-                                            public_number=experiment_1.serial_number)
+                                            public_number=experiment_1.proposal_id)
 
         self.service.add_user_to_experiment(username=calipso_user.user.username,
-                                            public_number=experiment_2.serial_number)
+                                            public_number=experiment_2.proposal_id)
 
         experiments = self.service.get_user_experiments(calipso_user.user.username)
         self.assertEqual(len(experiments), 2)
@@ -45,16 +45,16 @@ class ExperimentServiceTestCase(APITestCase):
         experiment_2 = CalipsoExperiment.objects.get(pk=2)
 
         self.service.add_user_to_experiment(username=calipso_user.user.username,
-                                            public_number=experiment_1.serial_number)
+                                            public_number=experiment_1.proposal_id)
 
         self.service.add_user_to_experiment(username=calipso_user.user.username,
-                                            public_number=experiment_2.serial_number)
+                                            public_number=experiment_2.proposal_id)
 
         self.service.remove_user_from_experiment(username=calipso_user.user.username,
-                                                 public_number=experiment_1.serial_number)
+                                                 public_number=experiment_1.proposal_id)
 
         self.service.remove_user_from_experiment(username=calipso_user.user.username,
-                                                 public_number=experiment_2.serial_number)
+                                                 public_number=experiment_2.proposal_id)
 
         experiments = self.service.get_user_experiments(calipso_user.user.username)
         self.assertEqual(len(experiments), 0)
@@ -69,7 +69,7 @@ class ExperimentServiceTestCase(APITestCase):
         self.assertEqual(experiment_1.subject, "Experiment 1")
 
         self.service.update_experiment(beamline_code=experiment_1.beam_line, description=experiment_1.body,
-                                       public_number=experiment_1.serial_number, title="Experiment A")
+                                       public_number=experiment_1.proposal_id, title="Experiment A")
 
         experiment = CalipsoExperiment.objects.get(pk=1)
 
@@ -85,7 +85,7 @@ class ExperimentServiceTestCase(APITestCase):
         self.assertEqual(experiment_1.body, "Description of experiment 1")
 
         self.service.update_experiment(beamline_code=experiment_1.beam_line, description="New description",
-                                       public_number=experiment_1.serial_number, title=experiment_1.subject)
+                                       public_number=experiment_1.proposal_id, title=experiment_1.subject)
 
         experiment = CalipsoExperiment.objects.get(pk=1)
 

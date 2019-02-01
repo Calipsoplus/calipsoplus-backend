@@ -5,7 +5,7 @@
     "fields": {
       "subject":"Experiment 1",
       "body":"Description of experiment 1",
-      "serial_number":"2018091622",
+      "proposal_id":"2018091622",
       "beam_line":"MIDAS"
     }
   },
@@ -15,7 +15,7 @@
     "fields": {
       "subject":"Experiment 2",
       "body":"Description of experiment 2",
-      "serial_number":"2018091632",
+      "proposal_id":"2018091632",
       "beam_line":"MIDAS"
     }
   },
@@ -25,10 +25,42 @@
     "fields": {
       "subject":"Experiment 3",
       "body":"Description of experiment 3",
-      "serial_number":"2018091633",
+      "proposal_id":"20180916333",
+      "beam_line":"MIDAS3"
+    }
+  },
+  {
+    "model": "apprest.CalipsoExperiment",
+    "pk": 4,
+    "fields": {
+      "subject":"Experiment 4",
+      "body":"Description of experiment 4",
+      "proposal_id":"2018091634",
+      "beam_line":"MIDAS2"
+    }
+  },
+  {
+    "model": "apprest.CalipsoExperiment",
+    "pk": 5,
+    "fields": {
+      "subject":"Experiment 5",
+      "body":"Description of experiment 5",
+      "proposal_id":"2018091635",
+      "beam_line":"MIDAS2"
+    }
+  },
+  {
+    "model": "apprest.CalipsoExperiment",
+    "pk": 6,
+    "fields": {
+      "subject":"Experiment 6",
+      "body":"Description of experiment 6",
+      "proposal_id":"2018091636",
       "beam_line":"MIDAS2"
     }
   }
+
+
 
 
 ]

@@ -3,6 +3,7 @@ import re
 import uuid
 import docker
 
+from apprest.models import CalipsoSession
 from apprest.models.container import CalipsoContainer
 from apprest.services.image import CalipsoAvailableImagesServices
 
@@ -11,7 +12,7 @@ from django.conf import settings
 from apprest.services.quota import CalipsoUserQuotaServices
 from apprest.services.session import CalipsoSessionsServices
 from apprest.utils.exceptions import QuotaMaxSimultaneousExceeded, QuotaHddExceeded, QuotaMemoryExceeded, \
-    QuotaCpuExceeded
+    QuotaCpuExceeded, DockerExceptionNotFound
 
 quota_service = CalipsoUserQuotaServices()
 image_service = CalipsoAvailableImagesServices()
@@ -45,21 +46,23 @@ class CalipsoContainersServices:
 
         self.logger.debug('Attempting to run a new container')
 
+        try:
+            self.client.ping()
+        except Exception as e:
+            self.logger.debug('Docker daemon not found.')
+            raise DockerExceptionNotFound("Docker daemon not found.")
+
         list_of_containers = self.list_container(username=username)
 
         for container in list_of_containers:
-            image = image_service.get_available_image(public_name=container.public_name)[0]
+            image = image_service.get_available_image(public_name=container.public_name)
             max_simultaneous += 1
             max_cpu += image.cpu
             max_memory += int(image.memory[:-1])
             max_hdd += int(image.hdd[:-1])
             self.logger.debug("container with public_name=%s" % container.public_name)
 
-        try:
-            quota_per_user = quota_service.get_default_quota(username=username)[0]
-        except Exception as e:
-            self.logger.error("Problem to get quota from %s user" % username)
-            self.logger.error(e)
+        quota_per_user = quota_service.get_default_quota(username=username)
 
         self.logger.debug("num_containers_per_user = %d" % len(list_of_containers))
 
@@ -81,7 +84,7 @@ class CalipsoContainersServices:
             self.logger.warning('user:%s max_hdd:%dG quota.max_hdd:%s' % (username, max_hdd, quota_per_user.hdd))
             raise QuotaHddExceeded("Max hdd exceeded")
 
-        image_selected = image_service.get_available_image(public_name=container_public_name)[0]
+        image_selected = image_service.get_available_image(public_name=container_public_name)
 
         try:
             # generate random values for guacamole credentials
@@ -92,8 +95,11 @@ class CalipsoContainersServices:
 
             try:
                 volume = session_service.get_volumes_from_session(session_number=experiment)
+
             except Exception as e:
-                volume = ""
+                self.logger.debug('volume not found, set volume to default')
+                volume = {"/tmp/results/" + username: {"bind": "/tmp/results/" + username, "mode": "rw"},
+                          "/tmp/data/" + username: {"bind": "/tmp/data/" + username, "mode": "ro"}}
 
             self.logger.debug('volume set to :%s', volume)
 
@@ -116,9 +122,10 @@ class CalipsoContainersServices:
                                                           memswap_limit=-1,
                                                           cpu_count=image_selected.cpu,
                                                           environment=["PYTHONUNBUFFERED=0"],
-                                                          working_dir="/tmp/results",
+                                                          working_dir="/tmp/results/" + username,
                                                           volumes=volume
                                                           )
+
             new_container.container_id = docker_container.id
             new_container.container_name = docker_container.name
             new_container.container_status = docker_container.status
@@ -127,6 +134,7 @@ class CalipsoContainersServices:
             port = 0
             for key, val in new_container.container_info['NetworkSettings']['Ports'].items():
                 bport = int(val[0]['HostPort'])
+
                 if (bport > port):
                     port = bport
 
@@ -157,6 +165,12 @@ class CalipsoContainersServices:
         self.logger.debug('Attempting to remove container %s' % container_name)
 
         try:
+            self.client.ping()
+        except Exception as e:
+            self.logger.debug('Docker daemon not found.')
+            raise DockerExceptionNotFound("Docker daemon not found.")
+
+        try:
             self.client.api.remove_container(container_name)
 
             container = CalipsoContainer.objects.get(container_name=container_name, container_status='stopped')
@@ -179,6 +193,11 @@ class CalipsoContainersServices:
         :return: none
         """
         self.logger.debug('Attempting to stop a container %s' % container_name)
+        try:
+            self.client.ping()
+        except Exception as e:
+            self.logger.debug('Docker daemon not found.')
+            raise DockerExceptionNotFound("Docker daemon not found.")
 
         try:
             self.client.api.stop(container_name)
