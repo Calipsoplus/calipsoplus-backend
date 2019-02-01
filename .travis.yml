@@ -1,0 +1,20 @@
+language: python
+
+matrix:
+    include:
+      - python 3.4
+      - python 3.5
+      - python 3.7
+      
+services:
+    - mysql
+
+env:
+  -DJANGO=1.8 DB=mysql
+install:
+  - pip install -r requirements.txt
+
+before_script: # => 6
+  - mysql -e 'create database test;' -u root
+script: # => 7
+  - echo
