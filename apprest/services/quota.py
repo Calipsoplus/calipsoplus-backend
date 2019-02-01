@@ -18,22 +18,21 @@ class CalipsoUserQuotaServices:
         try:
             user = User.objects.get(username=username)
             calipso_user = CalipsoUser.objects.get(user=user)
-            result_quota = CalipsoUserQuota.objects.get(calipso_user=calipso_user)
-            if not result_quota:
-                self.logger.debug('Default quota not found, for user:%s ' % username)
+            try:
+                result_quota = CalipsoUserQuota.objects.get(calipso_user=calipso_user)
+                return result_quota
+
+            except CalipsoUserQuota.DoesNotExist as e:
+                self.logger.debug(
+                    'Default quota for user:%s, not found, we will use default settings' % username)
 
                 quota = CalipsoUserQuota()
                 quota.max_simultaneous = MAX_CONTAINER_PER_USER
                 quota.memory = MAX_RAM_PER_USER
                 quota.cpu = MAX_CPU_PER_USER
                 quota.hdd = MAX_STORAGE_PER_USER
-                quota.calipso_user = calipso_user
-                quota.save()
 
                 return quota
-            else:
-                self.logger.debug('Returning quota for username:%s' % username)
-                return result_quota
 
         except Exception as e:
             self.logger.debug('Error to get calipso_user from quota, error:%s' % e)
@@ -57,5 +56,3 @@ class CalipsoUserQuotaServices:
         except Exception as e:
             self.logger.debug('Error to get calipso_user from quota, error:%s' % e)
             raise NotFound
-
-
