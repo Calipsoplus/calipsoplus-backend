@@ -5,7 +5,7 @@ from rest_framework.exceptions import NotFound
 
 from apprest.models.quota import CalipsoUserQuota
 from apprest.models.user import CalipsoUser
-from calipsoplus.settings_calipso import MAX_CONTAINER_PER_USER, MAX_RAM_PER_USER, MAX_CPU_PER_USER, \
+from calipsoplus.settings_calipso import MAX_RESOURCES_PER_USER, MAX_RAM_PER_USER, MAX_CPU_PER_USER, \
     MAX_STORAGE_PER_USER
 
 
@@ -27,7 +27,7 @@ class CalipsoUserQuotaServices:
                     'Default quota for user:%s, not found, we will use default settings' % username)
 
                 quota = CalipsoUserQuota()
-                quota.max_simultaneous = MAX_CONTAINER_PER_USER
+                quota.max_simultaneous = MAX_RESOURCES_PER_USER
                 quota.memory = MAX_RAM_PER_USER
                 quota.cpu = MAX_CPU_PER_USER
                 quota.hdd = MAX_STORAGE_PER_USER
