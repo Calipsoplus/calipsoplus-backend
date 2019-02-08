@@ -5,7 +5,9 @@ from apprest.services.resource_kubernetes import CalipsoResourceKubernetesServic
 from apprest.services.resource_static_link import CalipsoResourceStaticLinkService
 from apprest.services.resource_virtual_machine import CalipsoResourceVirtualMachineService
 from apprest.utils.resources import ResourceType
+from apprest.services.quota import CalipsoUserQuotaServices
 
+quota_service = CalipsoUserQuotaServices()
 logger = logging.getLogger(__name__)
 
 
@@ -36,6 +38,7 @@ class GenericCalipsoResourceService(CalipsoResource):
 
     def run_resource(self, username, experiment, public_name):
         logger.debug('run_resource (%s,%s,%s)' % (username, experiment, public_name))
+        quota_service.calculate_available_quota(username)
         return self.resource.run_resource(username=username, experiment=experiment, public_name=public_name)
 
     def rm_resource(self, resource_name):
