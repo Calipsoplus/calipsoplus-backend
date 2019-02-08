@@ -13,14 +13,14 @@
       "guacamole_username": "GUAC_USERNAME1",
       "guacamole_password": "GUAC_PASSWORD1",
       "vnc_password": "VNC_PASSWORD1",
-      "public_name": "base_image"
+      "public_name": "base_desktop"
     }
   },
   {
     "model": "apprest.CalipsoContainer",
     "pk": 2,
     "fields": {
-      "calipso_user": "userB",
+      "calipso_user": "userA",
       "calipso_experiment": "experiment_2",
       "container_id": "7ef712753dd5377e4b179ed2b64487a1a1687691cb0077e27945ea0ef456323f",
       "container_name": "wonderful_allen",
@@ -30,7 +30,7 @@
       "guacamole_username": "GUAC_USERNAME2",
       "guacamole_password": "GUAC_PASSWORD2",
       "vnc_password": "VNC_PASSWORD2",
-      "public_name": "base_image"
+      "public_name": "base_desktop"
     }
   }
 ]

@@ -1,34 +1,19 @@
 [
   {
     "model": "apprest.CalipsoAvailableImages",
-    "pk": 1,
+    "pk": 5,
     "fields": {
-      "public_name": "base_image",
+      "public_name": "base_link",
       "docker_daemon": "tcp://192.168.33.13:2375",
-      "image": "consol/centos-xfce-vnc:latest",
-      "host_domain": "192.168.33.13",
-      "port_hook": "5901/tcp",
-      "logs_er": "connect via",
-      "protocol": "ssh",
-      "cpu": 2,
-      "memory": "4G",
-      "hdd": "10G"
-    }
-  },
-  {
-    "model": "apprest.CalipsoAvailableImages",
-    "pk": 2,
-    "fields": {
-      "public_name": "base_jupyter",
-      "docker_daemon": "tcp://192.168.33.13:2375",
-      "image": "jupyter/scipy-notebook",
-      "host_domain": "192.168.33.13",
-      "port_hook": "3389/tcp",
-      "logs_er": "token=(?:[-\\w.]|(?:%[\\d\\a-fA-F]{2}))+",
+      "image": "image/link",
+      "host_domain": "",
+      "port_hook": "",
+      "logs_er": "",
       "protocol": "rdp",
       "cpu": 2,
       "memory": "4G",
-      "hdd": "10G"
+      "hdd": "10G",
+      "resource_type_id": 4
     }
   }
 ]

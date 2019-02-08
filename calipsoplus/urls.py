@@ -9,7 +9,6 @@ from apprest.views.login import login_user, logout_user, get_calipso_settings, g
 from apprest.views.quota import QuotaView
 
 urlpatterns = [
-    # url(r'^container/', include('apprest.urls.container')),
     url(r'^resource/', include('apprest.urls.resource')),
     url(r'^umbrella/', include('apprest.urls.umbrella')),
     path('experiments/<username>/', GetExperimentsByUserName.as_view()),
