@@ -6,7 +6,7 @@
       "fields": {
         "calipso_user": 1,
         "max_simultaneous": 3,
-        "cpu": 8,
+        "cpu": 5,
         "memory": "40G",
         "hdd": "50G"
       }
@@ -16,8 +16,8 @@
       "pk": 2,
       "fields": {
         "calipso_user": 2,
-        "max_simultaneous": 3,
-        "cpu": 4,
+        "max_simultaneous": 5,
+        "cpu": 2,
         "memory": "8G",
         "hdd": "25G"
       }
@@ -29,7 +29,7 @@
         "calipso_user": 3,
         "max_simultaneous": 3,
         "cpu": 6,
-        "memory": "8G",
+        "memory": "6G",
         "hdd": "25G"
       }
     },
@@ -41,7 +41,7 @@
         "max_simultaneous": 3,
         "cpu": 10,
         "memory": "50G",
-        "hdd": "20G"
+        "hdd": "10G"
       }
     }
 ]

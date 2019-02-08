@@ -42,12 +42,24 @@ class CalipsoAvailableImagesServices:
             self.logger.error(e)
             raise Exception
 
-    def add_new_image(self, public_name, image, port_hook, logs_er, protocol, cpu, memory, hdd):
+    def add_new_image(self, params):
+
+        public_name = params["public_name"]
+        image = params["image"]
+        port_hook = params["port_hook"]
+        logs_er = params["logs_er"]
+        protocol = params["protocol"]
+        cpu = params["cpu"]
+        memory = params["memory"]
+        hdd = params["hdd"]
+        resource_type = params["resource_type"]
+
         self.logger.debug('Attempting to add new image %s' % public_name)
         try:
             new_image = CalipsoAvailableImages(public_name=public_name, image=image, docker_daemon='tcp://:2375',
-                                           host_domain='', port_hook=port_hook, logs_er=logs_er,
-                                           protocol=protocol, cpu=cpu, memory=memory, hdd=hdd)
+                                               host_domain='', port_hook=port_hook, logs_er=logs_er,
+                                               protocol=protocol, cpu=cpu, memory=memory, hdd=hdd,
+                                               resource_type=resource_type)
             try:
                 self.logger.debug(str(image))
                 self.client.images.get_registry_data(str(image))
@@ -66,7 +78,17 @@ class CalipsoAvailableImagesServices:
         except Exception as e:
             self.logger.error(e)
 
-    def modify_image(self, public_name, image, port_hook, logs_er, protocol, cpu, memory, hdd):
+    def modify_image(self, params):
+        public_name = params["public_name"]
+        image = params["image"]
+        port_hook = params["port_hook"]
+        logs_er = params["logs_er"]
+        protocol = params["protocol"]
+        cpu = params["cpu"]
+        memory = params["memory"]
+        hdd = params["hdd"]
+        resource_type = params["resource_type"]
+
         self.logger.debug('Modifying image %s' % public_name)
         try:
             selected_image = self.get_available_image(public_name)
@@ -77,6 +99,7 @@ class CalipsoAvailableImagesServices:
             selected_image.cpu = cpu
             selected_image.memory = memory
             selected_image.hdd = hdd
+            selected_image.resource_type = resource_type
 
             selected_image.save()
             self.logger.debug('Image: %s has been updated' % public_name)
@@ -91,7 +114,6 @@ class CalipsoAvailableImagesServices:
             self.logger.debug('Image %s successfully deleted' % public_name)
         except Exception as e:
             self.logger.error(e)
-
 
     def get_sum_containers_quota(self, username):
         self.logger.debug('Getting get_sum_containers_quota quota')
@@ -126,16 +148,3 @@ class CalipsoAvailableImagesServices:
             self.logger.error('Error to get calipso_user from quota user:%s' % username)
             self.logger.debug(e)
             raise NotFound
-
-
-    def get_all_images(self):
-        self.logger.debug('Getting all images')
-        try:
-            all_facilities = CalipsoAvailableImages.objects.all().order_by('public_name')
-            self.logger.debug('All application facilities got')
-            return all_facilities
-        except Exception as e:
-            self.logger.debug(e)
-            raise NotFound
-
-
