@@ -31,6 +31,7 @@ class GetUsedQuotaFromUser(APIView):
         else:
             raise PermissionDenied
 
+
 class GetInfoImage(APIView):
     """
     get:
@@ -62,26 +63,42 @@ class GetInfoImage(APIView):
     def post(self, request, *args, **kwargs):
         service = CalipsoAvailableImagesServices()
         public_name = self.kwargs.get('public_name')
-        service.add_new_image(public_name=public_name, image=request.data.get('image'),
-                             port_hook=request.data.get('port_hook'), logs_er=request.data.get('logs_er'),
-                             protocol=request.data.get('protocol'), cpu=request.data.get('cpu'),
-                             memory=request.data.get('memory'), hdd=request.data.get('hdd'))
-        return Response(status=status.HTTP_201_CREATED)
 
+        params = {'public_name': public_name,
+                  'image': request.data.get('image'),
+                  'port_hook': request.data.get('port_hook'),
+                  'logs_er': request.data.get('logs_er'),
+                  'protocol': request.data.get('protocol'),
+                  'cpu': request.data.get('cpu'),
+                  'memory': request.data.get('memory'),
+                  'hdd': request.data.get('hdd'),
+                  'resource_type': request.data.get('resource_type')}
+
+        service.add_new_image(params=params)
+        return Response(status=status.HTTP_201_CREATED)
 
     def put(self, request, *args, **kwargs):
         service = CalipsoAvailableImagesServices()
         public_name = self.kwargs.get('public_name')
-        service.modify_image(public_name=public_name, image=request.data.get('image'),
-                             port_hook=request.data.get('port_hook'), logs_er=request.data.get('logs_er'),
-                             protocol=request.data.get('protocol'), cpu=request.data.get('cpu'),
-                             memory=request.data.get('memory'), hdd=request.data.get('hdd'))
+
+        params = {'public_name': public_name,
+                  'image': request.data.get('image'),
+                  'port_hook': request.data.get('port_hook'),
+                  'logs_er': request.data.get('logs_er'),
+                  'protocol': request.data.get('protocol'),
+                  'cpu': request.data.get('cpu'),
+                  'memory': request.data.get('memory'),
+                  'hdd': request.data.get('hdd'),
+                  'resource_type': request.data.get('resource_type')}
+
+        service.modify_image(params=params)
         return Response(status=status.HTTP_200_OK)
 
     def delete(self, *args, **kwargs):
         service = CalipsoAvailableImagesServices()
         service.delete_image(self.kwargs.get('public_name'))
         return Response(status=status.HTTP_204_NO_CONTENT)
+
 
 class GetAllImages(APIView):
     """

@@ -1,0 +1,27 @@
+[
+  {
+    "model": "apprest.CalipsoResourcesType",
+    "pk": 1,
+    "fields": {
+      "resource_type": "docker_container"
+    }
+  },{
+    "model": "apprest.CalipsoResourcesType",
+    "pk": 2,
+    "fields": {
+      "resource_type": "kubernetes"
+    }
+  },{
+    "model": "apprest.CalipsoResourcesType",
+    "pk": 3,
+    "fields": {
+      "resource_type": "virtual_machine"
+    }
+  },{
+    "model": "apprest.CalipsoResourcesType",
+    "pk": 4,
+    "fields": {
+      "resource_type": "static_link"
+    }
+  }
+]

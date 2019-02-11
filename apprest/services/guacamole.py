@@ -17,13 +17,13 @@ class CalipsoGuacamoleServices:
     def create_connection(self, params):
         self.logger.info('Attempting to run create_connection_guacamole')
 
-        guacamole_username=params["guacamole_username"]
-        guacamole_password=params["guacamole_password"]
-        guacamole_connection_name=params["guacamole_connection_name"]
-        guacamole_protocol=params["guacamole_protocol"]
-        vnc_password=params["vnc_password"]
-        container_ip=params["container_ip"]
-        container_port=params["container_port"]
+        guacamole_username = params["guacamole_username"]
+        guacamole_password = params["guacamole_password"]
+        guacamole_connection_name = params["guacamole_connection_name"]
+        guacamole_protocol = params["guacamole_protocol"]
+        vnc_password = params["vnc_password"]
+        container_ip = params["container_ip"]
+        container_port = params["container_port"]
 
         try:
             salt = bytearray(random.getrandbits(8) for _ in xrange(32))
