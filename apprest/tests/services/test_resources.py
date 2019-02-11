@@ -63,6 +63,7 @@ class ResourceServiceTestCase(CalipsoTestCase):
         resource_service = GenericCalipsoResourceService('static_link')
 
         resource = resource_service.run_resource(username=self.username, experiment='55555',
-                                                 public_name='static_alba')
+                                                 public_name='static_yahoo')
 
-        self.assertEqual(resource, NotImplemented)
+        self.assertEqual(resource.host_port, "http://www.yahoo.es")
+

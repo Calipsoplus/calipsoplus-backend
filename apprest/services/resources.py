@@ -38,7 +38,12 @@ class GenericCalipsoResourceService(CalipsoResource):
 
     def run_resource(self, username, experiment, public_name):
         logger.debug('run_resource (%s,%s,%s)' % (username, experiment, public_name))
-        quota_service.calculate_available_quota(username)
+
+        try:
+            quota_service.calculate_available_quota(username)
+        except Exception as e:
+            raise e
+
         return self.resource.run_resource(username=username, experiment=experiment, public_name=public_name)
 
     def rm_resource(self, resource_name):

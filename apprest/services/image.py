@@ -30,7 +30,7 @@ class CalipsoAvailableImagesServices:
         except Exception as e:
             self.logger.error("%s not found." % public_name)
             self.logger.error(e)
-            raise NotFound
+            raise Exception
 
     def get_all_images(self):
         self.logger.debug('Getting all available images')
