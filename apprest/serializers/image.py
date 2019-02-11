@@ -4,5 +4,6 @@ from apprest.models.image import CalipsoAvailableImages
 
 class CalipsoImageSerializer(serializers.ModelSerializer):
     class Meta:
-        fields = ('public_name', 'image', 'cpu', 'memory', 'hdd')
+        fields = ('public_name', 'image', 'cpu', 'memory', 'hdd', 'resource_type')
         model = CalipsoAvailableImages
+

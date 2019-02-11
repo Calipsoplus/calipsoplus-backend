@@ -1,5 +1,13 @@
+import django
 from django.db import models
 from simple_history.models import HistoricalRecords
+
+
+class CalipsoResourcesType(models.Model):
+    resource_type = models.CharField(max_length=30, unique=True)
+
+    class Meta:
+        db_table = 'calipso_resource_types'
 
 
 class CalipsoAvailableImages(models.Model):
@@ -14,6 +22,13 @@ class CalipsoAvailableImages(models.Model):
     memory = models.CharField(max_length=100)
     hdd = models.CharField(max_length=100)
 
+    resource_type = models.ForeignKey(CalipsoResourcesType, on_delete=django.db.models.deletion.CASCADE, blank=True,
+                                      null=True)
+
+
+    #label
+    #icon
+
     history = HistoricalRecords()
 
     class Meta:
@@ -21,4 +36,3 @@ class CalipsoAvailableImages(models.Model):
 
     def __str__(self):
         return self.public_name
-
