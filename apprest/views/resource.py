@@ -1,26 +1,27 @@
 import logging
 
+from django.conf import settings
+from django.core.exceptions import PermissionDenied
 from rest_framework import status
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
-from rest_framework.exceptions import PermissionDenied
+from rest_framework.exceptions import NotFound
 from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAuthenticated
 
+from apprest.models import CalipsoResourcesType, CalipsoAvailableImages
 from apprest.serializers.container import CalipsoContainerSerializer
 from apprest.services.container import CalipsoContainersServices
 from apprest.services.guacamole import CalipsoGuacamoleServices
-from apprest.services.image import CalipsoAvailableImagesServices
+
+from apprest.services.resources import GenericCalipsoResourceService
 from apprest.services.session import CalipsoSessionsServices
 
-from apprest.utils.request import JSONResponse, ErrorFormatting
-
-from django.conf import settings
+from apprest.utils.request import ErrorFormatting, JSONResponse
 
 container_service = CalipsoContainersServices()
 guacamole_service = CalipsoGuacamoleServices()
 session_service = CalipsoSessionsServices()
-image_service = CalipsoAvailableImagesServices()
 
 logger = logging.getLogger(__name__)
 errorFormatting = ErrorFormatting()
@@ -29,13 +30,22 @@ errorFormatting = ErrorFormatting()
 @api_view(['GET'])
 @permission_classes((IsAuthenticated,))
 @authentication_classes((SessionAuthentication, BasicAuthentication,))
-def rm_container(request, username, container_name):
+def rm_resource(request, username, resource_name, public_name):
+    image_selected = CalipsoAvailableImages.objects.get(public_name=public_name)
+    try:
+        resource_type = CalipsoResourcesType.objects.get(pk=image_selected.resource_type.id)
+    except Exception as e:
+        logger.debug("CalipsoResourcesType.objects.get e:%s" % e)
+        raise NotFound
+
+    resource_service = GenericCalipsoResourceService(resource_type.resource_type)
+
     if username != request.user.username:
         return JSONResponse("username mismatch", status=status.HTTP_403_FORBIDDEN)
     try:
-        container_data = container_service.rm_container(container_name)
+        resource_data = resource_service.rm_resource(resource_name)
         try:
-            serializer = CalipsoContainerSerializer(container_data)
+            serializer = CalipsoContainerSerializer(resource_data)
             return JSONResponse(serializer.data, status=status.HTTP_200_OK)
         except Exception as e:
             logger.debug(errorFormatting.format(e))
@@ -49,13 +59,22 @@ def rm_container(request, username, container_name):
 @api_view(['GET'])
 @permission_classes((IsAuthenticated,))
 @authentication_classes((SessionAuthentication, BasicAuthentication,))
-def stop_container(request, username, container_name):
+def stop_resource(request, username, resource_name, public_name):
+    image_selected = CalipsoAvailableImages.objects.get(public_name=public_name)
+    try:
+        resource_type = CalipsoResourcesType.objects.get(pk=image_selected.resource_type.id)
+    except Exception as e:
+        logger.debug("CalipsoResourcesType.objects.get e:%s" % e)
+        raise NotFound
+
+    resource_service = GenericCalipsoResourceService(resource_type.resource_type)
+
     if username != request.user.username:
         return JSONResponse("username mismatch", status=status.HTTP_403_FORBIDDEN)
     try:
-        container_data = container_service.stop_container(container_name)
+        resource_data = resource_service.stop_resource(resource_name)
         try:
-            serializer = CalipsoContainerSerializer(container_data)
+            serializer = CalipsoContainerSerializer(resource_data)
             return JSONResponse(serializer.data, status=status.HTTP_200_OK)
         except Exception as e:
             logger.debug(errorFormatting.format(e))
@@ -69,7 +88,16 @@ def stop_container(request, username, container_name):
 @api_view(['GET'])
 @authentication_classes((SessionAuthentication, BasicAuthentication,))
 @permission_classes((IsAuthenticated,))
-def run_container(request, username, experiment, public_name):
+def run_resource(request, username, experiment, public_name):
+    image_selected = CalipsoAvailableImages.objects.get(public_name=public_name)
+    try:
+        resource_type = CalipsoResourcesType.objects.get(pk=image_selected.resource_type.id)
+    except Exception as e:
+        logger.debug("CalipsoResourcesType.objects.get e:%s" % e)
+        raise NotFound
+
+    resource_service = GenericCalipsoResourceService(resource_type.resource_type)
+
     experiment_session = experiment.split("~")
 
     if len(experiment_session) == 2:
@@ -83,36 +111,35 @@ def run_container(request, username, experiment, public_name):
 
     if username != request.user.username:
         return JSONResponse("username mismatch", status=status.HTTP_403_FORBIDDEN)
-
     try:
-        container = container_service.run_container(username, session_number, public_name)
+        resource = resource_service.run_resource(username=username, experiment=session_number,
+                                                 public_name=public_name)
+
     except Exception as e:
         logger.debug("Error after run_container : %s " % e)
         return JSONResponse({'error': errorFormatting.format(e)}, status=status.HTTP_204_NO_CONTENT)
 
-    image_selected = image_service.get_available_image(public_name=public_name)
-
     logger.debug("Searching... port")
 
     try:
-        port = int(container.container_info['NetworkSettings']['Ports'][image_selected.port_hook][0]['HostPort'])
+        port = int(resource.container_info['NetworkSettings']['Ports'][image_selected.port_hook][0]['HostPort'])
     except Exception as e:
         port = 0
 
-    container.container_info = experiment_proposal_id
-    container.save()
+    resource.container_info = experiment_proposal_id
+    resource.save()
 
-    serializer = CalipsoContainerSerializer(container)
+    serializer = CalipsoContainerSerializer(resource)
 
     logger.debug("Selected port: %d" % port)
 
     try:
 
-        params = {'guacamole_username': container.guacamole_username,
-                  'guacamole_password': container.guacamole_password,
-                  'guacamole_connection_name': container.container_name,
+        params = {'guacamole_username': resource.guacamole_username,
+                  'guacamole_password': resource.guacamole_password,
+                  'guacamole_connection_name': resource.container_name,
                   'guacamole_protocol': image_selected.protocol,
-                  'vnc_password': container.vnc_password,
+                  'vnc_password': resource.vnc_password,
                   'container_ip': settings.REMOTE_MACHINE_IP,
                   'container_port': port}
 
@@ -125,7 +152,7 @@ def run_container(request, username, experiment, public_name):
     return JSONResponse(serializer.data, status=status.HTTP_201_CREATED)
 
 
-class GetContainersByUserName(ListAPIView):
+class GetResourcesByUserName(ListAPIView):
     authentication_classes = (SessionAuthentication, BasicAuthentication)
     permission_classes = (IsAuthenticated,)
     serializer_class = CalipsoContainerSerializer
@@ -139,4 +166,4 @@ class GetContainersByUserName(ListAPIView):
             raise PermissionDenied
 
     def dispatch(self, *args, **kwargs):
-        return super(GetContainersByUserName, self).dispatch(*args, **kwargs)
+        return super(GetResourcesByUserName, self).dispatch(*args, **kwargs)

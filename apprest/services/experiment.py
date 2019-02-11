@@ -2,8 +2,6 @@ import datetime
 import json
 import logging
 
-import time
-
 import requests
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -15,6 +13,12 @@ from apprest.models.experiment import CalipsoExperiment, CalipsoUserExperiment
 from apprest.models.user import CalipsoUser
 
 from calipsoplus.settings_calipso import PAGE_SIZE_EXPERIMENTS
+
+
+def get_str(content):
+    if not content:
+        return '.'
+    return str(content)
 
 
 class CalipsoExperimentsServices:
@@ -94,9 +98,6 @@ class CalipsoExperimentsServices:
 
     def get_external_user_experiments(self, username, query):
         self.logger.debug('Getting get_external_user_experiments from user:%s' % username)
-        """
-         query = {page, ordering, search, calipsouserexperiment__favorite}
-        """
         try:
             url = settings.DYNAMIC_EXPERIMENTS_DATA_RETRIEVAL_ENDPOINT.replace('$USERNAME', username)
             self.logger.debug('calling external endpoint %s' % url)
@@ -150,12 +151,9 @@ class CalipsoExperimentsServices:
             proposal_id = experiments.get('proposal_id')
             beam_line = experiments.get('beam_line')
 
-            if not subject:
-                subject = "."
-            if not body:
-                body = "."
-            if not beam_line:
-                beam_line = "."
+            subject = get_str(content=subject)
+            body = get_str(content=body)
+            beam_line = get_str(content=beam_line)
 
             # experiments
             try:
@@ -183,11 +181,8 @@ class CalipsoExperimentsServices:
                     session_data_set_path = "[]"
 
                 self.logger.debug("Session loop %s" % session_number)
-
-                if session_subject == '':
-                    session_subject = "."
-                if session_body == '':
-                    session_body = "."
+                session_subject = get_str(content=session_subject)
+                session_body = get_str(content=session_body)
 
                 try:
                     sess = CalipsoSession.objects.get(session_number=session_number, experiment=exp)
@@ -216,6 +211,7 @@ class CalipsoExperimentsServices:
                     user_experiment = CalipsoUserExperiment.objects.get(calipso_user=calipso_user,
                                                                         calipso_experiment=exp)
                 except Exception as e:
+                    self.logger.debug("Creating new user(%s)_experiment(%s) e:%s" % (username, exp.id, e))
                     user_experiment = CalipsoUserExperiment(calipso_user=calipso_user, calipso_experiment=exp,
                                                             favorite=False)
                     user_experiment.save()
