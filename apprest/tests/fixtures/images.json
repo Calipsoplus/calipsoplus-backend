@@ -1,15 +1,15 @@
 [
   {
     "model": "apprest.CalipsoAvailableImages",
-    "pk": 5,
+    "pk": 6,
     "fields": {
-      "public_name": "base_link",
+      "public_name": "static_yahoo",
       "docker_daemon": "tcp://192.168.33.13:2375",
-      "image": "image/link",
+      "image": "http://www.yahoo.es",
       "host_domain": "",
       "port_hook": "",
       "logs_er": "",
-      "protocol": "rdp",
+      "protocol": "",
       "cpu": 2,
       "memory": "4G",
       "hdd": "10G",
