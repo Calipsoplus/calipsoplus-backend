@@ -1,5 +1,9 @@
 import logging
 
+from rest_framework.exceptions import NotFound
+
+from apprest.models import CalipsoUser
+
 
 class CalipsoUserServices:
     def __init__(self):
@@ -18,3 +22,25 @@ class CalipsoUserServices:
 
         except KeyError:
             return None
+
+    def get_all_users(self):
+        self.logger.debug("Attempting to retrieve all users")
+        try:
+            users = CalipsoUser.objects.all()
+            self.logger.debug("Retrieved all users")
+            return users
+        except Exception as e:
+            self.logger.error(e)
+            raise Exception
+
+    def get_user(self, username):
+        self.logger.debug('Getting user profile: %s' % username)
+        try:
+            user = CalipsoUser.objects.get(user__username=username)
+            self.logger.debug('User found')
+            return user
+
+        except Exception as e:
+            self.logger.error("%s not found." % username)
+            self.logger.error(e)
+            raise NotFound
