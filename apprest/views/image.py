@@ -4,6 +4,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework import status
 
+from apprest.models import CalipsoResourcesType
 from apprest.serializers.image import CalipsoImageSerializer
 from apprest.services.image import CalipsoAvailableImagesServices
 
@@ -40,15 +41,17 @@ class GetInfoImage(APIView):
         service = CalipsoAvailableImagesServices()
         public_name = self.kwargs.get('public_name')
 
+        # New container image will always be Docker.
+        # TODO: Check to delete port_hook and logs_er
         params = {'public_name': public_name,
                   'image': request.data.get('image'),
-                  'port_hook': request.data.get('port_hook'),
-                  'logs_er': request.data.get('logs_er'),
+                  'port_hook': '',
+                  'logs_er': '',
                   'protocol': request.data.get('protocol'),
                   'cpu': request.data.get('cpu'),
                   'memory': request.data.get('memory'),
                   'hdd': request.data.get('hdd'),
-                  'resource_type': request.data.get('resource_type')}
+                  'resource_type':  CalipsoResourcesType.objects.get(resource_type='docker_container')}
 
         service.add_new_image(params=params)
         return Response(status=status.HTTP_201_CREATED)
