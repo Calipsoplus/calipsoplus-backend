@@ -41,6 +41,16 @@ class GetInfoImage(APIView):
         service = CalipsoAvailableImagesServices()
         public_name = self.kwargs.get('public_name')
 
+        # Default option
+        resource_type = CalipsoResourcesType.objects.get(resource_type='docker_container')
+
+        if request.data.get('resource_type') == 'kubernetes':
+            resource_type = CalipsoResourcesType.objects.get(resource_type='kubernetes')
+        elif request.data.get('resource_type') == 'static link':
+            resource_type = CalipsoResourcesType.objects.get(resource_type='static_link')
+        elif request.data.get('resource_type') == 'virtual machine':
+            resource_type = CalipsoResourcesType.objects.get(resource_type='virtual_machine')
+
         # New container image will always be Docker.
         # TODO: Check to delete port_hook and logs_er
         params = {'public_name': public_name,
@@ -51,7 +61,7 @@ class GetInfoImage(APIView):
                   'cpu': request.data.get('cpu'),
                   'memory': request.data.get('memory'),
                   'hdd': request.data.get('hdd'),
-                  'resource_type':  CalipsoResourcesType.objects.get(resource_type='docker_container')}
+                  'resource_type':  resource_type}
 
         service.add_new_image(params=params)
         return Response(status=status.HTTP_201_CREATED)
