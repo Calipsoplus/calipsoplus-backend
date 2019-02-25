@@ -8,12 +8,17 @@ from apprest.views.image import GetInfoImage, GetAllImages
 from apprest.views.login import login_user, logout_user, get_calipso_settings, get_login_authorization
 from apprest.views.quota import QuotaView, GetUsedQuotaFromUser
 from apprest.views.user import GetUser, GetAllUsers
+from apprest.views.container import ContainerInfo, ActiveContainers, UserContainers
 
 urlpatterns = [
     url(r'^resource/', include('apprest.urls.resource')),
     url(r'^umbrella/', include('apprest.urls.umbrella')),
     path('experiments/<username>/', GetExperimentsByUserName.as_view()),
     url(r'^favorite/(?P<pk>[0-9]+)/$', CalipsoExperimentFavorite.as_view()),
+    path('container/<id>', ContainerInfo.as_view()),
+    path('containers/', ContainerInfo.as_view()),
+    path('containers/active/', ActiveContainers.as_view()),
+    path('containers/<username>/', UserContainers.as_view()),
     path('quota/<username>/', QuotaView.as_view()),
     path('used_quota/<username>/', GetUsedQuotaFromUser.as_view()),
     path('images/', GetAllImages.as_view()),
