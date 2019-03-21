@@ -18,5 +18,9 @@ class QuotaHddExceeded(QuotaExceptionExceeded):
     pass
 
 
+class ResourceAlreadyLaunched(Exception):
+    pass
+
+
 class DockerExceptionNotFound(Exception):
     pass
