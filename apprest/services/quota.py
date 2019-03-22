@@ -8,10 +8,9 @@ from apprest.models.user import CalipsoUser
 from apprest.services.container import CalipsoContainersServices
 from apprest.services.image import CalipsoAvailableImagesServices
 from apprest.utils.exceptions import QuotaMaxSimultaneousExceeded, QuotaCpuExceeded, QuotaMemoryExceeded, \
-    QuotaHddExceeded
+    QuotaHddExceeded, ResourceAlreadyLaunched
 from calipsoplus.settings_calipso import MAX_RESOURCES_PER_USER, MAX_RAM_PER_USER, MAX_CPU_PER_USER, \
     MAX_STORAGE_PER_USER
-
 
 image_service = CalipsoAvailableImagesServices()
 container_service = CalipsoContainersServices()
@@ -65,7 +64,7 @@ class CalipsoUserQuotaServices:
             self.logger.debug('Error to get calipso_user from quota, error:%s' % e)
             raise NotFound
 
-    def calculate_available_quota(self, username):
+    def calculate_available_quota(self, experiment, username):
         self.logger.debug('CalipsoResourceDockerContainerService run_resource')
         max_simultaneous = 0
         max_cpu = 0
@@ -73,14 +72,19 @@ class CalipsoUserQuotaServices:
         max_hdd = 0
 
         list_of_containers = container_service.list_container(username=username)
+        list_of_experiments = []
 
         for container in list_of_containers:
+            list_of_experiments.append(container.calipso_experiment)
             image = image_service.get_available_image(public_name=container.public_name)
             max_simultaneous += 1
             max_cpu += image.cpu
             max_memory += int(image.memory[:-1])
             max_hdd += int(image.hdd[:-1])
             self.logger.debug("container with public_name=%s" % container.public_name)
+
+        if experiment in list_of_experiments:
+            raise ResourceAlreadyLaunched("Resource already launched")
 
         quota_per_user = self.get_default_quota(username=username)
         self.logger.debug("num_containers_per_user = %d" % len(list_of_containers))
