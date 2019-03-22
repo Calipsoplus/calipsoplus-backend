@@ -8,10 +8,8 @@ from apprest.services.image import CalipsoAvailableImagesServices
 
 from django.conf import settings
 
-
 from apprest.services.session import CalipsoSessionsServices
 from apprest.utils.exceptions import DockerExceptionNotFound
-
 
 image_service = CalipsoAvailableImagesServices()
 session_service = CalipsoSessionsServices()
@@ -42,8 +40,6 @@ class CalipsoResourceDockerContainerService:
         except Exception as e:
             self.logger.debug('Docker daemon not found.')
             raise DockerExceptionNotFound("Docker daemon not found.")
-
-
 
         image_selected = image_service.get_available_image(public_name=public_name)
 

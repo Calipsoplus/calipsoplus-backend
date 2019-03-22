@@ -79,7 +79,8 @@ class ResourceViewsTestCase(CalipsoTestCase):
         for x in range(0, quota.max_simultaneous):
             all_resource_responses.append(self.client.get(
                 reverse('run_resource',
-                        kwargs={'username': username, 'experiment': 'EXPERIMENTS', 'public_name': 'base_jupyter'})))
+                        kwargs={'username': username, 'experiment': 'EXPERIMENTS%d' % x,
+                                'public_name': 'base_jupyter'})))
             self.assertEqual(all_resource_responses[x].status_code, status.HTTP_201_CREATED)
 
         last_fail_resource = self.client.get(
