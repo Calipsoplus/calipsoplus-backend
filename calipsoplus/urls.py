@@ -1,6 +1,7 @@
 from django.conf.urls import url, include
 from django.urls import path
 
+from apprest.views.auth import is_user_authenticated
 from apprest.views.experiment import GetExperimentsByUserName
 from apprest.views.facility import GetAllFacilities
 from apprest.views.favorite import CalipsoExperimentFavorite
@@ -33,5 +34,6 @@ urlpatterns = [
     path('settings/', get_calipso_settings),
     path('login/type/', get_login_authorization),
     path('openidtest/', index, name='index'),
+    path('authenticated/', is_user_authenticated, name='is_auth'),
     url(r'^oidc/', include('mozilla_django_oidc.urls')),
 ]
