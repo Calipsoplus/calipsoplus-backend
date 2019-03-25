@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 
 from apprest.services.resources import GenericCalipsoResourceService
 from apprest.tests.utils import CalipsoTestCase
+from apprest.utils.exceptions import ResourceAlreadyLaunched
 
 logger = logging.getLogger(__name__)
 
@@ -66,4 +67,19 @@ class ResourceServiceTestCase(CalipsoTestCase):
                                                  public_name='static_yahoo')
 
         self.assertEqual(resource.host_port, "http://www.yahoo.es")
+
+    def test_repeated_experiment(self):
+
+        """test for a only one experiment by user"""
+        resource_service = GenericCalipsoResourceService('docker_container')
+
+        resource_1 = resource_service.run_resource(username='userA', experiment='EXPERIMENT_A',
+                                                   public_name='base_jupyter')
+
+        with self.assertRaisesMessage(ResourceAlreadyLaunched, 'Resource already launched'):
+            resource_service.run_resource(username='userA', experiment='EXPERIMENT_A',
+                                          public_name='base_jupyter')
+
+        resource_service.stop_resource(resource_name=resource_1.container_name)
+        resource_service.rm_resource(resource_name=resource_1.container_name)
 

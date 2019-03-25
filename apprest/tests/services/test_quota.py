@@ -33,15 +33,15 @@ class CalipsoUserQuotaTestCase(APITestCase):
     def test_max_resources(self):
         self.logger.debug('#### TEST test_quota_cpu START ####')
 
-        container_1 = self.resource_service.run_resource(username='userA', experiment='EXPERIMENT S/N',
+        container_1 = self.resource_service.run_resource(username='userA', experiment='EXPERIMENT1',
                                                          public_name=self.public_name)
-        container_2 = self.resource_service.run_resource(username='userA', experiment='EXPERIMENT S/N',
+        container_2 = self.resource_service.run_resource(username='userA', experiment='EXPERIMENT2',
                                                          public_name=self.public_name)
-        container_3 = self.resource_service.run_resource(username='userA', experiment='EXPERIMENT S/N',
+        container_3 = self.resource_service.run_resource(username='userA', experiment='EXPERIMENT3',
                                                          public_name=self.public_name)
 
         with self.assertRaisesMessage(QuotaMaxSimultaneousExceeded, 'Max machines exceeded'):
-            self.resource_service.run_resource(username='userA', experiment='EXPERIMENT S/N',
+            self.resource_service.run_resource(username='userA', experiment='EXPERIMENT4',
                                                public_name=self.public_name)
 
         self.resource_service.stop_resource(resource_name=container_1.container_name)
@@ -59,13 +59,13 @@ class CalipsoUserQuotaTestCase(APITestCase):
     def test_quota_cpu(self):
         self.logger.debug('#### TEST test_quota_cpu START ####')
 
-        resource_1 = self.resource_service.run_resource(username='userB', experiment='EXPERIMENT S/N',
+        resource_1 = self.resource_service.run_resource(username='userB', experiment='EXPERIMENT1',
                                                         public_name=self.public_name)
-        resource_2 = self.resource_service.run_resource(username='userB', experiment='EXPERIMENT S/N',
+        resource_2 = self.resource_service.run_resource(username='userB', experiment='EXPERIMENT2',
                                                         public_name=self.public_name)
 
         with self.assertRaisesMessage(QuotaCpuExceeded, 'Max cpus exceeded'):
-            self.resource_service.run_resource(username='userB', experiment='EXPERIMENT S/N',
+            self.resource_service.run_resource(username='userB', experiment='EXPERIMENT3',
                                                public_name=self.public_name)
 
         self.resource_service.stop_resource(resource_name=resource_1.container_name)
@@ -80,13 +80,13 @@ class CalipsoUserQuotaTestCase(APITestCase):
     def test_quota_memory(self):
         self.logger.debug('#### TEST test_quota_cpu START ####')
 
-        resource_a = self.resource_service.run_resource(username='userC', experiment='EXPERIMENT S/N',
+        resource_a = self.resource_service.run_resource(username='userC', experiment='EXPERIMENT1',
                                                          public_name=self.public_name)
-        resource_b = self.resource_service.run_resource(username='userC', experiment='EXPERIMENT S/N',
+        resource_b = self.resource_service.run_resource(username='userC', experiment='EXPERIMENT2',
                                                          public_name=self.public_name)
 
         with self.assertRaisesMessage(QuotaMemoryExceeded, 'Max memory exceeded'):
-            self.resource_service.run_resource(username='userC', experiment='EXPERIMENT S/N',
+            self.resource_service.run_resource(username='userC', experiment='EXPERIMENT3',
                                                public_name=self.public_name)
 
         self.resource_service.stop_resource(resource_name=resource_a.container_name)
@@ -101,13 +101,13 @@ class CalipsoUserQuotaTestCase(APITestCase):
     def test_quota_hdd(self):
         self.logger.debug('#### TEST test_quota_hdd START ####')
 
-        container_a = self.resource_service.run_resource(username='userD', experiment='EXPERIMENT S/N',
+        container_a = self.resource_service.run_resource(username='userD', experiment='EXPERIMENT1',
                                                          public_name=self.public_name)
-        container_b = self.resource_service.run_resource(username='userD', experiment='EXPERIMENT S/N',
+        container_b = self.resource_service.run_resource(username='userD', experiment='EXPERIMENT2',
                                                          public_name=self.public_name)
 
         with self.assertRaisesMessage(QuotaHddExceeded, 'Max hdd exceeded'):
-            self.resource_service.run_resource(username='userD', experiment='EXPERIMENT S/N',
+            self.resource_service.run_resource(username='userD', experiment='EXPERIMENT3',
                                                public_name=self.public_name)
 
         self.resource_service.stop_resource(resource_name=container_a.container_name)
