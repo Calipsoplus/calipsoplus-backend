@@ -1,6 +1,7 @@
 from django.conf.urls import url, include
 from django.urls import path
 
+from apprest.views.auth import is_user_authenticated
 from apprest.views.experiment import GetExperimentsByUserName
 from apprest.views.facility import GetAllFacilities
 from apprest.views.favorite import CalipsoExperimentFavorite
@@ -9,6 +10,7 @@ from apprest.views.login import login_user, logout_user, get_calipso_settings, g
 from apprest.views.quota import QuotaView, GetUsedQuotaFromUser
 from apprest.views.user import GetUser, GetAllUsers
 from apprest.views.container import ContainerInfo, ActiveContainers, UserContainers
+from apprest.views.openidtest import index
 
 urlpatterns = [
     url(r'^resource/', include('apprest.urls.resource')),
@@ -30,5 +32,8 @@ urlpatterns = [
     path('login/', login_user),
     path('logout/', logout_user),
     path('settings/', get_calipso_settings),
-    path('login/type/', get_login_authorization)
+    path('login/type/', get_login_authorization),
+    path('openidtest/', index, name='index'),
+    path('authenticated/', is_user_authenticated, name='is_auth'),
+    url(r'^oidc/', include('mozilla_django_oidc.urls')),
 ]
