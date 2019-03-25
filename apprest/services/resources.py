@@ -40,7 +40,7 @@ class GenericCalipsoResourceService(CalipsoResource):
         logger.debug('run_resource (%s,%s,%s)' % (username, experiment, public_name))
 
         try:
-            quota_service.calculate_available_quota(username)
+            quota_service.calculate_available_quota(experiment, username)
         except Exception as e:
             raise e
 

@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'mozilla_django_oidc',
 ]
 
 MIDDLEWARE = [
@@ -57,6 +58,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'simple_history.middleware.HistoryRequestMiddleware',
+    'mozilla_django_oidc.middleware.SessionRefresh',
 ]
 
 ROOT_URLCONF = 'calipsoplus.urls'
@@ -162,6 +164,10 @@ LOGGING = {
             'handlers': ['file'],
             'level': 'DEBUG',
         },
+        'mozilla_django_oidc': {
+            'handlers': ['console'],
+            'level': 'DEBUG'
+        },
     }
 }
 
@@ -190,6 +196,7 @@ AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
     'apprest.views.auth.ExternalServiceAuthenticationBackend',
     'apprest.views.auth_umbrella.ExternalUmbrellaServiceAuthenticationBackend',
+    'apprest.openidconnect.username_helper.MyOIDCAB'
 )
 
 # REST Framework configuration
@@ -215,3 +222,23 @@ LOCAL_ACCESS_USERNAME = access_conf['username']
 LOCAL_ACCESS_PASSWORD = access_conf['password']
 
 CORS_ALLOW_CREDENTIALS = True
+
+# Open ID Connect credentials
+OIDC_RP_CLIENT_ID = ''
+OIDC_RP_CLIENT_SECRET = ''
+OIDC_OP_AUTHORIZATION_ENDPOINT = '../auth'
+OIDC_OP_TOKEN_ENDPOINT = '../token'
+OIDC_OP_USER_ENDPOINT = '../userinfo'
+OIDC_OP_JWKS_ENDPOINT = '../certs'
+OIDC_RP_SIGN_ALGO = ''  # RS256 or HS256 (check your provider)
+
+# Keep this method or modify it. By default, the username is determined by hashing the email address
+OIDC_USERNAME_ALGO = 'apprest.openidconnect.username_helper.generate_username'
+
+# URL to the front end experiment page. After the user has authenticated, they will be redirected to this page in the
+# frontend
+REDIRECT_AFTER_OIDC_URL = 'http://frontend.fr/experiment'
+
+# URL to the calipsoplus home page. After the user has logged out, they should be redirected here. (Does not require
+# authentication)
+LOGOUT_REDIRECT_URL = 'http://frontend.fr'
