@@ -8,13 +8,14 @@ from apprest.services.image import CalipsoAvailableImagesServices
 
 from django.conf import settings
 
-
 from apprest.services.session import CalipsoSessionsServices
 from apprest.utils.exceptions import DockerExceptionNotFound
-
+from apprest.services.user import CalipsoUserServices
+from calipsoplus.settings_calipso import ADD_HOME_DIR_TO_ALL_CONTAINERS
 
 image_service = CalipsoAvailableImagesServices()
 session_service = CalipsoSessionsServices()
+user_service = CalipsoUserServices()
 
 
 class CalipsoResourceDockerContainerService:
@@ -43,8 +44,6 @@ class CalipsoResourceDockerContainerService:
             self.logger.debug('Docker daemon not found.')
             raise DockerExceptionNotFound("Docker daemon not found.")
 
-
-
         image_selected = image_service.get_available_image(public_name=public_name)
 
         try:
@@ -56,13 +55,27 @@ class CalipsoResourceDockerContainerService:
 
             try:
                 volume = session_service.get_volumes_from_session(session_number=experiment)
-
             except Exception as e:
                 self.logger.debug('volume not found, set volume to default')
-                volume = {"/tmp/results/" + username: {"bind": "/tmp/results/" + username, "mode": "rw"},
-                          "/tmp/data/" + username: {"bind": "/tmp/data/" + username, "mode": "ro"}}
+                volume = {
+                    "/tmp/results/" + username: {"bind": "/tmp/results/" + username, "mode": "rw"},
+                    "/tmp/data/" + username: {"bind": "/tmp/data/" + username, "mode": "ro"}
+                }
+
+            # Check to add home directory to the container
+            if ADD_HOME_DIR_TO_ALL_CONTAINERS:
+                volume.update(
+                    {str(user_service.get_user_home_dir(username)): {"bind": "/tmp/user/home/", "mode": "rw"}}
+                )
 
             self.logger.debug('volume set to :%s', volume)
+
+            # Set the user's UID and GID
+            uid = user_service.get_user_uid(username)
+            gid = user_service.get_user_gid(user_service)
+
+            # Group 100 needed for containers supported by Calipso
+            groups = [100]
 
             new_container = CalipsoContainer.objects.create(calipso_user=username,
                                                             calipso_experiment=experiment,
@@ -84,7 +97,9 @@ class CalipsoResourceDockerContainerService:
                                                           cpu_count=image_selected.cpu,
                                                           environment=["PYTHONUNBUFFERED=0"],
                                                           working_dir="/tmp/results/" + username,
-                                                          volumes=volume
+                                                          volumes=volume,
+                                                          user=str(uid) + ':' + str(gid),
+                                                          group_add=groups
                                                           )
 
             new_container.container_id = docker_container.id
@@ -96,7 +111,7 @@ class CalipsoResourceDockerContainerService:
             for key, val in new_container.container_info['NetworkSettings']['Ports'].items():
                 bport = int(val[0]['HostPort'])
 
-                if (bport > port):
+                if bport > port:
                     port = bport
 
             result_er = ""
