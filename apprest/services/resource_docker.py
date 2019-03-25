@@ -72,7 +72,7 @@ class CalipsoResourceDockerContainerService:
 
             # Set the user's UID and GID
             uid = user_service.get_user_uid(username)
-            gid = user_service.get_user_gid(user_service)
+            gid = user_service.get_user_gid(username)
 
             # Group 100 needed for containers supported by Calipso
             groups = [100]
