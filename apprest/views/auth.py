@@ -3,9 +3,13 @@ import logging
 
 import requests
 from django.contrib.auth.models import User
+from django.http import HttpResponse, JsonResponse
 from rest_framework import status
 
 from django.conf import settings
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.views import APIView
 
 
 class ExternalServiceAuthenticationBackend:
@@ -49,3 +53,9 @@ class ExternalServiceAuthenticationBackend:
             return User.objects.get(pk=user_id)
         except User.DoesNotExist:
             return None
+
+
+def is_user_authenticated(request):
+    if request.user.is_authenticated:
+        return JsonResponse({'username': request.user.username, 'authenticated': 'true'}, status=200)
+    return JsonResponse({'authenticated': 'false'}, status=401)

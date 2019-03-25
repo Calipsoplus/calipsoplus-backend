@@ -175,7 +175,7 @@ class CalipsoExperimentsServices:
                 session_end_date = datetime.datetime.strptime(session.get('start_date'), "%Y-%m-%dT%H:%M:%SZ")
                 session_subject = session.get('subject')
                 session_body = session.get('body')
-                session_data_set_path = session.get('date_set_path')
+                session_data_set_path = session.get('data_set_path')
 
                 if not session_data_set_path:
                     session_data_set_path = "[]"
