@@ -15,6 +15,23 @@
       "hdd": "10G",
       "resource_type_id": 4
     }
+  },
+  {
+    "model": "apprest.CalipsoAvailableImages",
+    "pk": 7,
+    "fields": {
+      "public_name": "docker_image",
+      "docker_daemon": "tcp://192.168.33.13:2375",
+      "image": "http://www.yahoo.es",
+      "host_domain": "",
+      "port_hook": "",
+      "logs_er": "",
+      "protocol": "",
+      "cpu": 2,
+      "memory": "4G",
+      "hdd": "10G",
+      "resource_type_id": 1
+    }
   }
 ]
 

@@ -11,35 +11,35 @@ class AddExperimentCommandTest(TestCase):
         out = StringIO()
         call_command('add_experiment', '--public_number=CODE000', '--title=title first experiment',
                      '--description=description of the experiment',
-                     '--beamline_code="COPRS"', stdout=out)
-        self.assertIn("Successfully added experiment ", out.getvalue())
+                     '--beamline_code=COPRS', '--uid=1000', '--gid=2000', stdout=out)
+        self.assertIn('Successfully added experiment ', out.getvalue())
 
     def test_command_add_existing_experiment(self):
         out = StringIO()
         call_command('add_experiment', '--public_number=CODE000', '--title=title first experiment',
                      '--description=description of the experiment',
-                     '--beamline_code="COPRS"', stdout=out)
+                     '--beamline_code=COPRS', '--uid=1000', '--gid=2000', stdout=out)
 
-        self.assertIn("Successfully added experiment", out.getvalue())
+        self.assertIn('Successfully added experiment', out.getvalue())
 
         with self.assertRaises(Exception):
             call_command('add_experiment', '--public_number=CODE000', '--title=another title first experiment',
                          '--description=description of the experiment',
-                         '--beamline_code=COPRS', stdout=out)
+                         '--beamline_code=COPRS', '--uid=1000', '--gid=2000', stdout=out)
 
     def test_command_add_three_experiments(self):
         out = StringIO()
         call_command('add_experiment', '--public_number=2018CODE000', '--title=TITLE001', '--description=my desc',
-                     '--beamline_code="COPRS"', stdout=out)
+                     '--beamline_code=COPRS', '--uid=1000', '--gid=2000', stdout=out)
 
-        self.assertIn("Successfully added experiment", out.getvalue())
+        self.assertIn('Successfully added experiment', out.getvalue())
 
         call_command('add_experiment', '--public_number=2017CODE000', '--title=TITLE002', '--description=my desc',
-                     '--beamline_code="COPRS"', stdout=out)
+                     '--beamline_code=COPRS', '--uid=1000', '--gid=2000', stdout=out)
 
-        self.assertIn("Successfully added experiment", out.getvalue())
+        self.assertIn('Successfully added experiment', out.getvalue())
 
         call_command('add_experiment', '--public_number=2016CODE000', '--title=TITLE003', '--description=my desc',
-                     '--beamline_code="COPRS"', stdout=out)
+                     '--beamline_code=COPRS', '--uid=1000', '--gid=2000', stdout=out)
 
-        self.assertIn("Successfully added experiment", out.getvalue())
+        self.assertIn('Successfully added experiment', out.getvalue())
