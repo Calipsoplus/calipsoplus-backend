@@ -9,6 +9,28 @@ from apprest.serializers.image import CalipsoImageSerializer
 from apprest.services.image import CalipsoAvailableImagesServices
 
 
+class GetUsedQuotaFromUser(APIView):
+    """
+    get:
+    Return the used quota for given user
+    """
+    authentication_classes = (SessionAuthentication, BasicAuthentication)
+    permission_classes = (IsAuthenticated,)
+
+    pagination_class = None
+
+    def get(self, *args, **kwargs):
+        service = CalipsoAvailableImagesServices()
+        username = self.kwargs.get('username')
+        if username == self.request.user.username:
+            quota = service.get_sum_containers_quota(username=username)
+            serializer_class = CalipsoUserQuotaSerializer(quota)
+            return Response(serializer_class.data)
+        else:
+            raise PermissionDenied
+
+
+
 class GetInfoImage(APIView):
     """
     get:
@@ -41,6 +63,7 @@ class GetInfoImage(APIView):
         service = CalipsoAvailableImagesServices()
         public_name = self.kwargs.get('public_name')
 
+
         # Default option
         resource_type = CalipsoResourcesType.objects.get(resource_type='docker_container')
 
@@ -53,10 +76,11 @@ class GetInfoImage(APIView):
 
         # New container image will always be Docker.
         # TODO: Check to delete port_hook and logs_er
+
         params = {'public_name': public_name,
                   'image': request.data.get('image'),
-                  'port_hook': '',
-                  'logs_er': '',
+                  'port_hook': request.data.get('port_hook'),
+                  'logs_er': request.data.get('logs_er'),
                   'protocol': request.data.get('protocol'),
                   'cpu': request.data.get('cpu'),
                   'memory': request.data.get('memory'),

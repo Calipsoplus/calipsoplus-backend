@@ -81,9 +81,9 @@ class CalipsoUserQuotaTestCase(APITestCase):
         self.logger.debug('#### TEST test_quota_memory START ####')
 
         resource_a = self.resource_service.run_resource(username='userC', experiment='2018091622',
-                                                         public_name=self.public_name)
+                                                        public_name=self.public_name)
         resource_b = self.resource_service.run_resource(username='userC', experiment='2018091632',
-                                                         public_name=self.public_name)
+                                                        public_name=self.public_name)
 
         with self.assertRaisesMessage(QuotaMemoryExceeded, 'Max memory exceeded'):
             self.resource_service.run_resource(username='userC', experiment='2018091633',
