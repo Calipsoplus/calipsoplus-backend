@@ -13,13 +13,18 @@ class CalipsoExperiment(models.Model):
     calipso_users = models.ManyToManyField(CalipsoUser, through='CalipsoUserExperiment',
                                            through_fields=('calipso_experiment', 'calipso_user'))
 
+    uid = models.CharField(max_length=255, blank=True)
+    gid = models.CharField(max_length=255, blank=True)
+
     history = HistoricalRecords()
 
-    def create(self, subject, body, proposal_id, beam_line):
+    def create(self, subject, body, proposal_id, beam_line, uid, gid):
         self.subject = subject
         self.body = body
         self.proposal_id = proposal_id
         self.beam_line = beam_line
+        self.uid = uid
+        self.gid = gid
 
     class Meta:
         db_table = 'calipso_experiments'

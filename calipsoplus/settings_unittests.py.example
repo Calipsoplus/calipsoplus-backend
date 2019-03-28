@@ -44,3 +44,6 @@ BACKEND_UO_IS_AUTHORIZED =
 # Example: "https://data.domain.tld/services/experiments/$USERNAME/" 
 # N.B.: $USERNAME is replaced by the application with the account name.
 DYNAMIC_EXPERIMENTS_DATA_RETRIEVAL_ENDPOINT =
+
+# List of additional group names and/or IDs that the container process will run as.
+GROUPS_DOCKER_ADD = []

@@ -19,6 +19,16 @@ class CalipsoSessionsServices:
             self.logger.debug(e)
             raise e
 
+    def get_experiment_from_session(self, session_number):
+        self.logger.debug('get_session from experiment %s' % session_number)
+        try:
+            session = CalipsoSession.objects.get(session_number=session_number)
+            return session.experiment
+
+        except Exception as e:
+            self.logger.debug(e)
+            raise e
+
     def create_session_to_experiment(self, params, experiment):
 
         session_number = params["session_number"]

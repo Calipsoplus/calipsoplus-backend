@@ -36,10 +36,12 @@ class Command(BaseCommand):
         body = options['body']
         data_set_path = options['data_set_path']
 
-        if not public_number or not session_number or not start_date or not end_date or not subject or not body or not data_set_path:
+        if not public_number or not session_number or not start_date or not end_date or not subject or not body \
+                or not data_set_path:
             raise CommandError(
                 'python manage.py add_session --public_number public_number'
-                ' --session_number session_number --start_date start_date --end_date end_date  --subject subject --body body --data_set_path data_set_path')
+                ' --session_number session_number --start_date start_date --end_date end_date'
+                ' --subject subject --body body --data_set_path data_set_path')
 
         try:
             experiment = CalipsoExperiment.objects.get(proposal_id=public_number)
@@ -50,7 +52,6 @@ class Command(BaseCommand):
                       'subject': subject,
                       'body': body,
                       'data_set_path': data_set_path}
-
 
             self.session_services.create_session_to_experiment(params=params, experiment=experiment)
 

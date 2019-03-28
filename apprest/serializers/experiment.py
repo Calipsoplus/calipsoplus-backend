@@ -9,7 +9,7 @@ class CalipsoExperimentSerializer(serializers.ModelSerializer):
     sessions = CalipsoSessionSerializer(many=True)
 
     class Meta:
-        fields = ('proposal_id', 'subject', 'body', 'beam_line', 'sessions')
+        fields = ('proposal_id', 'subject', 'body', 'beam_line', 'sessions', 'uid', 'gid')
         model = CalipsoExperiment
 
     def to_representation(self, instance):

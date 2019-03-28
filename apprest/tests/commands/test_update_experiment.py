@@ -16,7 +16,8 @@ class UpdateExperimentCommandTest(TestCase):
         out = StringIO()
 
         call_command('update_experiment', '--public_number=2018091632', "--set_title=new title",
-                     "--set_description=new description", "--set_beamline_code=new beamline code", stdout=out)
+                     "--set_description=new description", "--set_beamline_code=new beamline code"
+                     "--uid=1000", "--gid=2000", stdout=out)
 
         self.assertIn("Successfully updated experiment", out.getvalue())
 
@@ -25,4 +26,5 @@ class UpdateExperimentCommandTest(TestCase):
 
         with self.assertRaises(Exception):
             call_command('update_experiment', '--public_number=218091632', "--set_title=new title",
-                         "--set_description=new description", "--set_beamline_code=new beamline code", stdout=out)
+                         "--set_description=new description", "--set_beamline_code=new beamline code",
+                         "--uid=1000", "--gid=2000", stdout=out)
