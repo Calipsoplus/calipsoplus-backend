@@ -38,4 +38,7 @@ BACKEND_UO_IS_AUTHORIZED =
 # Endpoint to the information provider (ignore if Dynamic Data Retrieval is not enabled). Check API.md.
 # Example: "https://data.domain.tld/services/experiments/$USERNAME/" 
 # N.B.: $USERNAME is replaced by the application with the account name.
-DYNAMIC_EXPERIMENTS_DATA_RETRIEVAL_ENDPOINT = 
+DYNAMIC_EXPERIMENTS_DATA_RETRIEVAL_ENDPOINT =
+
+# List of additional group names and/or IDs that the container process will run as.
+GROUPS_DOCKER_ADD = []
