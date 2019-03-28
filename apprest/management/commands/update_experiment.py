@@ -16,20 +16,27 @@ class Command(BaseCommand):
                             type=str)
         parser.add_argument('--set_beamline_code', dest='beamline_code', default='',
                             help='The beam line code of experiment', type=str)
+        parser.add_argument('--uid', dest='uid', default='',
+                            help='The uid from experiment', type=str)
+        parser.add_argument('--gid', dest='gid', default='',
+                            help='The gid from experiment', type=str)
 
     def handle(self, *args, **options):
         public_number = options['public_number']
         title = options['title']
         description = options['description']
         beamline_code = options['beamline_code']
+        uid = options['uid']
+        gid = options['gid']
 
         if not public_number:
             raise CommandError(
                 'python manage.py update_experiment --public_number public_number'
-                ' --set_title title --set_decription description --set_beamline_code beam line coe')
+                ' --set_title title --set_decription description --set_beamline_code beam line code'
+                ' --uid uid --gid gid')
 
         try:
-            self.experiments_services.update_experiment(beamline_code, description, public_number, title)
+            self.experiments_services.update_experiment(beamline_code, description, public_number, title, uid, gid)
             self.stdout.write(self.style.SUCCESS('Successfully updated experiment "%s"' % public_number))
 
         except Exception as e:

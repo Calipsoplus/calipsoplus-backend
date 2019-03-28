@@ -27,16 +27,18 @@ class Command(BaseCommand):
                     title = row['title']
                     description = row['description']
                     beamline_code = row['beamline_code']
+                    uid = row['uid']
+                    gid = row['gid']
 
                     try:
-                        self.experiments_services.add_experiment(public_number, title, description, beamline_code)
+                        self.experiments_services.add_experiment(public_number, title, description, beamline_code, uid,
+                                                                 gid)
                         self.stdout.write(self.style.SUCCESS('line %d ..%s Ok!' % (line, public_number)))
                         done += 1
                     except Exception as e:
                         self.stdout.write(self.style.ERROR('line %d error:%s' % (line, e)))
 
-
-            self.stdout.write(self.style.SUCCESS('File processed. %d/%d done.!' % (done, line-1)))
+            self.stdout.write(self.style.SUCCESS('File processed. %d/%d done.!' % (done, line - 1)))
 
         except Exception as e:
             raise CommandError('Problems, %s' % e)
