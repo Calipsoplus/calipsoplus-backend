@@ -54,7 +54,7 @@ class CalipsoExperimentsServices:
             calipso_user_experiment = CalipsoUserExperiment(calipso_user=calipso_user, calipso_experiment=experiment)
             calipso_user_experiment.save()
 
-    def add_experiment(self, public_number, title, description, beamline_code):
+    def add_experiment(self, public_number, title, description, beamline_code, uid, gid):
         self.logger.debug('Try to add experiment %s' % public_number)
         calipso_experiment = CalipsoExperiment.objects.filter(proposal_id=public_number)
         if len(calipso_experiment) > 0:
@@ -65,6 +65,8 @@ class CalipsoExperimentsServices:
             calipso_experiment.proposal_id = public_number
             calipso_experiment.body = description
             calipso_experiment.beam_line = beamline_code
+            calipso_experiment.uid = uid
+            calipso_experiment.gid = gid
 
             calipso_experiment.save()
 
@@ -83,7 +85,7 @@ class CalipsoExperimentsServices:
 
         calipso_user_experiment.delete()
 
-    def update_experiment(self, beamline_code, description, public_number, title):
+    def update_experiment(self, beamline_code, description, public_number, title, uid, gid):
         self.logger.debug('Try to update experiment %s' % public_number)
         calipso_experiment = CalipsoExperiment.objects.get(proposal_id=public_number)
 
@@ -93,6 +95,10 @@ class CalipsoExperimentsServices:
             calipso_experiment.body = description
         if beamline_code:
             calipso_experiment.beam_line = beamline_code
+        if uid:
+            calipso_experiment.uid = uid
+        if gid:
+            calipso_experiment.gid = gid
 
         calipso_experiment.save()
 
@@ -150,10 +156,14 @@ class CalipsoExperimentsServices:
             body = experiments.get('body')
             proposal_id = experiments.get('proposal_id')
             beam_line = experiments.get('beam_line')
+            uid = experiments.get('uid')
+            gid = experiments.get('gid')
 
             subject = get_str(content=subject)
             body = get_str(content=body)
             beam_line = get_str(content=beam_line)
+            uid = get_str(content=uid)
+            gid = get_str(content=gid)
 
             # experiments
             try:
@@ -161,12 +171,16 @@ class CalipsoExperimentsServices:
                 exp.subject = subject
                 exp.body = body
                 exp.beam_line = beam_line
+                exp.uid = uid
+                exp.gid = gid
                 exp.save()
             except CalipsoExperiment.DoesNotExist as e:
                 self.logger.debug("UserExperiment not found: %s" % e)
                 exp = CalipsoExperiment.objects.create(subject=subject, body=body,
                                                        proposal_id=proposal_id,
-                                                       beam_line=beam_line)
+                                                       beam_line=beam_line,
+                                                       uid=uid,
+                                                       gid=gid)
             # sessions
             for session in experiments.get('sessions'):
 
@@ -191,6 +205,7 @@ class CalipsoExperimentsServices:
                     sess.end_date = session_end_date
                     sess.body = session_body
                     sess.subject = session_subject
+                    sess.data_set_path = session_data_set_path
                     sess.save()
 
                 except Exception as e:
@@ -224,3 +239,15 @@ class CalipsoExperimentsServices:
         except Exception as e:
             self.logger.debug("Error CalipsoExperiment creation: %s" % e)
             return False, 0
+
+    def get_experiment(self, proposal_id):
+        self.logger.debug('Getting one experiment: %s' % proposal_id)
+        try:
+            experiment = CalipsoExperiment.objects.get(proposal_id=proposal_id)
+            self.logger.debug('Experiment found')
+            return experiment
+
+        except Exception as e:
+            self.logger.warning("proposal_id = %s, not found." % proposal_id)
+            self.logger.warning(e)
+            raise Exception
