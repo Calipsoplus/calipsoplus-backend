@@ -18,3 +18,14 @@ EXPERIMENTS_OUTPUT = "/tmp/results"
 
 # which indicates whether getting the information from a REST endpoint (1) or the DB (0)
 DYNAMIC_EXPERIMENTS_DATA_RETRIEVAL = 0
+
+# Used to run the container with a user's UID and GID for read/write NFS
+# True: Run as the user
+# False: (Default) Run as root. (No access to NFS)
+ENABLE_NON_ROOT_UID_CONTAINER = False
+ENABLE_NON_ROOT_GID_CONTAINER = False
+
+# Add a user's home directory to each container created by them
+# This requires the method in apprest/services/user.py to be completed by each facility with a method that returns
+# the path to the user's home.
+ADD_HOME_DIR_TO_ALL_CONTAINERS = False
