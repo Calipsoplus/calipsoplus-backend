@@ -11,10 +11,13 @@ from django.conf import settings
 
 from apprest.services.session import CalipsoSessionsServices
 from apprest.utils.exceptions import DockerExceptionNotFound
+from apprest.services.user import CalipsoUserServices
+from calipsoplus.settings_calipso import ADD_HOME_DIR_TO_ALL_CONTAINERS
 
 image_service = CalipsoAvailableImagesServices()
 session_service = CalipsoSessionsServices()
 experiments_service = CalipsoExperimentsServices()
+user_service = CalipsoUserServices()
 
 
 class CalipsoResourceDockerContainerService:
@@ -50,12 +53,15 @@ class CalipsoResourceDockerContainerService:
             experiment_data = experiments_service.get_experiment(proposal_id=experiment_from_session.proposal_id)
             uid = experiment_data.uid
             gid = experiment_data.gid
+            if (uid is None or gid is None):
+                # Set the user's UID and GID
+                uid = user_service.get_user_uid(username)
+                gid = user_service.get_user_gid(username)
             self.logger.debug('uid:%s, gid:%s' % (uid, gid))
         except Exception as e:
             self.logger.debug('uid,gid not found, set uid,gid to default')
             uid = "1000"
             gid = "0"
-
 
         # generate random values for guacamole credentials
         guacamole_username = uuid.uuid4().hex
@@ -69,6 +75,12 @@ class CalipsoResourceDockerContainerService:
             self.logger.debug('volume not found, set volume to default')
             volume = {"/tmp/results/" + username: {"bind": "/tmp/results/" + username, "mode": "rw"},
                       "/tmp/data/" + username: {"bind": "/tmp/data/" + username, "mode": "ro"}}
+
+        # Check to add home directory to the container
+        if ADD_HOME_DIR_TO_ALL_CONTAINERS:
+            volume.update(
+                {str(user_service.get_user_home_dir(username)): {"bind": "/tmp/user/home/", "mode": "rw"}}
+            )
 
         self.logger.debug('volume set to :%s', volume)
 
@@ -84,6 +96,8 @@ class CalipsoResourceDockerContainerService:
                                                         vnc_password=vnc_password,
                                                         public_name=public_name
                                                         )
+        # Group 100 needed for containers supported by Calipso
+        groups = settings.GROUPS_DOCKER_ADD.append(100)
 
         try:
             self.logger.debug('client docker run')
@@ -96,7 +110,7 @@ class CalipsoResourceDockerContainerService:
                                                           environment=["PYTHONUNBUFFERED=0"],
                                                           working_dir="/tmp/results/" + username,
                                                           volumes=volume,
-                                                          group_add=settings.GROUPS_DOCKER_ADD,
+                                                          group_add=groups,
                                                           user="%s:%s" % (uid, gid),
                                                           )
             self.logger.debug('client docker after run')
@@ -109,7 +123,7 @@ class CalipsoResourceDockerContainerService:
             for key, val in new_container.container_info['NetworkSettings']['Ports'].items():
                 bport = int(val[0]['HostPort'])
 
-                if (bport > port):
+                if bport > port:
                     port = bport
 
             result_er = ""
