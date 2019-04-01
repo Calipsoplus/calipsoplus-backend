@@ -22,6 +22,7 @@ class ImagesServiceTestCase(CalipsoTestCase):
         # get_all_images
         all_images = self.service.get_all_images()
 
-        self.assertEqual(len(all_images), 5)
+        self.assertEqual(len(all_images), 6)
+
         self.logger.debug('#### TEST get_all_facilities END ####')
 

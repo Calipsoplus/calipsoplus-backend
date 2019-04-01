@@ -4,6 +4,7 @@ import uuid
 import docker
 
 from apprest.models.container import CalipsoContainer
+from apprest.services.experiment import CalipsoExperimentsServices
 from apprest.services.image import CalipsoAvailableImagesServices
 
 from django.conf import settings
@@ -15,6 +16,7 @@ from calipsoplus.settings_calipso import ADD_HOME_DIR_TO_ALL_CONTAINERS
 
 image_service = CalipsoAvailableImagesServices()
 session_service = CalipsoSessionsServices()
+experiments_service = CalipsoExperimentsServices()
 user_service = CalipsoUserServices()
 
 
@@ -47,48 +49,59 @@ class CalipsoResourceDockerContainerService:
         image_selected = image_service.get_available_image(public_name=public_name)
 
         try:
-            # generate random values for guacamole credentials
-            guacamole_username = uuid.uuid4().hex
-            guacamole_password = uuid.uuid4().hex
+            experiment_from_session = session_service.get_experiment_from_session(session_number=experiment)
+            experiment_data = experiments_service.get_experiment(proposal_id=experiment_from_session.proposal_id)
+            uid = experiment_data.uid
+            gid = experiment_data.gid
+            if not uid or not gid:
+                # Set the user's UID and GID
+                uid = user_service.get_user_uid(username)
+                gid = user_service.get_user_gid(username)
+                self.logger.debug('uid or gid is None. Getting from username')
+        except Exception as e:
+            self.logger.debug('Exception on get experiments,sessions, and uid,gid')
+            uid = "0"
+            gid = "0"
+        self.logger.debug('uid:%s, gid:%s' % (uid, gid))
+        
+        # generate random values for guacamole credentials
+        guacamole_username = uuid.uuid4().hex
+        guacamole_password = uuid.uuid4().hex
 
-            vnc_password = 'vncpassword'
+        vnc_password = 'vncpassword'
 
-            try:
-                volume = session_service.get_volumes_from_session(session_number=experiment)
-            except Exception as e:
-                self.logger.debug('volume not found, set volume to default')
-                volume = {
-                    "/tmp/results/" + username: {"bind": "/tmp/results/" + username, "mode": "rw"},
-                    "/tmp/data/" + username: {"bind": "/tmp/data/" + username, "mode": "ro"}
-                }
+        try:
+            volume = session_service.get_volumes_from_session(session_number=experiment)
+        except Exception as e:
+            self.logger.debug('volume not found, set volume to default')
+            volume = {"/tmp/results/" + username: {"bind": "/tmp/results/" + username, "mode": "rw"},
+                      "/tmp/data/" + username: {"bind": "/tmp/data/" + username, "mode": "ro"}}
 
-            # Check to add home directory to the container
-            if ADD_HOME_DIR_TO_ALL_CONTAINERS:
-                volume.update(
-                    {str(user_service.get_user_home_dir(username)): {"bind": "/tmp/user/home/", "mode": "rw"}}
-                )
+        # Check to add home directory to the container
+        if ADD_HOME_DIR_TO_ALL_CONTAINERS:
+            volume.update(
+                {str(user_service.get_user_home_dir(username)): {"bind": "/tmp/user/home/", "mode": "rw"}}
+            )
 
-            self.logger.debug('volume set to :%s', volume)
+        self.logger.debug('volume set to :%s', volume)
 
-            # Set the user's UID and GID
-            uid = user_service.get_user_uid(username)
-            gid = user_service.get_user_gid(username)
+        self.logger.debug('creating container')
+        new_container = CalipsoContainer.objects.create(calipso_user=username,
+                                                        calipso_experiment=experiment,
+                                                        container_id='not created yet',
+                                                        container_name='not created yet',
+                                                        container_status='busy',
+                                                        container_logs="...",
+                                                        guacamole_username=guacamole_username,
+                                                        guacamole_password=guacamole_password,
+                                                        vnc_password=vnc_password,
+                                                        public_name=public_name
+                                                        )
+        # Group 100 needed for containers supported by Calipso
+        groups = settings.GROUPS_DOCKER_ADD.append(100)
 
-            # Group 100 needed for containers supported by Calipso
-            groups = [100]
-
-            new_container = CalipsoContainer.objects.create(calipso_user=username,
-                                                            calipso_experiment=experiment,
-                                                            container_id='not created yet',
-                                                            container_name='not created yet',
-                                                            container_status='busy',
-                                                            container_logs="...",
-                                                            guacamole_username=guacamole_username,
-                                                            guacamole_password=guacamole_password,
-                                                            vnc_password=vnc_password,
-                                                            public_name=public_name
-                                                            )
-
+        try:
+            self.logger.debug('client docker run')
             docker_container = self.client.containers.run(image=image_selected.image,
                                                           detach=True,
                                                           publish_all_ports=True,
@@ -98,10 +111,10 @@ class CalipsoResourceDockerContainerService:
                                                           environment=["PYTHONUNBUFFERED=0"],
                                                           working_dir="/tmp/results/" + username,
                                                           volumes=volume,
-                                                          user=str(uid) + ':' + str(gid),
-                                                          group_add=groups
+                                                          group_add=groups,
+                                                          user="%s:%s" % (uid, gid),
                                                           )
-
+            self.logger.debug('client docker after run')
             new_container.container_id = docker_container.id
             new_container.container_name = docker_container.name
             new_container.container_status = docker_container.status
@@ -116,6 +129,7 @@ class CalipsoResourceDockerContainerService:
 
             result_er = ""
             for log in docker_container.logs(stream=True):
+                self.logger.debug(str(log))
                 result_er = re.findall(image_selected.logs_er, str(log))
                 if result_er:
                     break
@@ -129,9 +143,10 @@ class CalipsoResourceDockerContainerService:
             return new_container
 
         except Exception as e:
-            self.logger.error("Run container error")
-            self.logger.error(e)
-            raise e
+            # self.logger.error(e)
+            new_container.container_status = "error"
+            new_container.save()
+            raise Exception("Can not run the container. ErrorMsg:%s" % e)
 
     def rm_resource(self, resource_name):
         """

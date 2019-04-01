@@ -81,6 +81,7 @@ class ResourceViewsTestCase(CalipsoTestCase):
                 reverse('run_resource',
                         kwargs={'username': username, 'experiment': 'EXPERIMENTS%d' % x,
                                 'public_name': 'base_jupyter'})))
+
             self.assertEqual(all_resource_responses[x].status_code, status.HTTP_201_CREATED)
 
         last_fail_resource = self.client.get(

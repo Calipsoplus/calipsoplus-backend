@@ -58,3 +58,6 @@ DATABASES = {
         },
     },
 }
+
+# List of additional group names and/or IDs that the container process will run as.
+GROUPS_DOCKER_ADD = []
