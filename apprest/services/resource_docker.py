@@ -53,16 +53,17 @@ class CalipsoResourceDockerContainerService:
             experiment_data = experiments_service.get_experiment(proposal_id=experiment_from_session.proposal_id)
             uid = experiment_data.uid
             gid = experiment_data.gid
-            if (uid is None or gid is None):
+            if not uid or not gid:
                 # Set the user's UID and GID
                 uid = user_service.get_user_uid(username)
                 gid = user_service.get_user_gid(username)
-            self.logger.debug('uid:%s, gid:%s' % (uid, gid))
+                self.logger.debug('uid or gid is None. Getting from username')
         except Exception as e:
-            self.logger.debug('uid,gid not found, set uid,gid to default')
+            self.logger.debug('Exception on get experiments,sessions, and uid,gid')
             uid = "1000"
             gid = "0"
-
+        self.logger.debug('uid:%s, gid:%s' % (uid, gid))
+        
         # generate random values for guacamole credentials
         guacamole_username = uuid.uuid4().hex
         guacamole_password = uuid.uuid4().hex
