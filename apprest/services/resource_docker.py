@@ -60,7 +60,7 @@ class CalipsoResourceDockerContainerService:
                 self.logger.debug('uid or gid is None. Getting from username')
         except Exception as e:
             self.logger.debug('Exception on get experiments,sessions, and uid,gid')
-            uid = "1000"
+            uid = "0"
             gid = "0"
         self.logger.debug('uid:%s, gid:%s' % (uid, gid))
         
