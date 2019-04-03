@@ -121,11 +121,15 @@ class CalipsoResourceDockerContainerService:
             new_container.container_info = self.client.api.inspect_container(docker_container.id)
 
             port = 0
-            for key, val in new_container.container_info['NetworkSettings']['Ports'].items():
-                bport = int(val[0]['HostPort'])
 
-                if bport > port:
-                    port = bport
+            items = new_container.container_info['NetworkSettings']['Ports']
+            if image_selected.protocol == 'RDP':
+                if '3389/tcp' in items.keys():
+                    port = items['3389/tcp'][0]['HostPort']
+
+            elif image_selected.protocol == 'VNC':
+                if '5901/tcp' in items.keys():
+                    port = items['5901/tcp'][0]['HostPort']
 
             result_er = ""
             for log in docker_container.logs(stream=True):
@@ -137,6 +141,7 @@ class CalipsoResourceDockerContainerService:
             if result_er[0] != image_selected.logs_er:
                 new_container.host_port = "http://" + settings.REMOTE_MACHINE_IP + ":" + str(port) + "/?" + result_er[0]
 
+            new_container.host_port = port
             new_container.save()
 
             self.logger.debug('Return a new container, image:%s', image_selected.image)
