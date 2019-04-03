@@ -98,7 +98,7 @@ class CalipsoResourceDockerContainerService:
                                                         public_name=public_name
                                                         )
         # Group 100 needed for containers supported by Calipso
-        groups = settings.GROUPS_DOCKER_ADD.append(100)
+        groups = settings.GROUPS_DOCKER_ADD + [100]
 
         try:
             self.logger.debug('client docker run')
