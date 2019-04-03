@@ -186,6 +186,16 @@ In order to requisition new docker containers, the application has to communicat
 *  **DOCKER_URL_DAEMON**: takes the form of "tcp://MACHINE_IP:DOCKER_PORT", where "MACHINE_IP" is the IP of the machine that hosts the Docker daemon and "DOCKER_PORT" is the port the daemon is listening to.
 *  **REMOTE_MACHINE_IP**: the IP of the mchine that hosts the Docker daemon.
 
+The Docker daemon by default is not running on a port, to configure this, edit/create the file:
+/etc/systemd/system/docker.service.d/docker.conf
+
+Edit the file so that it looks something like this:
+[Service]
+ExecStart=
+ExecStart=/usr/bin/dockerd -H tcp://0.0.0.0:2375 -H unix:///var/run/docker.sock
+
+The port 2375 can be substituted for whatever you want but the new value must be set in the settings_local.py as the DOCKER_URL_DAEMON
+
 ### Run
 
 Once the environment and the database are configured...
