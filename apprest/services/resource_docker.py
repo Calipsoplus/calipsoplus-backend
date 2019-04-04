@@ -48,21 +48,27 @@ class CalipsoResourceDockerContainerService:
 
         image_selected = image_service.get_available_image(public_name=public_name)
 
+        uid = "-1"
+        gid = "-1"
         try:
             experiment_from_session = session_service.get_experiment_from_session(session_number=experiment)
             experiment_data = experiments_service.get_experiment(proposal_id=experiment_from_session.proposal_id)
             uid = experiment_data.uid
             gid = experiment_data.gid
-            if not uid or not gid:
-                # Set the user's UID and GID
-                uid = user_service.get_user_uid(username)
-                gid = user_service.get_user_gid(username)
-                self.logger.debug('uid or gid is None. Getting from username')
         except Exception as e:
             self.logger.debug('Exception on get experiments,sessions, and uid,gid')
-            uid = "0"
-            gid = "0"
-        self.logger.debug('uid:%s, gid:%s' % (uid, gid))
+
+        # If there was an exception getting the UID and GID from the experiment, try to get it from the user
+        if uid or gid == '-1':
+            try:
+                uid = user_service.get_user_uid(username)
+                gid = user_service.get_user_gid(username)
+                self.logger.debug('Getting UID and GID from user')
+                self.logger.debug('uid:%s, gid:%s' % (uid, gid))
+            except Exception as e:
+                self.logger.error(e)
+                self.logger.debug('Getting UID and GID from experiment and user has failed. Setting values to root')
+                uid, gid = 0, 0
         
         # generate random values for guacamole credentials
         guacamole_username = uuid.uuid4().hex
@@ -98,7 +104,7 @@ class CalipsoResourceDockerContainerService:
                                                         public_name=public_name
                                                         )
         # Group 100 needed for containers supported by Calipso
-        groups = settings.GROUPS_DOCKER_ADD.append(100)
+        groups = settings.GROUPS_DOCKER_ADD + [100]
 
         try:
             self.logger.debug('client docker run')
@@ -121,11 +127,15 @@ class CalipsoResourceDockerContainerService:
             new_container.container_info = self.client.api.inspect_container(docker_container.id)
 
             port = 0
-            for key, val in new_container.container_info['NetworkSettings']['Ports'].items():
-                bport = int(val[0]['HostPort'])
 
-                if bport > port:
-                    port = bport
+            items = new_container.container_info['NetworkSettings']['Ports']
+            if image_selected.protocol == 'RDP':
+                if '3389/tcp' in items.keys():
+                    port = items['3389/tcp'][0]['HostPort']
+
+            elif image_selected.protocol == 'VNC':
+                if '5901/tcp' in items.keys():
+                    port = items['5901/tcp'][0]['HostPort']
 
             result_er = ""
             for log in docker_container.logs(stream=True):
@@ -137,6 +147,7 @@ class CalipsoResourceDockerContainerService:
             if result_er[0] != image_selected.logs_er:
                 new_container.host_port = "http://" + settings.REMOTE_MACHINE_IP + ":" + str(port) + "/?" + result_er[0]
 
+            new_container.host_port = port
             new_container.save()
 
             self.logger.debug('Return a new container, image:%s', image_selected.image)
