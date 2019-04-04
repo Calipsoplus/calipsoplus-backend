@@ -43,7 +43,7 @@ class CalipsoResourceDockerContainerService:
         try:
             self.client.ping()
         except Exception as e:
-            self.logger.debug('Docker daemon not found.')
+            self.logger.debug('Docker daemon not found %s' % e)
             raise DockerExceptionNotFound("Docker daemon not found.")
 
         image_selected = image_service.get_available_image(public_name=public_name)
@@ -69,7 +69,7 @@ class CalipsoResourceDockerContainerService:
                 self.logger.error(e)
                 self.logger.debug('Getting UID and GID from experiment and user has failed. Setting values to root')
                 uid, gid = 0, 0
-        
+
         # generate random values for guacamole credentials
         guacamole_username = uuid.uuid4().hex
         guacamole_password = uuid.uuid4().hex
@@ -126,16 +126,9 @@ class CalipsoResourceDockerContainerService:
             new_container.container_status = docker_container.status
             new_container.container_info = self.client.api.inspect_container(docker_container.id)
 
-            port = 0
-
             items = new_container.container_info['NetworkSettings']['Ports']
-            if image_selected.protocol == 'RDP':
-                if '3389/tcp' in items.keys():
-                    port = items['3389/tcp'][0]['HostPort']
 
-            elif image_selected.protocol == 'VNC':
-                if '5901/tcp' in items.keys():
-                    port = items['5901/tcp'][0]['HostPort']
+            port = self.get_port_from_container(image_selected, items)
 
             result_er = ""
             for log in docker_container.logs(stream=True):
@@ -144,10 +137,11 @@ class CalipsoResourceDockerContainerService:
                 if result_er:
                     break
 
+            new_container.host_port = port
+
             if result_er[0] != image_selected.logs_er:
                 new_container.host_port = "http://" + settings.REMOTE_MACHINE_IP + ":" + str(port) + "/?" + result_er[0]
 
-            new_container.host_port = port
             new_container.save()
 
             self.logger.debug('Return a new container, image:%s', image_selected.image)
@@ -158,6 +152,17 @@ class CalipsoResourceDockerContainerService:
             new_container.container_status = "error"
             new_container.save()
             raise Exception("Can not run the container. ErrorMsg:%s" % e)
+
+    @staticmethod
+    def get_port_from_container(image_selected, items):
+        port = 0
+        if image_selected.protocol.upper() == 'RDP' and '3389/tcp' in items.keys():
+            port = items['3389/tcp'][0]['HostPort']
+        elif image_selected.protocol.upper() == 'VNC' and '5901/tcp' in items.keys():
+            port = items['5901/tcp'][0]['HostPort']
+        elif '8888/tcp' in items.keys():
+            port = items['8888/tcp'][0]['HostPort']
+        return port
 
     def rm_resource(self, resource_name):
         """
