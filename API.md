@@ -90,10 +90,12 @@ The response is expected in JSON format, in the following structure:
     *  **proposal_id**: String. Identifier of the experiment (must be unique).
     *  **body**: String. Abstract or description of the experiment.
     *  **beam_line**: String. Name of the beamline associated with the experiment.
+    *  **uid**: String. User Identification
+    *  **gid**: String. Group Identification
     *  **sessions**: List. Contains the data collection sessions of this experiment. The structure of each element is as follows:
         *  **sesion_number**: String. Unique identifier for the session.
         *  **start_date**: Timestamp. Date of the start of the session.
         *  **end_date**: Timestamp. Date of the end of the session.
         *  **subject**: String. Subject of the session, if available.
         *  **body**: String. Description of the session, if available.
-        *  **data_set_path**: String. (TOOD: unused?)
+        *  **data_set_path**: Json volume definition.
