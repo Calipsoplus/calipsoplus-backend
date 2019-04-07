@@ -14,6 +14,13 @@ DATABASES['default'] = {
     },    
 }
 
+DATABASES['guacamole'] = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+	'NAME': ':memory:'
+    },
+} 
+
 # Logs
 LOGGING['loggers']['apprest']['handlers'] = ['console']
 
