@@ -7,12 +7,16 @@ CORS_ORIGIN_WHITELIST = ['calipsobackend.domain.tld']
 DJANGO_ENV = 'LOCAL'
 
 # Override database connections to use sqlite
-DATABASES['default'] = {
+DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': ':memory:'
-    },    
-}
+    },
+    'guacamole': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': ':memory:'
+    },
+}  
 
 # Logs
 LOGGING['loggers']['apprest']['handlers'] = ['console']
