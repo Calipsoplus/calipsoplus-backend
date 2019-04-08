@@ -59,7 +59,7 @@ class CalipsoResourceDockerContainerService:
             self.logger.debug('Exception on get experiments,sessions, and uid,gid')
 
         # If there was an exception getting the UID and GID from the experiment, try to get it from the user
-        if uid or gid == '-1':
+        if uid == '-1' or gid == '-1':
             try:
                 uid = user_service.get_user_uid(username)
                 gid = user_service.get_user_gid(username)
