@@ -27,13 +27,13 @@ class Command(BaseCommand):
         title = options['title']
         description = options['description']
         beamline_code = options['beamline_code']
-        uid = options['uid']
-        gid = options['gid']
+        uid = options.get('uid')
+        gid = options.get('gid')
 
-        if not public_number or not title or not description or not beamline_code or not uid or not gid:
+        if not public_number or not title or not description or not beamline_code:
             raise CommandError(
                 'python manage.py add_experiment --public_number public_number'
-                ' --title title --description description --beamline_code beam_line_code'
+                ' --title title --description description --beamline_code beamline_code'
                 ' --uid uid --gid gid')
 
         try:
