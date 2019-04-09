@@ -7,6 +7,9 @@ MAX_STORAGE_PER_USER = "80G"
 # define limit max experiments per page
 PAGE_SIZE_EXPERIMENTS = 7
 
+# define limit max users per page
+PAGE_SIZE_USERS = 20
+
 # 0: This would only allow Umbrella authentication. By default, the system does only allow Umbrella authentication.
 # 1: This would allow the user to show the form in order to authenticate locally
 ALLOW_LOCAL_AUTHENTICATION = 0
@@ -29,3 +32,5 @@ ENABLE_NON_ROOT_GID_CONTAINER = False
 # This requires the method in apprest/services/user.py to be completed by each facility with a method that returns
 # the path to the user's home.
 ADD_HOME_DIR_TO_ALL_CONTAINERS = False
+
+API_URL_FOR_UID_AND_GID = 'http://example.fr/user/details'
