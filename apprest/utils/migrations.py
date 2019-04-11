@@ -9,9 +9,9 @@ def create_image_default():
     default_data_image = [
         ("base_image", "consol/centos-xfce-vnc:latest", "tcp://:2375", "", "5901/tcp", "connect via",
          "vnc", 1, "3G", "5G",),
-        ("base_jupyter", "jupyter/scipy-notebook", "tcp://:2375", "", "3389/tcp",
+        ("base_jupyter", "jupyter/scipy-notebook:latest", "tcp://:2375", "", "3389/tcp",
          "token=(?:[-\w.]|(?:%[\da-fA-F]{2}))+", "vnc", 1, "3G", "5G",),
-        ("base_image_ubuntu", "danielguerra/ubuntu-xrdp", "tcp://:2375", "", "3389/tcp", "startsecs",
+        ("base_image_ubuntu", "danielguerra/ubuntu-xrdp:latest", "tcp://:2375", "", "3389/tcp", "startsecs",
          "rdp", 1, "3G", "5G",)]
 
     resource_type = CalipsoResourcesType.objects.get(resource_type='docker_container')
