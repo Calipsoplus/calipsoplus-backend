@@ -21,6 +21,13 @@ EXPERIMENTS_OUTPUT = "/tmp/results"
 
 # which indicates whether getting the information from a REST endpoint (1) or the DB (0)
 DYNAMIC_EXPERIMENTS_DATA_RETRIEVAL = 0
+DYNAMIC_EXPERIMENTS_DATA_RETRIEVAL_ENDPOINT = "http://mock-login:8000/experiments/$USERNAME/"
+
+ENABLE_ICAT_DATA_RETRIEVAL = 1
+ICAT_DATA_RETRIEVAL_ENDPOINT = "https://icat.example.fr"
+ICAT_PLUGIN = ""
+ICAT_USERNAME = "username"
+ICAT_PASSWORD = "password"
 
 # Used to run the container with a user's UID and GID for read/write NFS
 # True: Run as the user
