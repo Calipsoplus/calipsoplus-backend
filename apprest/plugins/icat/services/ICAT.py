@@ -7,15 +7,23 @@ from apprest.plugins.icat.models.calipso_experiment import CalipsoExperiment
 from apprest.plugins.icat.models.calipso_session import CalipsoSession
 from calipsoplus.settings_calipso import ICAT_DATA_RETRIEVAL_ENDPOINT, ICAT_PASSWORD, ICAT_PLUGIN, ICAT_USERNAME
 
+icat_url = ICAT_DATA_RETRIEVAL_ENDPOINT
 
-def get_embargo_data():
-    icat_url = ICAT_DATA_RETRIEVAL_ENDPOINT
 
+def get_session_id():
     session_id = json.loads(requests.post(icat_url + '/session', data={
         "plugin": ICAT_PLUGIN,
         "username": ICAT_USERNAME,
         "password": ICAT_PASSWORD
-        }).text)['sessionId']
+    }).text)['sessionId']
+    return session_id
+
+
+def get_embargo_data():
+    # Get the session id (authentication)
+    session_id = get_session_id()
+
+    # Get all of embargoed data and create python object
     embargoed = json.loads(requests.get(icat_url + '/catalogue/' + session_id +
                                         "/investigation/status/embargoed/investigation").text)
     calipso_experiments = []
