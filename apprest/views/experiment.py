@@ -9,11 +9,14 @@ from rest_framework.authentication import SessionAuthentication, BasicAuthentica
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
+from apprest.plugins.icat.helpers.complex_encoder import JsonResponse
 from apprest.serializers.experiment import CalipsoExperimentSerializer
 from apprest.services.experiment import CalipsoExperimentsServices
 from apprest.utils.request import JSONResponse
+from apprest.plugins.icat.services import ICAT
 
-from calipsoplus.settings_calipso import PAGE_SIZE_EXPERIMENTS, DYNAMIC_EXPERIMENTS_DATA_RETRIEVAL
+from calipsoplus.settings_calipso import PAGE_SIZE_EXPERIMENTS, DYNAMIC_EXPERIMENTS_DATA_RETRIEVAL,\
+    ENABLE_ICAT_DATA_RETRIEVAL
 
 from django_filters.rest_framework import DjangoFilterBackend
 
@@ -59,6 +62,13 @@ class GetExperimentsByUserName(ListAPIView):
     def get(self, request, *args, **kwargs):
         if DYNAMIC_EXPERIMENTS_DATA_RETRIEVAL == 0:
             return super(GetExperimentsByUserName, self).get(self, request, *args, **kwargs)
+
+        elif ENABLE_ICAT_DATA_RETRIEVAL:
+            experiments_list = ICAT.get_embargo_data()
+            data = {'page_size': PAGE_SIZE_EXPERIMENTS, 'results': experiments_list, 'count': len(experiments_list),
+                    'next': '', 'previous': ''}
+            return JsonResponse(data, status=status.HTTP_200_OK)
+
         else:
             username = self.kwargs.get('username')
             if username == self.request.user.username:
