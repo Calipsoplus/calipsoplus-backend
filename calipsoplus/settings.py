@@ -13,6 +13,8 @@ import json
 import logging
 import os
 
+from django.core.management.utils import get_random_secret_key
+
 logger = logging.getLogger(__name__)
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -22,8 +24,18 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-with open(os.path.join(BASE_DIR, '..', 'config', 'secrets', 'secret_key.cnf')) as f:
-    SECRET_KEY = f.read().strip()
+SECRET_FILE = os.path.join(BASE_DIR, '..', 'config', 'secrets', 'secret_key.cnf')
+
+try:
+    SECRET_KEY = open(SECRET_FILE).read().strip()
+except IOError:
+    try:
+        with open(SECRET_FILE, 'w') as f:
+            f.write(get_random_secret_key())
+            f.close()
+        SECRET_KEY = open(SECRET_FILE).read().strip()
+    except Exception as e:
+        raise Exception('Cannot open file `%s` for writing.' % SECRET_FILE)
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -124,6 +136,10 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 # logs
+LOG_PATH = os.path.join(BASE_DIR, '..', 'logs')
+if not os.path.exists(LOG_PATH):
+    os.makedirs(LOG_PATH)
+        
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -140,7 +156,7 @@ LOGGING = {
         'file': {
             'level': 'DEBUG',
             'class': 'logging.handlers.RotatingFileHandler',
-            'filename': os.path.join(BASE_DIR, '..', 'logs', 'calipsoplus.log').replace('\\\\', '\\'),
+            'filename': os.path.join(LOG_PATH, 'calipsoplus.log').replace('\\\\', '\\'),
             'formatter': 'verbose',
             'maxBytes': 1024 * 1024 * 5,
             'backupCount': 5,
