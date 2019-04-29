@@ -24,15 +24,20 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_FILE = os.path.join(BASE_DIR, '..', 'config', 'secrets', 'secret_key.cnf')
+
+# Load secret key
+SECRET_DIR = os.path.join(BASE_DIR, '..', 'config', 'secrets')
+SECRET_FILE = os.path.join(SECRET_DIR, 'secret_key.cnf')
 
 try:
     SECRET_KEY = open(SECRET_FILE).read().strip()
-except IOError:
+except Exception:
+    # If the file doesn't exist, make it
     try:
-        with open(SECRET_FILE, 'w') as f:
-            f.write(get_random_secret_key())
-            f.close()
+        os.makedirs(SECRET_DIR, exist_ok=True)
+        f = open(SECRET_FILE, 'w+')
+        f.write(get_random_secret_key())
+        f.close()
         SECRET_KEY = open(SECRET_FILE).read().strip()
     except Exception as e:
         raise Exception('Cannot open file `%s` for writing.' % SECRET_FILE)
