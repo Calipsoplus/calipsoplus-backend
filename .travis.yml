@@ -19,9 +19,6 @@ install:
 
 before_script:
   - mkdir -p ../config/auth/
-  - mkdir -p ../config/secrets/
-  - mkdir -p ../logs
-  - cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 50 | head -n 1 > ../config/secrets/secret_key.cnf
   # Create the settings_* files
   - cp calipsoplus/settings_calipso.py.example calipsoplus/settings_calipso.py
   - cp calipsoplus/settings_unittests.py.example calipsoplus/settings_unittests.py
