@@ -16,7 +16,7 @@ class ComplexEncoder(json.JSONEncoder):
 
 class JsonResponse(HttpResponse):
     def __init__(self, content, mimetype='application/json', status=None, content_type='application/json'):
-        json_text = json.dumps(content, cls=ComplexEncoder)
+        json_text = json.dumps(content, cls=ComplexEncoder, sort_keys=True)
         super(JsonResponse, self).__init__(
             content=json_text,
             status=status,
