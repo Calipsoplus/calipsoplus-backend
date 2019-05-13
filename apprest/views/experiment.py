@@ -13,7 +13,8 @@ from apprest.plugins.icat.helpers.complex_encoder import JsonResponse
 from apprest.serializers.experiment import CalipsoExperimentSerializer
 from apprest.services.experiment import CalipsoExperimentsServices
 from apprest.utils.request import JSONResponse
-from apprest.plugins.icat.services import ICAT
+from apprest.plugins.icat.services.ICAT import ICATService
+
 
 from calipsoplus.settings_calipso import PAGE_SIZE_EXPERIMENTS, DYNAMIC_EXPERIMENTS_DATA_RETRIEVAL,\
     ENABLE_ICAT_DATA_RETRIEVAL
@@ -64,7 +65,8 @@ class GetExperimentsByUserName(ListAPIView):
             return super(GetExperimentsByUserName, self).get(self, request, *args, **kwargs)
 
         elif ENABLE_ICAT_DATA_RETRIEVAL:
-            experiments_list = ICAT.get_embargo_data()
+            icat_service = ICATService()
+            experiments_list = icat_service.get_embargo_data()
             data = {'page_size': PAGE_SIZE_EXPERIMENTS, 'results': experiments_list, 'count': len(experiments_list),
                     'next': '', 'previous': ''}
             return JsonResponse(data, status=status.HTTP_200_OK)
