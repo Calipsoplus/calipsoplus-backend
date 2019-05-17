@@ -101,23 +101,20 @@ WSGI_APPLICATION = 'calipsoplus.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
 
+# Database
+# https://docs.djangoproject.com/en/2.0/ref/settings/#databases
+DATABASE_DIR = os.path.join(BASE_DIR, 'database_data')
+os.makedirs(DATABASE_DIR, exist_ok=True)
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'STORAGE_ENGINE': 'INNODB',
-        'OPTIONS': {
-            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
-            'read_default_file': os.path.join(BASE_DIR, '..', 'config', 'database', 'default.cnf'),
-        }
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(DATABASE_DIR, 'calipsoplus.sqlite3')
     },
     'guacamole': {
-        'ENGINE': 'django.db.backends.mysql',
-        'STORAGE_ENGINE': 'INNODB',
-        'OPTIONS': {
-            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
-            'read_default_file': os.path.join(BASE_DIR, '..', 'config', 'database', 'guacamole.cnf'),
-        },
-    },
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(DATABASE_DIR, 'guacamole.sqlite3')
+    }
 }
 
 DATABASE_ROUTERS = ['calipsoplus.router.CalipsoPlusDBRouter']
