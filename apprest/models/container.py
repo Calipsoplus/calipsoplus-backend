@@ -2,6 +2,7 @@
 from django.db import models
 from django.utils import timezone
 from simple_history.models import HistoricalRecords
+from apprest.models.image import CalipsoAvailableImages
 
 
 class CalipsoContainer(models.Model):
@@ -17,6 +18,7 @@ class CalipsoContainer(models.Model):
     vnc_password = models.CharField(max_length=255, blank=True)
     creation_date = models.DateTimeField(default=timezone.now, blank=True)
     host_port = models.CharField(max_length=255, blank=True)
+    image = models.ForeignKey(CalipsoAvailableImages, null=True, blank=True, on_delete=models.SET_NULL)
 
     public_name = models.CharField(default='default', max_length=255)
 
