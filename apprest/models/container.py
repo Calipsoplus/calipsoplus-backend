@@ -19,7 +19,11 @@ class CalipsoContainer(models.Model):
     creation_date = models.DateTimeField(default=timezone.now, blank=True)
     host_port = models.CharField(max_length=255, blank=True)
     image = models.ForeignKey(CalipsoAvailableImages, null=True, blank=True, on_delete=models.SET_NULL)
+    num_cpus = models.IntegerField(null=True)
+    memory_allocated = models.CharField(max_length=20, null=True)
+    hdd_allocated = models.CharField(max_length=20, null=True)
 
+    # TODO: Remove usages for this and replace with the image foreign key
     public_name = models.CharField(default='default', max_length=255)
 
     history = HistoricalRecords()
