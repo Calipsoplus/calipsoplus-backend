@@ -15,5 +15,5 @@ env/
 .idea
 */.idea
 *.sqlite
-
+database_data/
 calipsoplus/settings_*.py
