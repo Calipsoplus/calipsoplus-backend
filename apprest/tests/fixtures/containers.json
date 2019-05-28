@@ -45,7 +45,7 @@
     "fields": {
       "calipso_user": "userA",
       "calipso_experiment": "experiment_2",
-      "container_id": "7ef712753dd5377e4b179ed2b64487a1a1687691cb0077e27945ea0ef456323f",
+      "container_id": "7ef712753dd5377e4b179ed2b64487a1a1687691cb0077e27945ea0ef48741ae",
       "container_name": "wonderful_something",
       "container_status": "created",
       "container_info": "info from container3",
