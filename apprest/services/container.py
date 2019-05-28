@@ -1,4 +1,7 @@
 import logging
+
+from django.db.models import Sum
+
 from apprest.models import CalipsoContainer
 
 
@@ -73,3 +76,28 @@ class CalipsoContainersServices:
             self.logger.error('Unable to list all containers')
             self.logger.error(e)
             raise e
+
+    def get_total_num_cpus_used(self):
+        """
+        Get the total number of CPUs being used by all active containers
+        :return: integer num_cpus_used
+        """
+        num_cpus_used = self.list_all_active_containers().aggregate(Sum('num_cpus'))['num_cpus__sum']
+        return num_cpus_used
+
+    def get_total_memory_allocated(self):
+        """
+        Get the total amount of memory being used by all active containers
+        :return: double total_memory_allocated
+        """
+        total_memory_allocated = self.list_all_active_containers().aggregate(Sum('memory_allocated'))['memory_allocated__sum']
+        return str(total_memory_allocated) + 'G'
+
+    def get_total_hdd_allocated(self):
+        """
+        Get the total amount of storage being used by all active containers
+        :return: double total_hdd_allocated
+        """
+        total_hdd_allocated = self.list_all_active_containers().aggregate(Sum('hdd_allocated'))[
+            'hdd_allocated__sum']
+        return str(total_hdd_allocated) + 'G'

@@ -13,7 +13,10 @@
       "guacamole_username": "GUAC_USERNAME1",
       "guacamole_password": "GUAC_PASSWORD1",
       "vnc_password": "VNC_PASSWORD1",
-      "public_name": "base_desktop"
+      "image": 2,
+      "num_cpus" : 4,
+      "memory_allocated": "16G",
+      "hdd_allocated" : "40G"
     }
   },
   {
@@ -30,7 +33,30 @@
       "guacamole_username": "GUAC_USERNAME2",
       "guacamole_password": "GUAC_PASSWORD2",
       "vnc_password": "VNC_PASSWORD2",
-      "public_name": "base_desktop"
+      "image": 2,
+      "num_cpus" : 1,
+      "memory_allocated": "2G",
+      "hdd_allocated" : "10G"
+    }
+  },
+  {
+    "model": "apprest.CalipsoContainer",
+    "pk": 3,
+    "fields": {
+      "calipso_user": "userA",
+      "calipso_experiment": "experiment_2",
+      "container_id": "7ef712753dd5377e4b179ed2b64487a1a1687691cb0077e27945ea0ef456323f",
+      "container_name": "wonderful_something",
+      "container_status": "created",
+      "container_info": "info from container3",
+      "container_logs": "...",
+      "guacamole_username": "GUAC_USERNAME2",
+      "guacamole_password": "GUAC_PASSWORD2",
+      "vnc_password": "VNC_PASSWORD2",
+      "image": 1,
+      "num_cpus" : 2,
+      "memory_allocated": "8G",
+      "hdd_allocated" : "20G"
     }
   }
 ]
