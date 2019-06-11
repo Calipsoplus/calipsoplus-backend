@@ -25,10 +25,6 @@ class CalipsoAvailableImages(models.Model):
     resource_type = models.ForeignKey(CalipsoResourcesType, on_delete=django.db.models.deletion.CASCADE, blank=True,
                                       null=True)
 
-
-    #label
-    #icon
-
     history = HistoricalRecords()
 
     class Meta:

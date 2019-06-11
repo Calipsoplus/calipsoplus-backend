@@ -1,20 +1,27 @@
 language: python
 
-matrix:
-    include:
-      - python 3.4
-      - python 3.5
-      - python 3.7
-      
+dist: xenial
+python:
+  - "3.6"
+
 services:
-    - mysql
+  - mysql
+  - docker
 
 env:
-  -DJANGO=1.8 DB=mysql
+  - DJANGO_VERSION=2.1
+
+before_install:
+  - sudo apt-get install -y libffi-dev gcc python-dev musl-dev
+
 install:
   - pip install -r requirements.txt
 
-before_script: # => 6
-  - mysql -e 'create database test;' -u root
-script: # => 7
-  - echo
+before_script:
+  - mkdir -p ../config/auth/
+  # Create the settings_* files
+  - cp calipsoplus/settings_calipso.py.example calipsoplus/settings_calipso.py
+  - cp calipsoplus/settings_unittests.py.example calipsoplus/settings_unittests.py
+
+script:
+  - python manage.py test --settings=calipsoplus.settings_unittests

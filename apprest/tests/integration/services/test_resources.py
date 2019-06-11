@@ -2,6 +2,7 @@ import logging
 
 from django.contrib.auth.models import User
 
+from apprest.models import CalipsoAvailableImages
 from apprest.services.resources import GenericCalipsoResourceService
 from apprest.tests.utils import CalipsoTestCase
 from apprest.utils.exceptions import ResourceAlreadyLaunched
@@ -24,12 +25,19 @@ class ResourceServiceTestCase(CalipsoTestCase):
         resource = resource_service.run_resource(username=self.username, experiment='55555',
                                                  public_name='base_jupyter')
 
+        image_used = CalipsoAvailableImages.objects.get(public_name='base_jupyter')
+
         self.assertEqual(len(resource.container_id), 64)
         self.assertEqual(resource.container_status, 'created')
 
         resources_list = resource_service.list_resources(username=self.username)
 
         self.assertEqual(len(resources_list), 1)
+
+        # Check the container's CPUs, RAM and Storage are equal to the image's
+        self.assertEqual(resource.num_cpus, image_used.cpu)
+        self.assertEqual(resource.memory_allocated, image_used.memory)
+        self.assertEqual(resource.hdd_allocated, image_used.hdd)
 
         resource_service.stop_resource(resource_name=resource.container_name)
         resource_service.rm_resource(resource_name=resource.container_name)
