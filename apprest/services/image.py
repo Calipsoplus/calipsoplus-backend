@@ -3,6 +3,7 @@ import docker
 import docker.errors
 
 from django.conf import settings
+from django.db.models import Count
 from rest_framework.exceptions import NotFound
 from django.db import IntegrityError
 
@@ -148,3 +149,13 @@ class CalipsoAvailableImagesServices:
             self.logger.error('Error to get calipso_user from quota user:%s' % username)
             self.logger.debug(e)
             raise NotFound
+
+    @staticmethod
+    def get_total_image_usage():
+        """
+        Get the total number of containers per image.
+        To get the data, use the images[X].num_containers property
+        :return: List of CalipsoAvailableImages
+        """
+        images = CalipsoAvailableImages.objects.annotate(num_containers=Count('calipsocontainer'))
+        return images
