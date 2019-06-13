@@ -1,8 +1,8 @@
 from calipsoplus.settings import *
 
 # Whitelist your deployment server
-ALLOWED_HOSTS = ['calipsobackend.domain.tld']
-CORS_ORIGIN_WHITELIST = ['calipsobackend.domain.tld']
+ALLOWED_HOSTS = ['0.0.0.0']
+CORS_ORIGIN_WHITELIST = ['0.0.0.0']
 
 DJANGO_ENV = 'LOCAL'
 
@@ -24,14 +24,20 @@ LOGGING['loggers']['apprest']['handlers'] = ['console']
 TESTING_MODE = True
 
 # Docker daemon location, replace this with your own server
-DOCKER_URL_DAEMON = "tcp://dockerhost.domain.tld:port"
-REMOTE_MACHINE_IP = "dockerhost.domain.tld"
+# "unix://var/run/docker.sock should not be used in production as it uses the Docker located on the backend host. This is useful for CI (travis etc)
+DOCKER_URL_DAEMON = "unix://var/run/docker.sock"
+REMOTE_MACHINE_IP = "0.0.0.0"
+
+# If you want to test using a different machine for the containers, use the following format:
+#DOCKER_URL_DAEMON = "tcp://dockerhost.domain.tld:port"
+#REMOTE_MACHINE_IP should be the hostname or ip address of the machine hosting the backend
+
 
 # Location of backend (eg.: https://calipsobackend.domain.tld)
-BACKEND_CALIPSO = 
+BACKEND_CALIPSO = 'https://calipsobackend.domain.tld'
 
 # Location of frontend (eg.: https://calipsofrontend.domain.tld))
-FRONTEND_CALIPSO = 
+FRONTEND_CALIPSO = 'https://calipsofrontend.domain.tld'
 
 # Umbrella logout endpoint (should point to a Shibboleth IDP and have a return argument to point to the frontend)
 UMBRELLA_LOGOUT = BACKEND_CALIPSO + "/Shibboleth.sso/Logout?return=" + FRONTEND_CALIPSO
@@ -40,14 +46,14 @@ UMBRELLA_LOGOUT = BACKEND_CALIPSO + "/Shibboleth.sso/Logout?return=" + FRONTEND_
 UMBRELLA_LOGIN = BACKEND_CALIPSO + "/Shibboleth.sso/Login?target=" + BACKEND_CALIPSO + "/calipsoplus-services/umbrella/frontend/"
 
 # User Office backend API login (check API.md)
-BACKEND_UO_LOGIN =
-BACKEND_UO_HASH =
-BACKEND_UO_IS_AUTHORIZED =
+BACKEND_UO_LOGIN = 'https://calipsobackendend.domain.tld'
+BACKEND_UO_HASH = '/'
+BACKEND_UO_IS_AUTHORIZED = True
 
 # Endpoint to the information provider (ignore if Dynamic Data Retrieval is not enabled). Check API.md.
 # Example: "https://data.domain.tld/services/experiments/$USERNAME/" 
 # N.B.: $USERNAME is replaced by the application with the account name.
-DYNAMIC_EXPERIMENTS_DATA_RETRIEVAL_ENDPOINT =
+DYNAMIC_EXPERIMENTS_DATA_RETRIEVAL_ENDPOINT = 'https://data.domain.tld/services/experiments/$USERNAME'
 
 # List of additional group names and/or IDs that the container process will run as.
 GROUPS_DOCKER_ADD = []

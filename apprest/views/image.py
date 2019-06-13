@@ -1,3 +1,4 @@
+from django.core.exceptions import PermissionDenied
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
@@ -6,6 +7,7 @@ from rest_framework import status
 
 from apprest.models import CalipsoResourcesType
 from apprest.serializers.image import CalipsoImageSerializer
+from apprest.serializers.quota import CalipsoUserQuotaSerializer
 from apprest.services.image import CalipsoAvailableImagesServices
 
 
@@ -28,7 +30,6 @@ class GetUsedQuotaFromUser(APIView):
             return Response(serializer_class.data)
         else:
             raise PermissionDenied
-
 
 
 class GetInfoImage(APIView):
@@ -63,7 +64,6 @@ class GetInfoImage(APIView):
         service = CalipsoAvailableImagesServices()
         public_name = self.kwargs.get('public_name')
 
-
         # Default option
         resource_type = CalipsoResourcesType.objects.get(resource_type='docker_container')
 
@@ -79,13 +79,13 @@ class GetInfoImage(APIView):
 
         params = {'public_name': public_name,
                   'image': request.data.get('image'),
-                  'port_hook': request.data.get('port_hook'),
-                  'logs_er': request.data.get('logs_er'),
+                  'port_hook': '',
+                  'logs_er': '',
                   'protocol': request.data.get('protocol'),
                   'cpu': request.data.get('cpu'),
                   'memory': request.data.get('memory'),
                   'hdd': request.data.get('hdd'),
-                  'resource_type':  resource_type}
+                  'resource_type': resource_type}
 
         service.add_new_image(params=params)
         return Response(status=status.HTTP_201_CREATED)

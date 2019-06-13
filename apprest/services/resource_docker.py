@@ -59,7 +59,7 @@ class CalipsoResourceDockerContainerService:
             self.logger.debug('Exception on get experiments,sessions, and uid,gid')
 
         # If there was an exception getting the UID and GID from the experiment, try to get it from the user
-        if uid or gid == '-1':
+        if uid == '-1' or gid == '-1':
             try:
                 uid = user_service.get_user_uid(username)
                 gid = user_service.get_user_gid(username)
@@ -125,6 +125,10 @@ class CalipsoResourceDockerContainerService:
             new_container.container_name = docker_container.name
             new_container.container_status = docker_container.status
             new_container.container_info = self.client.api.inspect_container(docker_container.id)
+            new_container.image = image_selected
+            new_container.num_cpus = image_selected.cpu
+            new_container.memory_allocated = image_selected.memory
+            new_container.hdd_allocated = image_selected.hdd
 
             items = new_container.container_info['NetworkSettings']['Ports']
 
