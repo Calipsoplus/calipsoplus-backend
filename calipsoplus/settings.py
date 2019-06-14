@@ -13,6 +13,8 @@ import json
 import logging
 import os
 
+from django.core.management.utils import get_random_secret_key
+
 logger = logging.getLogger(__name__)
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -22,8 +24,23 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-with open(os.path.join(BASE_DIR, '..', 'config', 'secrets', 'secret_key.cnf')) as f:
-    SECRET_KEY = f.read().strip()
+
+# Load secret key
+SECRET_DIR = os.path.join(BASE_DIR, '..', 'config', 'secrets')
+SECRET_FILE = os.path.join(SECRET_DIR, 'secret_key.cnf')
+
+try:
+    SECRET_KEY = open(SECRET_FILE).read().strip()
+except Exception:
+    # If the file doesn't exist, make it
+    try:
+        os.makedirs(SECRET_DIR, exist_ok=True)
+        f = open(SECRET_FILE, 'w+')
+        f.write(get_random_secret_key())
+        f.close()
+        SECRET_KEY = open(SECRET_FILE).read().strip()
+    except Exception as e:
+        raise Exception('Cannot open file `%s` for writing.' % SECRET_FILE)
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -84,23 +101,20 @@ WSGI_APPLICATION = 'calipsoplus.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
 
+# Database
+# https://docs.djangoproject.com/en/2.0/ref/settings/#databases
+DATABASE_DIR = os.path.join(BASE_DIR, 'database_data')
+os.makedirs(DATABASE_DIR, exist_ok=True)
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'STORAGE_ENGINE': 'INNODB',
-        'OPTIONS': {
-            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
-            'read_default_file': os.path.join(BASE_DIR, '..', 'config', 'database', 'default.cnf'),
-        }
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(DATABASE_DIR, 'calipsoplus.sqlite3')
     },
     'guacamole': {
-        'ENGINE': 'django.db.backends.mysql',
-        'STORAGE_ENGINE': 'INNODB',
-        'OPTIONS': {
-            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
-            'read_default_file': os.path.join(BASE_DIR, '..', 'config', 'database', 'guacamole.cnf'),
-        },
-    },
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(DATABASE_DIR, 'guacamole.sqlite3')
+    }
 }
 
 DATABASE_ROUTERS = ['calipsoplus.router.CalipsoPlusDBRouter']
@@ -124,6 +138,10 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 # logs
+LOG_PATH = os.path.join(BASE_DIR, '..', 'logs')
+if not os.path.exists(LOG_PATH):
+    os.makedirs(LOG_PATH)
+        
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -140,7 +158,7 @@ LOGGING = {
         'file': {
             'level': 'DEBUG',
             'class': 'logging.handlers.RotatingFileHandler',
-            'filename': os.path.join(BASE_DIR, '..', 'logs', 'calipsoplus.log').replace('\\\\', '\\'),
+            'filename': os.path.join(LOG_PATH, 'calipsoplus.log').replace('\\\\', '\\'),
             'formatter': 'verbose',
             'maxBytes': 1024 * 1024 * 5,
             'backupCount': 5,
@@ -223,6 +241,8 @@ LOCAL_ACCESS_PASSWORD = access_conf['password']
 
 CORS_ALLOW_CREDENTIALS = True
 
+# Open ID Connect Enabled
+OIDC_ENABLED = False
 # Open ID Connect credentials
 OIDC_RP_CLIENT_ID = ''
 OIDC_RP_CLIENT_SECRET = ''
@@ -237,7 +257,7 @@ OIDC_USERNAME_ALGO = 'apprest.openidconnect.username_helper.generate_username'
 
 # URL to the front end experiment page. After the user has authenticated, they will be redirected to this page in the
 # frontend
-REDIRECT_AFTER_OIDC_URL = 'http://frontend.fr/experiment'
+REDIRECT_AFTER_OIDC_URL = 'http://frontend.fr/navigation'
 
 # URL to the calipsoplus home page. After the user has logged out, they should be redirected here. (Does not require
 # authentication)

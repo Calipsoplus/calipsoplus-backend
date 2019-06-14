@@ -22,7 +22,7 @@
     "fields": {
       "public_name": "docker_image",
       "docker_daemon": "tcp://192.168.33.13:2375",
-      "image": "http://www.yahoo.es",
+      "image": "debian:buster",
       "host_domain": "",
       "port_hook": "",
       "logs_er": "",

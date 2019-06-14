@@ -8,13 +8,13 @@ from rest_framework import status, pagination, filters
 
 from apprest.serializers.user import CalipsoUserSerializer
 from apprest.services.user import CalipsoUserServices
-from calipsoplus.settings_calipso import PAGE_SIZE_EXPERIMENTS
+from calipsoplus.settings_calipso import PAGE_SIZE_USERS
 
 from django_filters.rest_framework import DjangoFilterBackend
 
 
-class ExperimentsPagination(pagination.PageNumberPagination):
-    page_size = PAGE_SIZE_EXPERIMENTS
+class UsersPagination(pagination.PageNumberPagination):
+    page_size = PAGE_SIZE_USERS
     max_page_size = 20
 
     def get_paginated_response(self, data):
@@ -51,7 +51,7 @@ class GetAllUsers(ListAPIView):
     """
     authentication_classes = (SessionAuthentication, BasicAuthentication)
     permission_classes = (IsAuthenticated,)
-    pagination_class = ExperimentsPagination
+    pagination_class = UsersPagination
     serializer_class = CalipsoUserSerializer
     filter_backends = (filters.OrderingFilter, filters.SearchFilter, DjangoFilterBackend,)
     ordering_fields = ('id', 'user__username')

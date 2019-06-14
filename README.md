@@ -75,7 +75,6 @@ The prerequisites for this project is a working installation of Python 3.6+ and 
 
 ```bash
 mkdir calipsoplus && cd calipsoplus
-mkdir logs
 python3 -m venv env
 source env/bin/activate
 git clone git@github.com:Calipsoplus/calipsoplus-backend.git -b develop backend

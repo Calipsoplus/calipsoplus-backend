@@ -38,6 +38,6 @@ class UserExperimentViewsTestCase(CalipsoTestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertGreater(len(json_content), 0)
-        self.assertEqual(json_content['count'], 2) # two
+        self.assertEqual(json_content['count'], 2)  # two
 
         self.logger.debug('#### TEST get test_get_two_user_experiments END ####')

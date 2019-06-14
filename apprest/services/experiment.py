@@ -12,7 +12,7 @@ from apprest.models import CalipsoSession
 from apprest.models.experiment import CalipsoExperiment, CalipsoUserExperiment
 from apprest.models.user import CalipsoUser
 
-from calipsoplus.settings_calipso import PAGE_SIZE_EXPERIMENTS
+from calipsoplus.settings_calipso import PAGE_SIZE_EXPERIMENTS, BACKEND_DEFAULT_AUTHORIZATION
 
 
 def get_str(content):
@@ -121,7 +121,11 @@ class CalipsoExperimentsServices:
 
     def get_external_is_authorized(self, username):
 
-        self.logger.debug('calling external endpoint to obtain if is authorized (%s)' % username)
+        self.logger.debug('Check authorization for (%s)' % username)
+        if BACKEND_DEFAULT_AUTHORIZATION == 1:
+            return {'result': True}
+
+        self.logger.debug('Calling external endpoint to check if is authorized (%s)' % username)
         try:
             url = settings.BACKEND_UO_IS_AUTHORIZED
 

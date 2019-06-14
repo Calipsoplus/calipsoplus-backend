@@ -54,6 +54,7 @@ def get_calipso_settings(request):
 @api_view(['GET'])
 def get_login_authorization(request):
     logger.debug("get_login_authorization")
+
     calipso_experiment_services = CalipsoExperimentsServices()
     json_settings_data = calipso_experiment_services.get_external_is_authorized(request.user.username)
 
