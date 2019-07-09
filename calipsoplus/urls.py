@@ -7,7 +7,7 @@ from apprest.views.favorite import CalipsoExperimentFavorite
 from apprest.views.image import GetInfoImage, GetAllImages
 from apprest.views.login import login_user, logout_user, get_calipso_settings, get_login_authorization
 from apprest.views.quota import QuotaView, GetUsedQuotaFromUser
-from apprest.views.user import GetUser, GetAllUsers
+from apprest.views.user import GetUser, GetAllUsers, UserAdmin
 from apprest.views.container import ContainerInfo, ActiveContainers, UserContainers
 from apprest.views.openidtest import index
 from apprest.plugins.icat.views.ICAT import GetInvestigationUsers
@@ -29,6 +29,7 @@ urlpatterns = [
     path('images/', GetAllImages.as_view()),
     path('users/', GetAllUsers.as_view()),
     path('user/<username>/', GetUser.as_view()),
+    path('user/<username>/admin', UserAdmin.as_view()),
     path('login/', login_user),
     path('logout/', logout_user),
     path('settings/', get_calipso_settings),
