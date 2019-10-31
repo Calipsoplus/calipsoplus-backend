@@ -5,7 +5,7 @@ django-cors-headers==2.2.0
 django-simple-history==2.0
 djangorestframework==3.7.7
 docker==3.5.1
-docker-pycreds==0.2.2
+docker-pycreds>=0.3.0
 idna==2.6
 mysqlclient>=1.3,<1.4
 pycparser==2.18
@@ -14,7 +14,7 @@ requests>=2.20,<2.21
 six==1.11.0
 urllib3>=1.23,<1.24
 websocket-client==0.47.0
-Django>=2.1,<2.2
+Django==2.1.2
 gunicorn>=19.5.0,<19.6
 django-filter==2.0.0
 mozilla-django-oidc==1.2.1

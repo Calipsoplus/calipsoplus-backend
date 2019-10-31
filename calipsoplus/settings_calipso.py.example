@@ -14,6 +14,10 @@ PAGE_SIZE_USERS = 20
 # 1: This would allow the user to show the form in order to authenticate locally
 ALLOW_LOCAL_AUTHENTICATION = 0
 
+# 0: Check the endpoint (BACKEND_UO_IS_AUTHORIZED) if is authorized or not to manage own resources.
+# 1: Always be able to create my own resources.
+BACKEND_DEFAULT_AUTHORIZATION = 1
+
 # Both volumes should be built dynamically, but root of both of them must be declared as settings variables
 # (e.g EXPERIMENTS_DATASETS_ROOT - for the read-only - and EXPERIMENTS_OUTPUT - for the results)--
 EXPERIMENTS_DATASETS_ROOT = "/tmp/data"
