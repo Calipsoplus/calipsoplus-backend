@@ -1,14 +1,14 @@
-#OpenID Connect
-OpenID Connect (OIDC) is an authentication layer on top of OAuth 2.0, an authorization framework.
+# OpenID Connect
+OpenID Connect (OIDC) is an authentication layer on top of OAuth 2.0, an authorization framework. 
 The standard is controlled by the OpenID Foundation.   
 
 OIDC can be enabled as an authentication method for the portal. 
 
-##Keycloak Requirement  
+## Keycloak Requirement  
 Keycloak will need to return the username after the user has been authenticated.
 
-##Settings
-To enable OpenID Connect, modify the settings in the settings.py. The default values should
+## Settings
+To enable OpenID Connect, modify the settings in the settings.py. The default values should 
 look similar to this:
 
 ``` python 
