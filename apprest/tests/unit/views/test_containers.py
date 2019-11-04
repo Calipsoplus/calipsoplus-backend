@@ -38,6 +38,6 @@ class ContainerViewsTestCase(CalipsoTestCase):
         json_content = json.loads(response.content.decode("utf-8"))
 
         self.assertIsInstance(json_content, list)
-        self.assertEqual(len(json_content), 2)
+        self.assertEqual(len(json_content), 3)
 
         self.logger.debug('#### TEST test_get_all_containers END ####')

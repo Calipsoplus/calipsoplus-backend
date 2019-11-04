@@ -20,5 +20,14 @@ class CalipsoContainerServiceTestCase(APITestCase):
         self.logger.debug('#### TEST test_get_containers_list START ####')
 
         containers_list = self.containers_service.list_container(username='userA')
-        self.assertEqual(len(containers_list), 2)
+        self.assertEqual(len(containers_list), 3)
         self.logger.debug('#### TEST test_get_containers_list END ####')
+
+    def test_get_total_num_cpus_used(self):
+        self.assertEqual(self.containers_service.get_total_num_cpus_used(), 7)
+
+    def test_get_total_memory_allocated(self):
+        self.assertEqual(self.containers_service.get_total_memory_allocated(), '26.0G')
+
+    def test_get_total_hdd_allocated(self):
+        self.assertEqual(self.containers_service.get_total_hdd_allocated(), '70.0G')
