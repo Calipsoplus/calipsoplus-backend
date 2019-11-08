@@ -27,6 +27,20 @@ class ContainerInfo(APIView):
         return Response(serializer_class.data)
 
 
+class AllContainersInfo(APIView):
+    authentication_classes = (SessionAuthentication, BasicAuthentication)
+    permission_classes = (IsAuthenticated,)
+    serializer_class = CalipsoContainerSerializer
+
+    pagination_class = None
+
+    def get(self, *args, **kwargs):
+        service = CalipsoContainersServices()
+        containers = service.list_all_containers()
+        serializer_class = CalipsoContainerSerializer(containers, many=True)
+        return Response(serializer_class.data)
+
+
 class ActiveContainers(APIView):
     """
     get:
@@ -60,6 +74,7 @@ class UserContainers(APIView):
     def get(self, *args, **kwargs):
         service = CalipsoContainersServices()
         username = self.kwargs.get('username')
+        service.update_container_status()
         containers = service.list_container(username)
         serializer_class = CalipsoContainerSerializer(containers, many=True)
         return Response(serializer_class.data)
