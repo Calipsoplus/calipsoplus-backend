@@ -36,6 +36,7 @@ class CalipsoUserServices:
         if self.is_admin(username=username):
             raise Exception
         user.user.is_superuser = True
+        user.user.save()
         return True
 
     def get_all_users(self):
