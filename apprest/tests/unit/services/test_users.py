@@ -20,8 +20,10 @@ class UserServiceTestCase(CalipsoTestCase):
 
         request = HttpRequest()
         request.method = 'GET'
-        request.META['HTTP_EAAHASH'] = eaa_hash
-        request.META["HTTP_UID"] = uid
+        #request.META['HTTP_EAAHASH'] = eaa_hash
+        #request.META["HTTP_UID"] = uid
+        request.META['EAAHash'] = eaa_hash
+        request.META["uid"] = uid
 
         json_umbrella_meta = self.user_service.get_umbrella_session_hash(request)
 
