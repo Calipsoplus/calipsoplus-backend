@@ -25,6 +25,20 @@ class CalipsoUserServices:
         except KeyError:
             return None
 
+    def is_admin(self, username):
+        user = self.get_user(username=username)
+        if user.user.is_superuser:
+            return True
+        return False
+
+    def make_user_admin(self, username):
+        user = self.get_user(username=username)
+        if self.is_admin(username=username):
+            raise Exception
+        user.user.is_superuser = True
+        user.user.save()
+        return True
+
     def get_all_users(self):
         self.logger.debug("Attempting to retrieve all users")
         try:
