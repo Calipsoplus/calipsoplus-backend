@@ -14,10 +14,12 @@ class CalipsoUserServices:
     def get_umbrella_session_hash(self, request):
         self.logger.debug('try to get umbrella session')
         try:
-            #session_hash = request.META["HTTP_EAAHASH"]
-            session_hash = request.META["EAAHash"]
-            #uid = request.META["HTTP_UID"]
-            uid = request.META["uid"]
+            if "EAAHash" in request.META:
+                session_hash = request.META["EAAHash"]
+                uid = request.META["uid"]
+            else:
+                session_hash = request.META["HTTP_EAAHASH"]
+                uid = request.META["HTTP_UID"]
 
             json_session_data = {'EAAHash': session_hash, 'uid': uid}
 
