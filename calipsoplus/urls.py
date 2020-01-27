@@ -26,7 +26,6 @@ urlpatterns = [
     path('used_quota/<username>/', GetUsedQuotaFromUser.as_view()),
     path('images/', GetAllImages.as_view()),
     path('image/<public_name>/', GetInfoImage.as_view()),
-    path('images/', GetAllImages.as_view()),
     path('users/', GetAllUsers.as_view()),
     path('user/<username>/', GetUser.as_view()),
     path('user/<username>/admin', UserAdmin.as_view()),
