@@ -49,7 +49,7 @@ class CalipsoContainersServices:
         self.logger.debug('Attempting to list containers from calipso user:' + username)
         self.update_container_status()
         try:
-            containers = CalipsoContainer.objects.filter(calipso_user=username,
+            containers = CalipsoContainer.objects.filter(calipso_user__user__username=username,
                                                          container_status__in=['created', 'busy', 'Running', 'Pending'])
             self.logger.debug('List containers from ' + username)
             return containers
