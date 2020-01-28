@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 
 class CalipsoContainerServiceTestCase(APITestCase):
     logger = logging.getLogger(__name__)
-    fixtures = ['containers.json']
+    fixtures = ['users.json', 'containers.json']
 
     def setUp(self):
         self.logger.debug('#### setUp CalipsoContainerServiceTestCase : START ####')
