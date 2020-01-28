@@ -24,7 +24,7 @@ class ExperimentViewsTestCase(CalipsoTestCase):
     def test_get_experiments_by_username(self):
         self.logger.debug('#### TEST get experiments by username START ####')
 
-        base_url = '/experiments/%s/'
+        base_url = '/users/%s/experiments/'
 
         # Not authenticated -> 403
         url = base_url % self.scientist_1.user.username

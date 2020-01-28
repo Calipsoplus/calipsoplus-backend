@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 class SessionServiceTestCase(APITestCase):
     logger = logging.getLogger(__name__)
 
-    fixtures = ['experiments.json']
+    fixtures = ['experiments.json', 'sessions.json']
     def setUp(self):
         self.logger.debug('#### setUp SessionServiceTestCase START ####')
         self.service = CalipsoSessionsServices()
