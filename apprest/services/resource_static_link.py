@@ -1,7 +1,7 @@
 import logging
 import uuid
 
-from apprest.models import CalipsoContainer
+from apprest.models import CalipsoContainer, CalipsoUser
 from apprest.services.image import CalipsoAvailableImagesServices
 
 image_service = CalipsoAvailableImagesServices()
@@ -16,11 +16,11 @@ class CalipsoResourceStaticLinkService:
     def run_resource(self, username, experiment, public_name):
         self.logger.debug('CalipsoResourceStaticLinkService run_resource')
         self.logger.debug('run_resource(static_link) public_name=%s' % public_name)
-
+        user = CalipsoUser.objects.get(user__username=username)
         try:
             image_selected = image_service.get_available_image(public_name=public_name)
 
-            new_container = CalipsoContainer.objects.create(calipso_user=username,
+            new_container = CalipsoContainer.objects.create(calipso_user=user,
                                                             calipso_experiment=experiment,
                                                             container_id=uuid.uuid4().hex,
                                                             container_name=uuid.uuid4(),

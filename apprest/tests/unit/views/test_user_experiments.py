@@ -24,7 +24,7 @@ class UserExperimentViewsTestCase(CalipsoTestCase):
         self.logger.debug('#### TEST test_get_two_user_experiments START ####')
 
         calipso_user = CalipsoUser.objects.get(pk=1)
-        base_url = '/experiments/%s/'
+        base_url = '/users/%s/experiments/'
         url = base_url % str(calipso_user.user.username)
 
         # Login and check methods

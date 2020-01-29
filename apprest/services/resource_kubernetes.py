@@ -6,6 +6,7 @@ import os
 
 from kubernetes import client, config
 
+from apprest.models import CalipsoUser
 from apprest.models.container import CalipsoContainer
 from apprest.services.experiment import CalipsoExperimentsServices
 from apprest.services.image import CalipsoAvailableImagesServices
@@ -255,7 +256,8 @@ class CalipsoResourceKubernetesService:
         vnc_password = 'vncpassword'
 
         self.logger.debug('creating container')
-        new_container = CalipsoContainer.objects.create(calipso_user=username,
+        user = CalipsoUser.objects.get(user__username=username)
+        new_container = CalipsoContainer.objects.create(calipso_user=user,
                                                         calipso_experiment=experiment,
                                                         container_id='not created yet',
                                                         container_name='not created yet',
@@ -342,7 +344,8 @@ class CalipsoResourceKubernetesService:
         self.logger.debug('CalipsoResourceKubernetesContainerService list_resources (%s)' % username)
 
         try:
-            containers = CalipsoContainer.objects.filter(calipso_user=username,
+            user = CalipsoUser.objects.get(user__username=username)
+            containers = CalipsoContainer.objects.filter(calipso_user=user,
                                                          container_status__in=['created', 'busy', 'Running'])
             self.logger.debug('List containers from ' + username)
             return containers

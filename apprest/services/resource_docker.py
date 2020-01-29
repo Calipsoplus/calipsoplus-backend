@@ -3,6 +3,7 @@ import re
 import uuid
 import docker
 
+from apprest.models import CalipsoUser
 from apprest.models.container import CalipsoContainer
 from apprest.services.experiment import CalipsoExperimentsServices
 from apprest.services.image import CalipsoAvailableImagesServices
@@ -92,7 +93,8 @@ class CalipsoResourceDockerContainerService:
         self.logger.debug('volume set to :%s', volume)
 
         self.logger.debug('creating container')
-        new_container = CalipsoContainer.objects.create(calipso_user=username,
+        user = CalipsoUser.objects.get(user__username=username)
+        new_container = CalipsoContainer.objects.create(calipso_user=user,
                                                         calipso_experiment=experiment,
                                                         container_id='not created yet',
                                                         container_name='not created yet',
@@ -234,7 +236,8 @@ class CalipsoResourceDockerContainerService:
         self.logger.debug('CalipsoResourceDockerContainerService list_resources (%s)' % username)
 
         try:
-            containers = CalipsoContainer.objects.filter(calipso_user=username,
+            user = CalipsoUser.objects.get(user__username=username)
+            containers = CalipsoContainer.objects.filter(calipso_user=user,
                                                          container_status__in=['created', 'busy'])
             self.logger.debug('List containers from ' + username)
             return containers
