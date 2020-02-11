@@ -14,7 +14,7 @@ requests>=2.20,<2.21
 six==1.11.0
 urllib3>=1.23,<1.24
 websocket-client==0.47.0
-django==2.1.5
+django==2.2.10
 gunicorn>=19.5.0,<19.6
 django-filter==2.0.0
 mozilla-django-oidc==1.2.1
