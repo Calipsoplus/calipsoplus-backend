@@ -14,8 +14,12 @@ class CalipsoUserServices:
     def get_umbrella_session_hash(self, request):
         self.logger.debug('try to get umbrella session')
         try:
-            session_hash = request.META["HTTP_EAAHASH"]
-            uid = request.META["HTTP_UID"]
+            if "EAAHash" in request.META:
+                session_hash = request.META["EAAHash"]
+                uid = request.META["uid"]
+            else:
+                session_hash = request.META["HTTP_EAAHASH"]
+                uid = request.META["HTTP_UID"]
 
             json_session_data = {'EAAHash': session_hash, 'uid': uid}
 
@@ -24,6 +28,20 @@ class CalipsoUserServices:
 
         except KeyError:
             return None
+
+    def is_admin(self, username):
+        user = self.get_user(username=username)
+        if user.user.is_superuser:
+            return True
+        return False
+
+    def make_user_admin(self, username):
+        user = self.get_user(username=username)
+        if self.is_admin(username=username):
+            raise Exception
+        user.user.is_superuser = True
+        user.user.save()
+        return True
 
     def get_all_users(self):
         self.logger.debug("Attempting to retrieve all users")

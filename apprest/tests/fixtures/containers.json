@@ -3,7 +3,7 @@
     "model": "apprest.CalipsoContainer",
     "pk": 1,
     "fields": {
-      "calipso_user": "userA",
+      "calipso_user": 1,
       "calipso_experiment": "experiment_1",
       "container_id": "c79a948380516cbb5b6b4ef817cf9d83064477cec5b019140b99cad9d9538e3e",
       "container_name": "vigilant_wilson",
@@ -23,7 +23,7 @@
     "model": "apprest.CalipsoContainer",
     "pk": 2,
     "fields": {
-      "calipso_user": "userA",
+      "calipso_user": 1,
       "calipso_experiment": "experiment_2",
       "container_id": "7ef712753dd5377e4b179ed2b64487a1a1687691cb0077e27945ea0ef456323f",
       "container_name": "wonderful_allen",
@@ -43,7 +43,7 @@
     "model": "apprest.CalipsoContainer",
     "pk": 3,
     "fields": {
-      "calipso_user": "userA",
+      "calipso_user": 1,
       "calipso_experiment": "experiment_2",
       "container_id": "7ef712753dd5377e4b179ed2b64487a1a1687691cb0077e27945ea0ef48741ae",
       "container_name": "wonderful_something",
