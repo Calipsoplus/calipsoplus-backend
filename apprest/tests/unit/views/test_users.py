@@ -90,7 +90,7 @@ class UserViewsTestCase(CalipsoTestCase):
         self.assertEqual(response.status_code, 200)
 
         # Get user details of the adminuser
-        url = '/user/adminuser/'
+        url = '/users/adminuser/'
         response = self.client.get(url, format='json', content_type='application/json')
 
         # Check the is_superuser property

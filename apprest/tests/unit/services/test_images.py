@@ -9,9 +9,7 @@ logger = logging.getLogger(__name__)
 
 class ImagesServiceTestCase(CalipsoTestCase):
     logger = logging.getLogger(__name__)
-
-    fixtures = ['resources_type.json', 'images.json', 'containers.json']
-
+    fixtures = ['users.json', 'containers.json', 'images.json']
 
     def setUp(self):
         self.logger.debug('#### setUp START ####')

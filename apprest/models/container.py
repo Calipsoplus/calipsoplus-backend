@@ -2,11 +2,13 @@
 from django.db import models
 from django.utils import timezone
 from simple_history.models import HistoricalRecords
+
+from apprest.models.user import CalipsoUser
 from apprest.models.image import CalipsoAvailableImages
 
 
 class CalipsoContainer(models.Model):
-    calipso_user = models.CharField(max_length=255)
+    calipso_user = models.ForeignKey(CalipsoUser, on_delete=models.CASCADE)
     calipso_experiment = models.CharField(max_length=255)
     container_id = models.CharField(max_length=255)
     container_name = models.CharField(max_length=255)

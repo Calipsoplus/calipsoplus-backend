@@ -3,12 +3,26 @@ import logging
 from django.db.models import Sum
 
 from apprest.models import CalipsoContainer
+from apprest.services.resource_kubernetes import CalipsoResourceKubernetesService
 
 
 class CalipsoContainersServices:
 
     def __init__(self):
         self.logger = logging.getLogger(__name__)
+
+    # Temporary fix for updating the container status as there is a delay when kubernetes creates the container
+    # and when it is in the 'Running' stage
+    def update_container_status(self):
+        service = CalipsoResourceKubernetesService()
+        containers = CalipsoContainer.objects.filter(container_status__in=['Pending'])
+        if len(containers) == 0:
+            return
+        for container in containers:
+            if container.container_status == 'Pending':
+                status = service.get_pod_status(container.container_name)
+                CalipsoContainer.objects.filter(id=container.id).update(container_status=status)
+                self.logger.debug('Container %s status updated' % container.id)
 
     def get_container_by_id(self, cid):
         """
@@ -33,10 +47,10 @@ class CalipsoContainersServices:
         :return: list containers
         """
         self.logger.debug('Attempting to list containers from calipso user:' + username)
-
+        self.update_container_status()
         try:
-            containers = CalipsoContainer.objects.filter(calipso_user=username,
-                                                         container_status__in=['created', 'busy'])
+            containers = CalipsoContainer.objects.filter(calipso_user__user__username=username,
+                                                         container_status__in=['created', 'busy', 'Running', 'Pending'])
             self.logger.debug('List containers from ' + username)
             return containers
 
@@ -69,7 +83,7 @@ class CalipsoContainersServices:
         self.logger.debug('Listing all active containers')
 
         try:
-            containers = CalipsoContainer.objects.filter(container_status__in=['created', 'busy'])
+            containers = CalipsoContainer.objects.filter(container_status__in=['created', 'busy', 'Running'])
             return containers
 
         except Exception as e:
@@ -90,7 +104,8 @@ class CalipsoContainersServices:
         Get the total amount of memory being used by all active containers
         :return: double total_memory_allocated
         """
-        total_memory_allocated = self.list_all_active_containers().aggregate(Sum('memory_allocated'))['memory_allocated__sum']
+        total_memory_allocated = self.list_all_active_containers().aggregate(Sum('memory_allocated'))[
+            'memory_allocated__sum']
         return str(total_memory_allocated) + 'G'
 
     def get_total_hdd_allocated(self):

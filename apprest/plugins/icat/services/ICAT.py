@@ -1,6 +1,6 @@
 import requests
 import json
-
+import logging
 import dateutil.parser
 
 from apprest.plugins.icat.models.calipso_experiment import CalipsoExperiment
@@ -14,11 +14,14 @@ icat_url = ICAT_DATA_RETRIEVAL_ENDPOINT
 class ICATService:
 
     def get_session_id(self):
-        session_id = json.loads(requests.post(icat_url + '/session', data={
-            "plugin": ICAT_PLUGIN,
-            "username": ICAT_USERNAME,
-            "password": ICAT_PASSWORD
-        }).text)['sessionId']
+        try:
+            session_id = json.loads(requests.post(icat_url + '/session', data={
+                "plugin": ICAT_PLUGIN,
+                "username": ICAT_USERNAME,
+                "password": ICAT_PASSWORD
+            }).text)['sessionId']
+        except json.JSONDecodeError:
+            logging.debug("Exception authenticating with ICAT service")
         return session_id
 
     def parse_data(self,data_array):

@@ -19,7 +19,7 @@ class SessionViewsTestCase(CalipsoTestCase):
     def test_get_json_sessions_from_experiment(self):
         self.logger.debug('#### TEST test_get_json_sessions_from_experiment START ####')
 
-        base_url = '/experiments/%s/'
+        base_url = '/users/%s/experiments/'
         url = base_url % self.scientist_1.user.username
 
         # Login and check methods
