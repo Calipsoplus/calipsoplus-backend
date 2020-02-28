@@ -30,7 +30,7 @@ class FavoriteExperimentViewsTestCase(CalipsoTestCase):
         response = self.client.put(url, format='json', content_type='application/json', data=data_str)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        base_url = '/experiments/%s/'
+        base_url = '/users/%s/experiments/'
         url = base_url % str(self.calipso_user.user.username)
         response = self.client.get(url, format='json', content_type='application/json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)

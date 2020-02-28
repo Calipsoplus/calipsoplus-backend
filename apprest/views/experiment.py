@@ -9,6 +9,8 @@ from rest_framework.authentication import SessionAuthentication, BasicAuthentica
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
+from django.core.paginator import Paginator
+
 from apprest.plugins.icat.helpers.complex_encoder import JsonResponse
 from apprest.serializers.experiment import CalipsoExperimentSerializer
 from apprest.services.experiment import CalipsoExperimentsServices
@@ -67,7 +69,9 @@ class GetExperimentsByUserName(ListAPIView):
         elif ENABLE_ICAT_DATA_RETRIEVAL:
             icat_service = ICATService()
             experiments_list = icat_service.get_embargo_data()
-            data = {'page_size': PAGE_SIZE_EXPERIMENTS, 'results': experiments_list, 'count': len(experiments_list),
+            paginator = Paginator(experiments_list, PAGE_SIZE_EXPERIMENTS) # PAGE_SIZE_EXPERIMENTS is results per page
+            results = paginator.get_page(request.GET.get('page'))
+            data = {'page_size': PAGE_SIZE_EXPERIMENTS, 'results': results.object_list, 'count': len(experiments_list),
                     'next': '', 'previous': ''}
             return JsonResponse(data, status=status.HTTP_200_OK)
 
