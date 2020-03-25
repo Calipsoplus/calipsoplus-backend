@@ -14,11 +14,18 @@ from apprest.models.user import CalipsoUser
 
 from calipsoplus.settings_calipso import PAGE_SIZE_EXPERIMENTS, BACKEND_DEFAULT_AUTHORIZATION
 
+DATE_TIME_FORMAT = "%Y-%m-%dT%H:%M:%SZ"
 
 def get_str(content):
     if not content:
         return '.'
     return str(content)
+
+def json_default(value):
+    if isinstance(value, datetime.date):
+        return datetime.datetime(value.year,value.month,value.day, value.hour, value.minute, value.second).strftime(DATE_TIME_FORMAT)
+    else:
+        return value.__dict__
 
 
 class CalipsoExperimentsServices:
@@ -119,6 +126,68 @@ class CalipsoExperimentsServices:
             self.logger.debug(e)
             raise e
 
+
+
+
+    def get_icat_experiments_sort_search(self, username, query, experiments_list):
+        search_field = query['search']
+        ordering_field = query['ordering']
+
+        object_list = []
+
+        if search_field is not None:
+            for obj in experiments_list:
+                append = False
+                try:
+                    obj.beam_line.index(search_field)
+                    append = True
+                except Exception:
+                    pass
+                try:
+                    obj.subject.index(search_field)
+                    append = True
+                except Exception:
+                    pass
+                try:
+                    obj.body.index(search_field)
+                    append = True
+                except Exception:
+                    pass
+                try:
+                    obj.proposal_id.index(search_field)
+                    append = True
+                except Exception:
+                    pass
+                if append:
+                    object_list.append(obj)
+
+            experiments_list = object_list
+
+        if ordering_field != '':
+            try:
+                object_list = experiments_list
+                if ordering_field == "proposal_id":
+                    my_sorted_data = sorted(object_list, key=lambda k: k.proposal_id, reverse=True)
+                if ordering_field == "-proposal_id":
+                    my_sorted_data = sorted(object_list, key=lambda k: k.proposal_id, reverse=False)
+                if ordering_field == "subject":
+                    my_sorted_data = sorted(object_list, key=lambda k: k.subject, reverse=True)
+                if ordering_field == "-subject":
+                    my_sorted_data = sorted(object_list, key=lambda k: k.subject, reverse=False)
+                if ordering_field == "beam_line":
+                    my_sorted_data = sorted(object_list, key=lambda k: k.beam_line, reverse=True)
+                if ordering_field == "-beam_line":
+                    my_sorted_data = sorted(object_list, key=lambda k: k.beam_line, reverse=False)
+                if ordering_field == "body":
+                    my_sorted_data = sorted(object_list, key=lambda k: k.body, reverse=True)
+                if ordering_field == "-body":
+                    my_sorted_data = sorted(object_list, key=lambda k: k.body, reverse=False)
+                experiments_list = my_sorted_data
+            except Exception:
+                object_list = []
+
+        return json.loads(json.dumps(experiments_list, default=json_default))
+
     def get_external_is_authorized(self, username):
 
         self.logger.debug('Check authorization for (%s)' % username)
@@ -189,8 +258,17 @@ class CalipsoExperimentsServices:
             for session in experiments.get('sessions'):
 
                 session_number = session.get('session_number')
-                session_start_date = datetime.datetime.strptime(session.get('start_date'), "%Y-%m-%dT%H:%M:%SZ")
-                session_end_date = datetime.datetime.strptime(session.get('start_date'), "%Y-%m-%dT%H:%M:%SZ")
+
+                start_datetime = session.get('start_date')
+                end_datetime = session.get('end_date')
+
+                try:
+                    session_start_date = datetime.datetime.strptime(start_datetime, DATE_TIME_FORMAT)
+                    session_end_date = datetime.datetime.strptime(end_datetime, DATE_TIME_FORMAT)
+                except Exception as e:
+                    session_start_date = datetime.datetime(start_datetime['year'], start_datetime['month'], start_datetime['day']).strftime(DATE_TIME_FORMAT)
+                    session_end_date = datetime.datetime(end_datetime['year'], end_datetime['month'], end_datetime['day']).strftime(DATE_TIME_FORMAT)
+
                 session_subject = session.get('subject')
                 session_body = session.get('body')
                 session_data_set_path = session.get('data_set_path')
@@ -204,7 +282,6 @@ class CalipsoExperimentsServices:
 
                 try:
                     sess = CalipsoSession.objects.get(session_number=session_number, experiment=exp)
-                    sess.session_number = sess.session_number
                     sess.start_date = session_start_date
                     sess.end_date = session_end_date
                     sess.body = session_body
