@@ -168,19 +168,19 @@ class CalipsoExperimentsServices:
                 object_list = experiments_list
                 if ordering_field == "proposal_id":
                     my_sorted_data = sorted(object_list, key=lambda k: k.proposal_id, reverse=True)
-                if ordering_field == "-proposal_id":
+                elif ordering_field == "-proposal_id":
                     my_sorted_data = sorted(object_list, key=lambda k: k.proposal_id, reverse=False)
                 if ordering_field == "subject":
                     my_sorted_data = sorted(object_list, key=lambda k: k.subject, reverse=True)
-                if ordering_field == "-subject":
+                elif ordering_field == "-subject":
                     my_sorted_data = sorted(object_list, key=lambda k: k.subject, reverse=False)
                 if ordering_field == "beam_line":
                     my_sorted_data = sorted(object_list, key=lambda k: k.beam_line, reverse=True)
-                if ordering_field == "-beam_line":
+                elif ordering_field == "-beam_line":
                     my_sorted_data = sorted(object_list, key=lambda k: k.beam_line, reverse=False)
                 if ordering_field == "body":
                     my_sorted_data = sorted(object_list, key=lambda k: k.body, reverse=True)
-                if ordering_field == "-body":
+                elif ordering_field == "-body":
                     my_sorted_data = sorted(object_list, key=lambda k: k.body, reverse=False)
                 experiments_list = my_sorted_data
             except Exception:
