@@ -49,8 +49,8 @@ class CalipsoResourceDockerContainerService:
 
         image_selected = image_service.get_available_image(public_name=public_name)
 
-        uid = "-1"
-        gid = "-1"
+        uid = "."
+        gid = "."
         try:
             experiment_from_session = session_service.get_experiment_from_session(session_number=experiment)
             experiment_data = experiments_service.get_experiment(proposal_id=experiment_from_session.proposal_id)
@@ -60,7 +60,7 @@ class CalipsoResourceDockerContainerService:
             self.logger.debug('Exception on get experiments,sessions, and uid,gid')
 
         # If there was an exception getting the UID and GID from the experiment, try to get it from the user
-        if uid == '-1' or gid == '-1':
+        if uid == '.' or gid == '.':
             try:
                 uid = user_service.get_user_uid(username)
                 gid = user_service.get_user_gid(username)
