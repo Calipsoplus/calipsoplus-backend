@@ -12,7 +12,7 @@ from apprest.services.experiment import CalipsoExperimentsServices
 from apprest.services.image import CalipsoAvailableImagesServices
 from apprest.services.session import CalipsoSessionsServices
 from apprest.services.user import CalipsoUserServices
-from calipsoplus.settings_calipso import ADD_HOME_DIR_TO_ALL_CONTAINERS, EXPERIMENTS_DATASETS_ROOT, EXPERIMENTS_OUTPUT
+from calipsoplus.settings_calipso import ADD_HOME_DIR_TO_ALL_CONTAINERS, EXPERIMENTS_DATASETS_ROOT, EXPERIMENTS_OUTPUT, DEFAULT_KUBE_NAMESPACE
 
 image_service = CalipsoAvailableImagesServices()
 session_service = CalipsoSessionsServices()
@@ -38,18 +38,18 @@ class CalipsoResourceKubernetesService:
     def id_generator(self, size=12, chars=string.ascii_lowercase + string.digits):
         return ''.join(random.choice(chars) for _ in range(size))
 
-    def get_pod_full_name(self, pod_name, namespace='default'):
+    def get_pod_full_name(self, pod_name, namespace=DEFAULT_KUBE_NAMESPACE):
         api_instance = client.CoreV1Api()
 
         results = api_instance.list_namespaced_pod(namespace=namespace)
         for i in results.items:
             if pod_name in i.metadata.name:
+                self.logger.debug('Pod %s found' % pod_name)
                 return i.metadata.name
+        self.logger.error('Pod %s does not exist' % pod_name)
+        return str('error-%s' % pod_name)
 
-        self.logger.debug('Pod %s does not exist' % pod_name)
-        return Exception
-
-    def get_pod_status(self, pod_full_name, namespace='default'):
+    def get_pod_status(self, pod_full_name, namespace=DEFAULT_KUBE_NAMESPACE):
         api_instance = client.CoreV1Api()
 
         api_response = api_instance.read_namespaced_pod_status(pod_full_name, namespace)
@@ -163,7 +163,7 @@ class CalipsoResourceKubernetesService:
         api_response = api_instance.create_namespaced_service(namespace=namespace, body=service)
         print("Service created. status='%s'" % str(api_response.status))
 
-    def create_deployment_and_service(self, deployment_name, container_image, username, namespace='default',
+    def create_deployment_and_service(self, deployment_name, container_image, username, namespace=DEFAULT_KUBE_NAMESPACE,
                                       uid=0, gid=0):
         label_selector = deployment_name
         deployment = self.create_deployment_object(username, deployment_name, container_image, label_selector, uid, gid)
@@ -171,7 +171,7 @@ class CalipsoResourceKubernetesService:
         self.create_deployment(client.ExtensionsV1beta1Api(), deployment, namespace)
         self.create_service(label_selector, {'rdp': 3389, 'vnc': 5901, 'something': 8888}, namespace)
 
-    def get_ports_from_service(self, deployment_name, namespace='default'):
+    def get_ports_from_service(self, deployment_name, namespace=DEFAULT_KUBE_NAMESPACE):
         api_instance = client.CoreV1Api()
         deployment_name += '-service'
         api_response = api_instance.read_namespaced_service(deployment_name, namespace)
@@ -201,14 +201,14 @@ class CalipsoResourceKubernetesService:
         api_instance = client.AppsV1Api()
         api_response = api_instance.delete_namespaced_deployment(
             name=str(deployment_name),
-            namespace="default",
+                namespace=DEFAULT_KUBE_NAMESPACE,
             body=client.V1DeleteOptions(
                 propagation_policy='Foreground',
                 grace_period_seconds=5))
 
         self.logger.debug("Deployment deleted. status='%s'" % str(api_response.status))
 
-    def delete_service(self, service_name, namespace='default'):
+    def delete_service(self, service_name, namespace=DEFAULT_KUBE_NAMESPACE):
         # Delete Service
         api_instance = client.CoreV1Api()
         api_response = api_instance.delete_namespaced_service(
@@ -223,8 +223,8 @@ class CalipsoResourceKubernetesService:
     def run_resource(self, username, experiment, public_name):
         image_selected = image_service.get_available_image(public_name=public_name)
 
-        uid = "-1"
-        gid = "-1"
+        uid = "."
+        gid = "."
         try:
             experiment_from_session = session_service.get_experiment_from_session(session_number=experiment)
             experiment_data = experiments_service.get_experiment(proposal_id=experiment_from_session.proposal_id)
@@ -234,7 +234,7 @@ class CalipsoResourceKubernetesService:
             self.logger.debug('Exception on get experiments,sessions, and uid,gid')
 
         # If there was an exception getting the UID and GID from the experiment, try to get it from the user
-        if uid == '-1' or gid == '-1':
+        if uid == '.' or gid == '.':
             try:
                 uid = user_service.get_user_uid(username)
                 gid = user_service.get_user_gid(username)

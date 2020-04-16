@@ -19,6 +19,10 @@ from apprest.services.session import CalipsoSessionsServices
 
 from apprest.utils.request import ErrorFormatting, JSONResponse
 
+from apprest.utils.resources import ResourceType
+
+from calipsoplus.settings_calipso import REMOTE_PODS_MACHINE_IP
+
 container_service = CalipsoContainersServices()
 guacamole_service = CalipsoGuacamoleServices()
 session_service = CalipsoSessionsServices()
@@ -121,17 +125,25 @@ def run_resource(request, username, experiment, public_name):
 
     logger.debug("Searching... port")
 
-    try:
-        port = int(resource.container_info['NetworkSettings']['Ports'][image_selected.port_hook][0]['HostPort'])
-    except Exception as e:
-        port = 0
+    container_ip = settings.REMOTE_MACHINE_IP
+    port = resource.host_port
+
+    if resource_type.resource_type == ResourceType.kubernetes:
+        container_ip = REMOTE_PODS_MACHINE_IP
+        port = int(resource.host_port)
+
+    if port == 0:
+        try:
+            port = int(resource.container_info['NetworkSettings']['Ports'][image_selected.port_hook][0]['HostPort'])
+        except Exception as e:
+            port = 0
 
     resource.container_info = experiment_proposal_id
     resource.save()
 
     serializer = CalipsoContainerSerializer(resource)
 
-    logger.debug("Selected port: %d" % port)
+    logger.debug("Selected port: %s" % str(port))
 
     try:
 
@@ -140,7 +152,7 @@ def run_resource(request, username, experiment, public_name):
                   'guacamole_connection_name': resource.container_name,
                   'guacamole_protocol': image_selected.protocol,
                   'vnc_password': resource.vnc_password,
-                  'container_ip': settings.REMOTE_MACHINE_IP,
+                  'container_ip': container_ip,
                   'container_port': port}
 
         guacamole_service.create_connection(params)
