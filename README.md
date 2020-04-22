@@ -246,6 +246,27 @@ Replace the placeholders with the following:
 *  **RELOAD_FILE**: A file UWSGI watches for changes to trigger a hot reload of the application (usually we use the README of the application).
 *  **ENVIRONMENT_SETTINGS_FILE**: The settings file used for this deployment, one of **settings_[test|demo|prod]** (depending on which environment you are deploying).
 
+#### Alternative HTTPS-based UWSGI
+
+You can also configure uwsgi to listen on HTTPS, and also provide official certificate/key. This means that your proxy configuration does not need to proxy uWSGI (just a 'normal' HTTP(S)-based proxy) which can reduce complexity depending on your environment.
+
+Here is a live example with no variables, for additional perspective to the previous example:
+
+```ini
+[uwsgi]
+https=0.0.0.0:8000,secrets/backend/calipso.crt,secrets/backend/calipso.key
+master=True
+chdir=/src
+honour-stdin=True
+wsgi-file=calipsoplus/wsgi.py
+pidfile=/src/calipsoplus.pid
+stats=/tmp/calipso-stats
+env=DJANGO_SETTINGS_MODULE=calipsoplus.settings_prod
+processes=4
+threads=2
+```
+* NB: the order of the certificate/key is important; give the path to the certificate *before* the key. In the above example, the container is configured to provide a 'secrets' directory inside /src.
+
 Once you are sure the values are correct, sym-link it to the apps-enabled folder and restart the UWSGI service.
 
 ### Configure Apache
