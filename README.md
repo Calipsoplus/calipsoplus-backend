@@ -180,6 +180,12 @@ To configure the resource quotas to which users are limited, modify the relevant
 #### Set the storage root path
 Paths to the datasets of an experiment are built dynamically, but the root path to the storage mounting needs to be defined in the **calipsoplus/settings_calipso.py** file. Use "EXPERIMENTS_DATASETS_ROOT" for datasets that will be mounted in "read-only" mode, and "EXPERIMENTS_OUTPUT" for the results of operations performed in the requisitioned resource.
 
+
+#### Set the kubernetes endpoint at calipso_settings
+REMOTE_PODS_MACHINE_IP = "kube.machine"
+DEFAULT_KUBE_NAMESPACE = "default"
+
+
 #### Set the docker daemon endpoint
 In order to requisition new docker containers, the application has to communicate with an existing Docker daemon. The endpoints to contact with this service are set in the relevant settings.py file (eg.: settings_local.py). There are two variables that need to be set:
 *  **DOCKER_URL_DAEMON**: takes the form of "tcp://MACHINE_IP:DOCKER_PORT", where "MACHINE_IP" is the IP of the machine that hosts the Docker daemon and "DOCKER_PORT" is the port the daemon is listening to.
