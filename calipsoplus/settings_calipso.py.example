@@ -46,6 +46,13 @@ ADD_HOME_DIR_TO_ALL_CONTAINERS = False
 
 API_URL_FOR_UID_AND_GID = 'http://example.fr/user/details'
 
+# Mount arbitrary directories into container
+# Form: "source:target:ro|rw"
+OTHER_DIRS_TO_MOUNT = [
+    "/opt/matlab/2018b:/usr/local/matlab:ro",
+    "/opt/tools:/opt/tools:ro",
+]
+
 # kubernetes (pods) location
 REMOTE_PODS_MACHINE_IP = "kube.machine"
 DEFAULT_KUBE_NAMESPACE = "default"
