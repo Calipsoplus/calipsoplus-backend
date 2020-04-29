@@ -52,3 +52,7 @@ OTHER_DIRS_TO_MOUNT = [
     "/opt/matlab/2018b:/usr/local/matlab:ro",
     "/opt/tools:/opt/tools:ro",
 ]
+
+# kubernetes (pods) location
+REMOTE_PODS_MACHINE_IP = "kube.machine"
+DEFAULT_KUBE_NAMESPACE = "default"
