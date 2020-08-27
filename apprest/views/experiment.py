@@ -68,7 +68,7 @@ class GetExperimentsByUserName(ListAPIView):
 
         elif ENABLE_ICAT_DATA_RETRIEVAL:
             icat_service = ICATService()
-            experiments_list = icat_service.get_embargo_data()
+            experiments_list = icat_service.get_embargo_data(request.session['oidc_access_token'])
             paginator = Paginator(experiments_list, PAGE_SIZE_EXPERIMENTS) # PAGE_SIZE_EXPERIMENTS is results per page
             results = paginator.get_page(request.GET.get('page'))
             data = {'page_size': PAGE_SIZE_EXPERIMENTS, 'results': results.object_list, 'count': len(experiments_list),
