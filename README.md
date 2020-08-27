@@ -180,6 +180,12 @@ To configure the resource quotas to which users are limited, modify the relevant
 #### Set the storage root path
 Paths to the datasets of an experiment are built dynamically, but the root path to the storage mounting needs to be defined in the **calipsoplus/settings_calipso.py** file. Use "EXPERIMENTS_DATASETS_ROOT" for datasets that will be mounted in "read-only" mode, and "EXPERIMENTS_OUTPUT" for the results of operations performed in the requisitioned resource.
 
+
+#### Set the kubernetes endpoint at calipso_settings
+REMOTE_PODS_MACHINE_IP = "kube.machine"
+DEFAULT_KUBE_NAMESPACE = "default"
+
+
 #### Set the docker daemon endpoint
 In order to requisition new docker containers, the application has to communicate with an existing Docker daemon. The endpoints to contact with this service are set in the relevant settings.py file (eg.: settings_local.py). There are two variables that need to be set:
 *  **DOCKER_URL_DAEMON**: takes the form of "tcp://MACHINE_IP:DOCKER_PORT", where "MACHINE_IP" is the IP of the machine that hosts the Docker daemon and "DOCKER_PORT" is the port the daemon is listening to.
@@ -245,6 +251,27 @@ Replace the placeholders with the following:
 *  **CALIPSO_UWSGI_PID_FILE**: Location where the application PID file will be saved (this is usually UWSGI_DIR/config/pid/calipsoplus.pid).
 *  **RELOAD_FILE**: A file UWSGI watches for changes to trigger a hot reload of the application (usually we use the README of the application).
 *  **ENVIRONMENT_SETTINGS_FILE**: The settings file used for this deployment, one of **settings_[test|demo|prod]** (depending on which environment you are deploying).
+
+#### Alternative HTTPS-based UWSGI
+
+You can also configure uwsgi to listen on HTTPS, and also provide official certificate/key. This means that your proxy configuration does not need to proxy uWSGI (just a 'normal' HTTP(S)-based proxy) which can reduce complexity depending on your environment.
+
+Here is a live example with no variables, for additional perspective to the previous example:
+
+```ini
+[uwsgi]
+https=0.0.0.0:8000,secrets/backend/calipso.crt,secrets/backend/calipso.key
+master=True
+chdir=/src
+honour-stdin=True
+wsgi-file=calipsoplus/wsgi.py
+pidfile=/src/calipsoplus.pid
+stats=/tmp/calipso-stats
+env=DJANGO_SETTINGS_MODULE=calipsoplus.settings_prod
+processes=4
+threads=2
+```
+* NB: the order of the certificate/key is important; give the path to the certificate *before* the key. In the above example, the container is configured to provide a 'secrets' directory inside /src.
 
 Once you are sure the values are correct, sym-link it to the apps-enabled folder and restart the UWSGI service.
 

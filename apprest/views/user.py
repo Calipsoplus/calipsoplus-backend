@@ -87,12 +87,13 @@ class UserAdmin(APIView):
             return JSONResponse({'is_admin': False})
         return HttpResponse(status=403)
 
-    def post(self, *args, **kwargs):
+    def post(self, request, *args, **kwargs):
         service = CalipsoUserServices()
         authenticated_user = self.request.user.username
         requested_username = self.kwargs.get('username')
 
         if service.is_admin(authenticated_user):
-            service.make_user_admin(requested_username)
-            return HttpResponse(status=200)
+            if request.data.get('is_superuser'):
+                service.make_user_admin(requested_username)
+                return HttpResponse(status=200)
         return HttpResponse(status=403)

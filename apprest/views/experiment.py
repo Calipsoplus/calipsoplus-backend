@@ -71,13 +71,17 @@ class GetExperimentsByUserName(ListAPIView):
             experiments_list = icat_service.get_embargo_data(request.session['oidc_access_token'])
             paginator = Paginator(experiments_list, PAGE_SIZE_EXPERIMENTS) # PAGE_SIZE_EXPERIMENTS is results per page
             results = paginator.get_page(request.GET.get('page'))
-            data = {'page_size': PAGE_SIZE_EXPERIMENTS, 'results': results.object_list, 'count': len(experiments_list),
-                    'next': '', 'previous': ''}
-            return JsonResponse(data, status=status.HTTP_200_OK)
 
+            data = {'page_size': PAGE_SIZE_EXPERIMENTS, 'results': results.object_list, 'count': len(experiments_list['results']),
+                    'next': '', 'previous': ''}
+
+            if must_be_favorite is None:
+                return JsonResponse(data, status=status.HTTP_200_OK)
+            else:
+                return super(GetExperimentsByUserName, self).get(self, request, *args, **kwargs)
         else:
             username = self.kwargs.get('username')
-            if username == self.request.user.username:
+            if username == request.user.username:
 
                 must_be_favorite = request.GET.get('calipsouserexperiment__favorite')
                 logger.debug('must_be_favorite=%s' % must_be_favorite)

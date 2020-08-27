@@ -14,6 +14,7 @@ from apprest.services.session import CalipsoSessionsServices
 from apprest.utils.exceptions import DockerExceptionNotFound
 from apprest.services.user import CalipsoUserServices
 from calipsoplus.settings_calipso import ADD_HOME_DIR_TO_ALL_CONTAINERS
+from calipsoplus.settings_calipso import OTHER_DIRS_TO_MOUNT
 
 image_service = CalipsoAvailableImagesServices()
 session_service = CalipsoSessionsServices()
@@ -49,8 +50,8 @@ class CalipsoResourceDockerContainerService:
 
         image_selected = image_service.get_available_image(public_name=public_name)
 
-        uid = "-1"
-        gid = "-1"
+        uid = "."
+        gid = "."
         try:
             experiment_from_session = session_service.get_experiment_from_session(session_number=experiment)
             experiment_data = experiments_service.get_experiment(proposal_id=experiment_from_session.proposal_id)
@@ -60,7 +61,7 @@ class CalipsoResourceDockerContainerService:
             self.logger.debug('Exception on get experiments,sessions, and uid,gid')
 
         # If there was an exception getting the UID and GID from the experiment, try to get it from the user
-        if uid == '-1' or gid == '-1':
+        if uid == '.' or gid == '.':
             try:
                 uid = user_service.get_user_uid(username)
                 gid = user_service.get_user_gid(username)
@@ -89,6 +90,12 @@ class CalipsoResourceDockerContainerService:
             volume.update(
                 {str(user_service.get_user_home_dir(username)): {"bind": "/tmp/user/home/", "mode": "rw"}}
             )
+
+        # Check for, and add any additional directories from the docker host
+        if OTHER_DIRS_TO_MOUNT is not None and type(OTHER_DIRS_TO_MOUNT) is list:
+            for _ in OTHER_DIRS_TO_MOUNT:
+                (src_vol,dst_vol,vol_mode) = _.split(':')
+                volume[src_vol] = {"bind" : dst_vol, "mode" : vol_mode}
 
         self.logger.debug('volume set to :%s', volume)
 
