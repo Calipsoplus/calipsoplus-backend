@@ -18,9 +18,9 @@ class GetInvestigationUsers(APIView):
 
     pagination_class = None
 
-    def get(self, *args, **kwargs):
+    def get(self, request, *args, **kwargs):
         service = ICATService()
         investigation_id = self.kwargs.get('investigation_id')
-        investigation_users = service.get_users_involved_in_investigation(investigation_id)
+        investigation_users = service.get_users_involved_in_investigation(investigation_id, request)
 
         return JsonResponse(investigation_users, status=status.HTTP_200_OK)
