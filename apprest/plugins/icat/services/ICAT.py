@@ -6,7 +6,7 @@ import dateutil.parser
 from apprest.plugins.icat.models.calipso_experiment import CalipsoExperiment
 from apprest.plugins.icat.models.calipso_session import CalipsoSession
 from apprest.plugins.icat.models.calipso_investigation_user import CalipsoInvestigationUser
-from calipsoplus.settings_calipso import ICAT_DATA_RETRIEVAL_ENDPOINT, ICAT_PLUGIN
+from calipsoplus.settings_calipso import ICAT_DATA_RETRIEVAL_ENDPOINT, ICAT_PLUGIN, ICAT_OPENID_CONNECT, ICAT_PASSWORD, ICAT_USERNAME
 
 icat_url = ICAT_DATA_RETRIEVAL_ENDPOINT
 logger = logging.getLogger(__name__)
@@ -15,16 +15,27 @@ logger = logging.getLogger(__name__)
 class ICATService:
 
     def get_session_id(self, access_token=None):
-        try:
-            # ICAT doesn't need a username as it checks if it can decrypt the token to verify the user
-            session_id = json.loads(requests.post(icat_url + '/session', data={
-               "plugin": ICAT_PLUGIN,
-               "password": access_token
-            }).text)['sessionId']
-
-            return session_id
-        except json.JSONDecodeError:
-            logging.debug("Exception authenticating with ICAT service")
+        # If ICAT supports OpenID Connect
+        if ICAT_OPENID_CONNECT and access_token is not None:
+            try:
+                # ICAT doesn't need a username as it checks if it can decrypt the token to verify the user
+                session_id = json.loads(requests.post(icat_url + '/session', data={
+                "plugin": ICAT_PLUGIN,
+                "password": access_token
+                }).text)['sessionId']
+                return session_id
+            except json.JSONDecodeError:
+                logging.debug("Exception authenticating with ICAT service")
+        else:
+            try:
+                session_id = json.loads(requests.post(icat_url + '/session', data={
+                "plugin": ICAT_PLUGIN,
+                "username": ICAT_USERNAME,
+                "password": ICAT_PASSWORD
+                }).text)['sessionId']
+                return session_id
+            except json.JSONDecodeError:
+                logging.debug("Exception authenticating with ICAT service")
         return None
 
     def parse_data(self, data_array):
@@ -108,7 +119,10 @@ class ICATService:
         Gets all investigations that are under embargo, releaseDate > NOW
         :return: List of CalipsoExperiment
         """
-        session_id = self.get_session_id(access_token)
+        if access_token is not None:
+            session_id = self.get_session_id(access_token)
+        else:
+            session_id = self.get_session_id()
 
         # Get all of embargoed investigation data and create python objects
         embargoed_investigations = json.loads(requests.get(icat_url + '/catalogue/' + session_id +

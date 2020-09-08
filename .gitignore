@@ -6,6 +6,7 @@
 */.project
 */.pydevproject
 env/
+venv/
 /.settings/
 *.cnf
 *.log
